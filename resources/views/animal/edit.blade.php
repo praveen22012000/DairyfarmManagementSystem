@@ -5,6 +5,7 @@
 
        
             <h1>Animal Registration Form</h1>     
+            
         
 
     <br>
@@ -31,9 +32,9 @@
         <select name="animal_type_id" id="animal_type_id" class="form-control" required>
                 <option value="">Select Animal Type</option>
              
-                @foreach ($Animal_types as $Animal_type)
-                <option value="{{ $Animal_type->id }}">{{ $Animal_type->Animal_Type}}</option>
-                @endforeach
+              
+                <option value="{{ $animaldetail->id }}">{{ $animaldetail->id}}</option>
+               
             </select>
 
         </div>
@@ -42,13 +43,13 @@
         <!--this is get the animal birthdate-->
         <div class="form-group">
             <label for="animal_birthdate">Animal Birthdate</label>
-                <input type="datetime-local" name="animal_birthdate" class="form-control rounded" id="animal_birthdate" required>
+                <input type="datetime-local" name="animal_birthdate" class="form-control rounded" id="animal_birthdate" value="{{$animaldetail->animal_birthdate}}" required>
         </div>
 
         <!--this is to get the Animalname-->
         <div class="form-group">
             <label for="animal_name">Animal Name</label>
-            <input type="text" name="animal_name" class="form-control rounded" id="animal_name" required>
+            <input type="text" name="animal_name" class="form-control rounded" id="animal_name" required value="{{$animaldetail->animal_name}}">
         </div>
 
         </fieldset>
@@ -61,11 +62,11 @@
         <div class="row mb-3">
                 <div class="col-md-6">
                     <label for="ear_tag" class="form-label">Ear Tag</label>
-                    <input type="text" class="form-control rounded" id="ear_tag" name="ear_tag" placeholder="Enter Ear Tag">
+                    <input type="text" class="form-control rounded" id="ear_tag" name="ear_tag" placeholder="Enter Ear Tag" value="{{$animaldetail->ear_tag}}">
                 </div>
                 <div class="col-md-6">
                     <label for="sire_id" class="form-label">Sire ID</label>
-                    <input type="text" class="form-control rounded" id="sire_id" name="sire_id" placeholder="Enter Sire ID">
+                    <input type="text" class="form-control rounded" id="sire_id" name="sire_id" placeholder="Enter Sire ID" value="{{$animaldetail->sire_id}}">
                 </div>
         </div>
 
@@ -73,11 +74,11 @@
         <div class="row mb-3">
                 <div class="col-md-6">
                     <label for="dam_id" class="form-label">Dam ID</label>
-                    <input type="text" class="form-control rounded" id="dam_id" name="dam_id" placeholder="Enter Dam ID">
+                    <input type="text" class="form-control rounded" id="dam_id" name="dam_id" placeholder="Enter Dam ID" value="{{$animaldetail->dam_id}}">
                 </div>
                 <div class="col-md-6">
                     <label for="color" class="form-label">Color</label>
-                    <input type="text" class="form-control rounded" id="color" name="color" placeholder="Enter Color">
+                    <input type="text" class="form-control rounded" id="color" name="color" placeholder="Enter Color" value="{{$animaldetail->color}}">
                 </div>
         </div>
 
@@ -92,9 +93,9 @@
         <select name="breed_id" id="breed_id" class="form-control" required>
                 <option value="">Select Breed Type</option>
              
-                @foreach ($breeds as $breed)
-                <option value="{{ $breed->id }}">{{ $breed->breed_name }}</option>
-                @endforeach
+             
+                <option value="{{ $animaldetail->breed_id }}">{{ $animaldetail->breed_id }}</option>
+              
             </select>
             
 

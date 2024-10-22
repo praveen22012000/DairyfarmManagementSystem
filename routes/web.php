@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AnimalController;
 use Illuminate\Support\Facades\Route;
 
+use App\Models\AnimalDetail;
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -26,7 +28,7 @@ Route::middleware('auth')->prefix('animal')->group(function () {
     Route::get('/create', [AnimalController::class, 'create'])->name('animal.create');
     Route::post('/store', [AnimalController::class, 'store'])->name('animal.store');
     
-    Route::group(['prefix'=>'{animal_details}'],function(){
+    Route::group(['prefix'=>'{animaldetail}'],function(){
        
         Route::get('/edit', [AnimalController::class, 'edit'])->name('animal.edit');
 

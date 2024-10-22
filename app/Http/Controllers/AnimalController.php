@@ -80,8 +80,9 @@ class AnimalController extends Controller
 
     }
 
-    public function edit(AnimalDetails $animaldetails)
+    public function edit(AnimalDetail $animaldetail)
     {
-        return view('animal.edit');
+      
+        return view('animal.edit',['animaldetail'=>$animaldetail]);
     }
 }
