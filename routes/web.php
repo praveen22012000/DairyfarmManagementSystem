@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AnimalController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -16,5 +17,32 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
+
+//this below group is used to manage about animal_details
+Route::middleware('auth')->prefix('animal')->group(function () {
+    Route::get('/', [AnimalController::class, 'index'])->name('animal.list');
+    Route::get('/create', [AnimalController::class, 'create'])->name('animal.create');
+    Route::post('/store', [AnimalController::class, 'store'])->name('animal.store');
+    
+    Route::group(['prefix'=>'{animal_details}'],function(){
+       
+        Route::get('/edit', [AnimalController::class, 'edit'])->name('animal.edit');
+
+    });
+ 
+});
+
+
+
+
+
+
+
+
+
+
+
 
 require __DIR__.'/auth.php';
