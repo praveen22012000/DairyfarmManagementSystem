@@ -32,7 +32,7 @@
                     <tr>
                         <td>{{$animal->id}}</td>
                         <td>{{$animal->animal_name}}</td>
-                        <td>{{$animal->AnimalType->Animal_Type}}</td>
+                        <td>{{$animal->AnimalType->animal_type}}</td>
                         <td><a href="{{route('animal.edit',$animal->id)}}">Edit</a></td>
                     </tr>
                     @endforeach

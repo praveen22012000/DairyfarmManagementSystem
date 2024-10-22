@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('animal_types', function (Blueprint $table) {
             $table->id();
 
-            $table->string('Animal_Type');
+            $table->string('animal_type');
 
             $table->timestamps();
         });

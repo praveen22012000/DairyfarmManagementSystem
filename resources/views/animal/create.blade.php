@@ -32,8 +32,8 @@
         <select name="animal_type_id" id="animal_type_id" class="form-control" required>
                 <option value="">Select Animal Type</option>
              
-                @foreach ($Animal_types as $Animal_type)
-                <option value="{{ $Animal_type->id }}">{{ $Animal_type->Animal_Type}}</option>
+                @foreach ($animal_types as $animal_type)
+                <option value="{{ $animal_type->id }}">{{ $animal_type->animal_type}}</option>
                 @endforeach
             </select>
 

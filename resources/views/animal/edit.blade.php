@@ -112,12 +112,12 @@
             
                 <div class="col-md-6">
                         <label for="weight_at_birth">Weight_at_Birth</label>
-                        <input type="text" name="weight_at_birth" class="form-control rounded" id="weight_at_birth" required>
+                        <input type="text" name="weight_at_birth" class="form-control rounded" id="weight_at_birth" value="{{$animaldetail->weight_at_birth}}"  required>
                 </div>
 
                 <div class="col-md-6">
                         <label for="age_at_birth">Age_at_First_Service</label>
-                        <input type="text" name="age_at_birth" class="form-control rounded" id="age_at_birth" required>
+                        <input type="text" name="age_at_birth" class="form-control rounded" id="age_at_birth" value="{{$animaldetail->age_at_birth}}" required>
                 </div>
         </div>
 
@@ -125,7 +125,7 @@
        
         <div class="form-group">
             <label for="weight_at_first_service">Weight_at_First_Service</label>
-            <input type="text" name="weight_at_first_service" class="form-control rounded" id="weight_at_first_service" required>
+            <input type="text" name="weight_at_first_service" class="form-control rounded" id="weight_at_first_service" value="{{$animaldetail->weight_at_first_service}}" required>
         </div>
 
         
