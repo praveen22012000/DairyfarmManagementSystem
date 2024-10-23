@@ -32,9 +32,11 @@
         <select name="animal_type_id" id="animal_type_id" class="form-control" required>
                 <option value="">Select Animal Type</option>
              
-              
-                <option value="{{ $animaldetail->id }}">{{ $animaldetail->id}}</option>
-               
+                @foreach ($animal_types as $animal_type)
+                <option value="{{ $animal_type->id }}"
+                {{ $animaldetail->id == $animal_type->id ? 'selected' : '' }}
+                >{{ $animal_type->animal_type}}</option>
+                @endforeach
             </select>
 
         </div>
@@ -43,8 +45,11 @@
         <!--this is get the animal birthdate-->
         <div class="form-group">
             <label for="animal_birthdate">Animal Birthdate</label>
-                <input type="datetime-local" name="animal_birthdate" class="form-control rounded" id="animal_birthdate" value="{{$animaldetail->animal_birthdate}}" required>
+                <input type="datetime-local" name="animal_birthdate" class="form-control rounded" id="animal_birthdate" value="{{ old('birthdate', $animaldetail->animal_birthdate) }}" required>
         </div>
+
+       
+
 
         <!--this is to get the Animalname-->
         <div class="form-group">
@@ -93,9 +98,11 @@
         <select name="breed_id" id="breed_id" class="form-control" required>
                 <option value="">Select Breed Type</option>
              
-             
-                <option value="{{ $animaldetail->breed_id }}">{{ $animaldetail->breed_id }}</option>
-              
+                @foreach ($breeds as $breed)
+                <option value="{{ $breed->id }}"
+                 {{ $animaldetail->breed_id == $breed->id ? 'selected' : '' }}
+                >{{ $breed->breed_name }}</option>
+                @endforeach
             </select>
             
 

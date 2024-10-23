@@ -29,7 +29,7 @@ class AnimalController extends Controller
 
 
         $animal_types=AnimalType::all();
-        //get the all breed records from the database.and stored it in the $breeds variable
+        //get the all animaltypes records from the database.and stored it in the $animal_types variable
 
         return view('animal.create',['breeds'=>$breeds,'animal_types'=>$animal_types]);
         //this method  pass the breeds to the animal.create view
@@ -86,6 +86,13 @@ class AnimalController extends Controller
          //this line get the AnimalType details along with AnimalDetail using the AnimalType relationship(define on the AnimalDetailModel)
          $animals=AnimalDetail::with('AnimalType')->get();
 
-        return view('animal.edit',['animaldetail'=>$animaldetail]);
+
+         $animal_types=AnimalType::all();
+         //get the all animaltypes records from the database.and stored it in the $animal_types variable
+
+         $breeds=Breed::all();
+         //get the all breed records from the database.and stored it in the $breeds variable
+
+        return view('animal.edit',['animal_types'=>$animal_types,'animaldetail'=>$animaldetail,'breeds'=>$breeds]);
     }
 }
