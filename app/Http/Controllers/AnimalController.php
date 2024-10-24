@@ -39,7 +39,7 @@ class AnimalController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'animal_image'=>'required|image',
+           
             'animal_type_id'=>'required',
             'animal_birthdate'=>'required',
             'animal_name'=>'required|string|max:255',
@@ -54,14 +54,14 @@ class AnimalController extends Controller
 
         ]);
 
-        $imagePath = null;
+     /*   $imagePath = null;
         if ($request->hasFile('animal_image')) {
             $imagePath = $request->file('animal_image')->store('animal_images', 'public');
-        }
+        }*/
 
         AnimalDetail::create(
             [
-                'animal_image'=>$imagePath,
+                
                 'animal_type_id'=>$request->animal_type_id,
                 'animal_birthdate'=>$request->animal_birthdate,
                 'animal_name'=>$request->animal_name,
@@ -76,6 +76,7 @@ class AnimalController extends Controller
             ]);
 
 
+            return redirect()->route('animal.list');
 
 
     }
@@ -94,5 +95,41 @@ class AnimalController extends Controller
          //get the all breed records from the database.and stored it in the $breeds variable
 
         return view('animal.edit',['animal_types'=>$animal_types,'animaldetail'=>$animaldetail,'breeds'=>$breeds]);
+    }
+
+
+    public function update(Request $request,AnimalDetail $animaldetail)
+    {
+
+        $data=$request->validate([
+            'animal_type_id'=>'required',
+            'animal_birthdate'=>'required',
+            'animal_name'=>'required|string|max:255',
+            'ear_tag'=>'required',
+            'sire_id'=>'required',
+            'dam_id'=>'required',
+            'breed_id'=>'required',
+            'color'=>'required',
+            'weight_at_birth'=>'required',
+            'age_at_birth'=>'required',
+            'weight_at_first_service'=>'required'
+
+        ]);
+
+        $animaldetail->update($data);
+
+        return redirect()->route('animal.list');
+
+    }
+
+    public function delete(AnimalDetail $animaldetail)
+    {
+        return view('animal.delete',['animaldetail'=>$animaldetail]);
+    }
+
+    public function destroy(AnimalDetail $animaldetail)
+    {
+        $animaldetail->delete();
+        return redirect()->route('animal.list');
     }
 }

@@ -9,7 +9,7 @@
                     <h2>Animals</h2>
                 </div>
                 <div class="float-right">
-                <a  class="btn btn-primary btn-md btn-rounded" href="{{route('animal.create')}}"><i class="mdi mdi-plus-circle mdi-18px"></i>Add Animal</a>
+                <a  class="btn btn-success btn-md btn-rounded" href="{{route('animal.create')}}"><i class="mdi mdi-plus-circle mdi-18px"></i>Add Animal</a>
                 </div>
             </div>
             <div class="card-body">
@@ -25,6 +25,7 @@
                         <th>Animal Name</th>
                         <th>Animal Type</th>
                         <th></th>
+                        <th></th>
                       
                     </tr>
                 </thead>
@@ -34,6 +35,7 @@
                         <td>{{$animal->animal_name}}</td>
                         <td>{{$animal->AnimalType->animal_type}}</td>
                         <td><a href="{{route('animal.edit',$animal->id)}}">Edit</a></td>
+                        <td><a href="{{route('animal.delete',$animal->id)}}">Delete</a></td>
                     </tr>
                     @endforeach
                 <tbody>

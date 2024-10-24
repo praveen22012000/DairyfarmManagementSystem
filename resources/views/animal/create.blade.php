@@ -16,12 +16,7 @@
         <fieldset class="border p-4 mb-4">
         <legend class="w-auto px-2">General Information</legend>
 
-    <!--this is to display the image of the animal-->
-        <div class="form-group">
-            <label for="animal_image">Animal Image</label>
-            <input type="file" name="animal_image" class="form-control" id="animal_image" required>
-        </div>
-
+   
 
 
          <!-- this is used to list the animal types-->
@@ -43,7 +38,7 @@
         <!--this is get the animal birthdate-->
         <div class="form-group">
             <label for="animal_birthdate">Animal Birthdate</label>
-                <input type="datetime-local" name="animal_birthdate" class="form-control rounded" id="animal_birthdate" required>
+                <input type="date" name="animal_birthdate" class="form-control rounded" id="animal_birthdate" required>
         </div>
 
         <!--this is to get the Animalname-->

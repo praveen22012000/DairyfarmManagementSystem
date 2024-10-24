@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('animal_details', function (Blueprint $table) {
             $table->id();
 
-            $table->string('animal_image');
+            
             $table->foreignId('animal_type_id');
             $table->date('animal_birthdate');
             $table->string('animal_name');

@@ -31,7 +31,10 @@ Route::middleware('auth')->prefix('animal')->group(function () {
     Route::group(['prefix'=>'{animaldetail}'],function(){
        
         Route::get('/edit', [AnimalController::class, 'edit'])->name('animal.edit');
+        Route::post('/update', [AnimalController::class, 'update'])->name('animal.update');
 
+        Route::get('/delete', [AnimalController::class, 'delete'])->name('animal.delete');
+        Route::post('/destroy', [AnimalController::class, 'destroy'])->name('animal.destroy');
     });
  
 });
