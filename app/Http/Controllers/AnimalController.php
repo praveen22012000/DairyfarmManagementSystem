@@ -49,7 +49,7 @@ class AnimalController extends Controller
             'breed_id'=>'required',
             'color'=>'required',
             'weight_at_birth'=>'required',
-            'age_at_birth'=>'required',
+            'age_at_first_service'=>'required',
             'weight_at_first_service'=>'required'
 
         ]);
@@ -71,7 +71,7 @@ class AnimalController extends Controller
                 'breed_id'=>$request->breed_id,
                 'color'=>$request->color,
                 'weight_at_birth'=>$request->weight_at_birth,
-                'age_at_birth'=>$request->age_at_birth,
+                'age_at_first_service'=>$request->age_at_first_service,
                 'weight_at_first_service'=>$request->weight_at_first_service
             ]);
 
@@ -111,7 +111,7 @@ class AnimalController extends Controller
             'breed_id'=>'required',
             'color'=>'required',
             'weight_at_birth'=>'required',
-            'age_at_birth'=>'required',
+            'age_at_first_service'=>'required',
             'weight_at_first_service'=>'required'
 
         ]);

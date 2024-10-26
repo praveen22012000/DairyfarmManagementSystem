@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AnimalController;
+use App\Http\Controllers\AnimalCalvingsController;
 use Illuminate\Support\Facades\Route;
 
 use App\Models\AnimalDetail;
@@ -38,6 +39,20 @@ Route::middleware('auth')->prefix('animal')->group(function () {
     });
  
 });
+
+
+//this below group is used to manage animal_calving details
+Route::middleware('auth')->prefix('animal_calvings')->group(function () {
+
+    Route::get('/', [AnimalCalvingsController::class, 'index'])->name('animal_calving.list');
+  
+    Route::get('/create', [AnimalCalvingsController::class, 'create'])->name('animal_calving.create');
+    Route::post('/store', [AnimalCalvingsController::class, 'store'])->name('animal_calvings.store');
+ 
+});
+
+
+
 
 
 

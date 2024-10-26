@@ -16,19 +16,19 @@ class BreedSeeder extends Seeder
     {
         //
         Breed::create([
-        'breed_name'=>'Holstein Bull'
+        'breed_name'=>'Holstein'
         ]);
 
         Breed::create([
-        'breed_name'=>'Jersey Bull'
+        'breed_name'=>'Jersey'
         ]);
 
         Breed::create([
-        'breed_name'=>'Guernsey'
+        'breed_name'=>'Angus'
         ]);
 
         Breed::create([
-        'breed_name'=>'Brown Swiss'
+        'breed_name'=>'Hereford'
         ]);
 
 

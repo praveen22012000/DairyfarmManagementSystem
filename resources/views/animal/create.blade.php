@@ -111,8 +111,8 @@
                 </div>
 
                 <div class="col-md-6">
-                        <label for="age_at_birth">Age_at_First_Service</label>
-                        <input type="text" name="age_at_birth" class="form-control rounded" id="age_at_birth" required>
+                        <label for="age_at_first_service">Age_at_First_Service</label>
+                        <input type="text" name="age_at_first_service" class="form-control rounded" id="age_at_first_service" required>
                 </div>
         </div>
 

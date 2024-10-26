@@ -24,7 +24,7 @@ return new class extends Migration
             $table->foreignId('breed_id');
             $table->string('color');
             $table->string('weight_at_birth');
-            $table->string('age_at_birth');
+            $table->string('age_at_first_service');
             $table->string('weight_at_first_service');
 
             $table->timestamps();

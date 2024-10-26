@@ -20,7 +20,7 @@ class AnimalDetail extends Model
         'breed_id',
         'color',
         'weight_at_birth',
-        'age_at_birth',
+        'age_at_first_service',
         'weight_at_first_service'
     ];
 
@@ -32,5 +32,10 @@ class AnimalDetail extends Model
     public function Breed()
     {
         return $this->belongsTo(Breed::class);
+    }
+
+    public function AnimalCalvings()
+    {
+        return $this->hasMany(AnimalCalving::class);
     }
 }
