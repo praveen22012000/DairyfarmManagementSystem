@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\AnimalType;
 use App\Models\AnimalCalvings;
 use App\Models\AnimalDetail;
@@ -12,7 +13,9 @@ class AnimalCalvingsController extends Controller
     //
     public function index()
     {
-        $animal_calvings_details=AnimalCalvings::with('AnimalDetail')->get();
+        $animal_calvings_details=AnimalCalvings::with(['parentCow','calf'])->get();
+
+       
 
         return view('animal_calving.index',['animal_calvings_details'=>$animal_calvings_details]);
 
@@ -30,8 +33,15 @@ class AnimalCalvingsController extends Controller
         $Parent_female_Animals = AnimalDetail::whereIn('animal_type_id', $animal_types_id)->get();
      
       
+        //this is used to get the type of the animals Heifer,and BullCalf from the animal_type table in db.pluck() method return only the animal_type_id of the animals Heifer and BullCalf
+        $calf_animal_types_id= AnimalType::whereIn('animal_type',['Heifer','BullCalf'])->pluck('id');
 
-        return view('animal_calving.create',['Parent_female_Animals'=>$Parent_female_Animals]);
+        //$Child_animals variable contain the details of the animal which are heifer and BullCalf
+        $Child_animals=AnimalDetail::whereIn('animal_type_id',$calf_animal_types_id)->get();
+
+       
+
+        return view('animal_calving.create',['Parent_female_Animals'=>$Parent_female_Animals,'Child_animals'=>$Child_animals]);
     }
 
     public function store(Request $request)
@@ -50,6 +60,8 @@ class AnimalCalvingsController extends Controller
             'calving_date'=>$request->calving_date,
             'calving_notes'=>$request->calving_notes
         ]);
+
+        return redirect()->route('animal_calvings.list');
     }
 
     public function edit()

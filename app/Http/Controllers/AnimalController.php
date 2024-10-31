@@ -18,6 +18,7 @@ class AnimalController extends Controller
         //this line get the AnimalType details along with AnimalDetail using the AnimalType relationship(define on the AnimalDetailModel)
         $animals=AnimalDetail::with('AnimalType')->get();
 
+       
 
         return view('animal.index',['animals'=>$animals]);
     }

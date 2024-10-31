@@ -44,7 +44,7 @@ Route::middleware('auth')->prefix('animal')->group(function () {
 //this below group is used to manage animal_calving details
 Route::middleware('auth')->prefix('animal_calvings')->group(function () {
 
-    Route::get('/', [AnimalCalvingsController::class, 'index'])->name('animal_calving.list');
+    Route::get('/', [AnimalCalvingsController::class, 'index'])->name('animal_calvings.list');
   
     Route::get('/create', [AnimalCalvingsController::class, 'create'])->name('animal_calving.create');
     Route::post('/store', [AnimalCalvingsController::class, 'store'])->name('animal_calvings.store');

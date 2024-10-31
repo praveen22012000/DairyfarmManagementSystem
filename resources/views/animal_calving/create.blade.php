@@ -18,9 +18,14 @@
 
 
         <div class="form-group">
-            <label for="calf_id">calf_id</label>
-                <input type="text" name="calf_id" class="form-control rounded" id="calf_id" required>
-        </div>
+        <label for="calf_id">Calf Name</label>
+        <select name="calf_id" id="calf_id" class="form-control">
+            <option value="">Select Calf</option>
+            @foreach($Child_animals as $Child_animal)
+                <option value="{{ $Child_animal->id }}">{{ $Child_animal->animal_name }}</option>
+            @endforeach
+        </select>
+    </div>
 
 
         <div class="form-group">

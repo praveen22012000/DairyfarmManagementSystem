@@ -34,8 +34,15 @@ class AnimalDetail extends Model
         return $this->belongsTo(Breed::class);
     }
 
-    public function AnimalCalvings()
+    // Define a relationship to AnimalCalvings as a parent cow
+    public function calvings()
     {
-        return $this->hasMany(AnimalCalving::class);
+        return $this->hasMany(AnimalCalvings::class, 'parent_cow_id');
+    }
+
+    // Define a relationship to AnimalCalvings as a calf
+    public function asCalf()
+    {
+        return $this->hasOne(AnimalCalvings::class, 'calf_id');
     }
 }

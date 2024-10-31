@@ -9,7 +9,7 @@
                     <h2>Animals</h2>
                 </div>
                 <div class="float-right">
-                <a  class="btn btn-success btn-md btn-rounded" href="{{route('animal.create')}}"><i class="mdi mdi-plus-circle mdi-18px"></i>Add Animal</a>
+                <a  class="btn btn-success btn-md btn-rounded" href="{{route('animal_calving.create')}}"><i class="mdi mdi-plus-circle mdi-18px"></i>Add Calving Events</a>
                 </div>
             </div>
             <div class="card-body">
@@ -32,10 +32,10 @@
                     @foreach($animal_calvings_details as $animal_calvings_detail)
                     <tr>
                         <td>{{$animal_calvings_detail->id}}</td>
-                        <td>{{$animal_calvings_detail->AnimalType->animal_name}}</td>
+                        <td>{{$animal_calvings_detail->calf->animal_name}}</td>
+                        <td>{{$animal_calvings_detail->parentCow->animal_name}}</td>
                         <td>{{$animal_calvings_detail->calving_date}}</td>
-                        <td><a href="{{route('animal.edit',$animal->id)}}">Edit</a></td>
-                        <td><a href="{{route('animal.delete',$animal->id)}}">Delete</a></td>
+                        <td>{{$animal_calvings_detail->calving_notes}}</td>
                     </tr>
                     @endforeach
                 <tbody>

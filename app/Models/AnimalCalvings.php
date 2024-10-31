@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\AnimalDetail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,8 +20,18 @@ class AnimalCalvings extends Model
     ];
 
 
-    public function AnimalDetail()
-    {
-        return $this->belongsTo(AnimalDetail::class);
-    }
+    
+     // Get the parent animal (cow) for each calving
+     //define a relationship a relationship to animal details(parent_cow_id is the parent animal)
+     public function parentCow()
+     {
+         return $this->belongsTo(AnimalDetail::class, 'parent_cow_id');
+     }
+ 
+     // Get the calf's details
+     //define a relationship a relationship to animal details(calf_id is the child animal)
+     public function calf()
+     {
+         return $this->belongsTo(AnimalDetail::class, 'calf_id');
+     }
 }
