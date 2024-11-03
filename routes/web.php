@@ -48,6 +48,19 @@ Route::middleware('auth')->prefix('animal_calvings')->group(function () {
   
     Route::get('/create', [AnimalCalvingsController::class, 'create'])->name('animal_calving.create');
     Route::post('/store', [AnimalCalvingsController::class, 'store'])->name('animal_calvings.store');
+
+    Route::group(['prefix'=>'{animalcalvings}'],function(){
+       
+        Route::get('/edit', [AnimalCalvingsController::class, 'edit'])->name('animal_calvings.edit');
+        Route::post('/update', [AnimalCalvingsController::class, 'update'])->name('animal_calvings.update');
+
+        Route::get('/delete', [AnimalCalvingsController::class, 'delete'])->name('animal_calvings.delete');
+        Route::post('/destroy', [AnimalCalvingsController::class, 'destroy'])->name('animal_calvings.destroy');
+
+      
+    });
+
+   
  
 });
 

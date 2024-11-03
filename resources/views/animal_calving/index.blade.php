@@ -26,6 +26,9 @@
                         <th>Parent Animal Name</th>
                         <th>Calving Date</th>
                         <th>Calving Notes</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
                       
                     </tr>
                 </thead>
@@ -36,6 +39,10 @@
                         <td>{{$animal_calvings_detail->parentCow->animal_name}}</td>
                         <td>{{$animal_calvings_detail->calving_date}}</td>
                         <td>{{$animal_calvings_detail->calving_notes}}</td>
+
+                        <td><a href="{{route('animal_calvings.edit',$animal_calvings_detail->id)}}">Edit</a></td>
+                        <td><a href="{{route('animal_calvings.delete',$animal_calvings_detail->id)}}">Delete</a></td>
+                        <td></td>
                     </tr>
                     @endforeach
                 <tbody>
