@@ -45,4 +45,16 @@ class AnimalDetail extends Model
     {
         return $this->hasOne(AnimalCalvings::class, 'calf_id');
     }
+
+    //define a relationship to the BreedingEvents table
+    public function maleBreedingEvents()
+    {
+        return $this->hasMany(BreedingEvents::class,'male_cow_id');
+    }
+
+      //define a relationship to the BreedingEvents table
+    public function femaleBreedingEvents()
+    {
+        return $this->hasMany(BreedingEvents::class,'female_cow_id');
+    }
 }

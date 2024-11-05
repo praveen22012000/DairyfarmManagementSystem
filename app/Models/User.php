@@ -53,4 +53,9 @@ class User extends Authenticatable
     {
        return $this->belongsTo(Role::class);
     }
+
+    public function BreedingEvents()
+    {
+        return $this->hasMany(BreedingEvents::class,'veterinarian_id');
+    }
 }

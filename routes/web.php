@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AnimalController;
+use App\Http\Controllers\BreedingEventsController;
 use App\Http\Controllers\AnimalCalvingsController;
 use Illuminate\Support\Facades\Route;
 
@@ -63,6 +64,31 @@ Route::middleware('auth')->prefix('animal_calvings')->group(function () {
    
  
 });
+
+//this below group is used to animal_breedings details
+Route::middleware('auth')->prefix('animal_breedings')->group(function () {
+
+    Route::get('/', [BreedingEventsController::class, 'index'])->name('animal_breedings.list');
+  
+    Route::get('/create', [BreedingEventsController::class, 'create'])->name('animal_breedings.create');
+    Route::post('/store', [BreedingEventsController::class, 'store'])->name('animal_breedings.store');
+
+    Route::group(['prefix'=>'{animalbreeding}'],function(){
+       
+        Route::get('/edit', [BreedingEventsController::class, 'edit'])->name('animal_breedings.edit');
+        Route::post('/update', [BreedingEventsController::class, 'update'])->name('animal_breedings.update');
+
+        Route::get('/delete', [BreedingEventsController::class, 'delete'])->name('animal_breedings.delete');
+        Route::post('/destroy', [BreedingEventsController::class, 'destroy'])->name('animal_breedings.destroy');
+
+      
+    });
+
+   
+ 
+});
+
+
 
 
 
