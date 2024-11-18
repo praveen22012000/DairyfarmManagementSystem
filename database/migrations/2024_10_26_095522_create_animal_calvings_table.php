@@ -15,14 +15,16 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('calf_id');
-            $table->foreignId('parent_cow_id');
+       //     $table->foreignId('parent_cow_id');
+            $table->foreignId('veterinarian_id');
 
             $table->date('calving_date');
             $table->string('calving_notes');
 
 
             $table->foreign('calf_id')->references('id')->on('animal_details')->onDelete('cascade');
-            $table->foreign('parent_cow_id')->references('id')->on('animal_details')->onDelete('cascade');
+        //    $table->foreign('parent_cow_id')->references('id')->on('animal_details')->onDelete('cascade');
+            $table->foreign('veterinarian_id')->references('id')->on('users')->onDelete('cascade');
 
 
             $table->timestamps();

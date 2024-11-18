@@ -1,3 +1,10 @@
+
+
+
+@extends('layouts.admin.master')
+
+@section('content')
+     
 <form method="post" action="{{route('animal_calvings.destroy',$animalcalvings->id)}}">
             @csrf
                <p>Are you sure want to delete?</p>
@@ -6,3 +13,6 @@
                 <input type="submit" value="delete">
 
         </form>
+
+
+@endsection

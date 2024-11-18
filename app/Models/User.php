@@ -58,4 +58,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(BreedingEvents::class,'veterinarian_id');
     }
+
+    //this function establish a relationship to the AnimalCalvings Model
+    public function AnimalCalvings()
+    {
+        return $this->hasMany(AnimalCalvings::class,'veterinarian_id');
+    }
 }

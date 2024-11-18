@@ -35,6 +35,8 @@ Route::middleware('auth')->prefix('animal')->group(function () {
         Route::get('/edit', [AnimalController::class, 'edit'])->name('animal.edit');
         Route::post('/update', [AnimalController::class, 'update'])->name('animal.update');
 
+        Route::get('/view', [AnimalController::class, 'view'])->name('animal.view');
+
         Route::get('/delete', [AnimalController::class, 'delete'])->name('animal.delete');
         Route::post('/destroy', [AnimalController::class, 'destroy'])->name('animal.destroy');
     });
@@ -57,6 +59,14 @@ Route::middleware('auth')->prefix('animal_calvings')->group(function () {
 
         Route::get('/delete', [AnimalCalvingsController::class, 'delete'])->name('animal_calvings.delete');
         Route::post('/destroy', [AnimalCalvingsController::class, 'destroy'])->name('animal_calvings.destroy');
+
+      
+    });
+
+  
+    Route::group(['prefix'=>'{calfId}'],function(){
+       
+        Route::get('/details', [AnimalCalvingsController::class, 'getCalfDetails']);
 
       
     });

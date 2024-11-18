@@ -10,7 +10,7 @@
 
     <br>
 
-    <form  method="POST" enctype="multipart/form-data" action="{{route('animal.update',$animaldetail->id)}}">
+    <form  method="POST" enctype="multipart/form-data" action="#">
         @csrf
 
         <fieldset class="border p-4 mb-4">
@@ -170,26 +170,21 @@
             <input type="text" name="weight_at_first_service" class="form-control rounded" id="weight_at_first_service" value="{{$animaldetail->weight_at_first_service}}" required>
         </div>
 
+        <script>
+
+            document.getElementById('parentKnownCheckbox').addEventListener('change', function() {
+                let sireDropdown = document.getElementById('sire_id');
+            let damDropdown = document.getElementById('dam_id');
+                let isChecked = this.checked;
+
+            // Enable or disable dropdowns based on checkbox state
+            sireDropdown.disabled = !isChecked;
+            damDropdown.disabled = !isChecked;
+                });
+        </script>
         
-        
-        <button type="submit" class="btn btn-success mt-3">Update</button>
+
     </form>
 </div>
 
-@endsection
-
-   <!-- below is added by me-->
-   @section('scripts')
-<script>
-   
-   document.getElementById('parentKnownCheckbox').addEventListener('change', function() {
-        let sireDropdown = document.getElementById('sire_id');
-        let damDropdown = document.getElementById('dam_id');
-        let isChecked = this.checked;
-        
-        // Enable or disable dropdowns based on checkbox state
-        sireDropdown.disabled = !isChecked;
-        damDropdown.disabled = !isChecked;
-            });
-</script>
 @endsection

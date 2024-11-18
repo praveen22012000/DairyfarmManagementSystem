@@ -19,8 +19,12 @@ return new class extends Migration
             $table->date('animal_birthdate');
             $table->string('animal_name');
             $table->string('ear_tag');
-            $table->string('sire_id')->nullable();
-            $table->string('dam_id')->nullable();
+
+            $table->foreignId('sire_id')->nullable()->constrained('animal_details')->nullOnDelete();
+            $table->foreignId('dam_id')->nullable()->constrained('animal_details')->nullOnDelete();
+
+
+       
             $table->foreignId('breed_id');
             $table->string('color');
             $table->string('weight_at_birth');

@@ -29,29 +29,31 @@
         </select>
     </div>
 
+  
 
         <div class="form-group">
-            <label for="parent_cow_id">Parent Female Animal</label>
+            <label for="veterinarian_id">Veterinarian</label>
            
         <!-- this is used to list the parent_cow_id-->
-        <select name="parent_cow_id" id="parent_cow_id" class="form-control" required>
-                <option value="">Select Parent Female Animal</option>
+        <select name="veterinarian_id" id="veterinarian_id" class="form-control" required>
+                <option value="">Select Veterinarian</option>
              
-                @foreach ($Parent_female_Animals as $Parent_female_Animals)
-                <option value="{{ $Parent_female_Animals->id }}"
-                {{ $animalcalvings->parent_cow_id == $Parent_female_Animals->id ? 'selected' : '' }}
-                >{{ $Parent_female_Animals->animal_name}}</option>
+               @foreach($veterinarians as $veterinarian)
+                <option value="{{$veterinarian->id}}"
+                {{$animalcalvings->veterinarian_id==$veterinarian->id ? 'selected' : ''}}
+                >{{$veterinarian->name}}</option>
                 @endforeach
             </select>
 
         </div>
 
 
+
         
         <!--this is get the animal_calving date-->
         <div class="form-group">
             <label for="calving_date">Calving_Date</label>
-                <input type="date" name="calving_date" class="form-control rounded" id="calving_date" value="{{$animalcalvings->calving_date}}" required>
+                <input type="date" name="calving_date" class="form-control rounded" id="calving_date" value="{{$animalcalvings->calving_date}}" required readonly>
         </div>
 
         <!--this is used to record the calving notes -->

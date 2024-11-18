@@ -13,7 +13,8 @@ class AnimalCalvings extends Model
     protected $fillable = [
        
         'calf_id',
-            'parent_cow_id',
+           // 'parent_cow_id',
+            'veterinarian_id',
             'calving_date',
             'calving_notes'
        
@@ -33,5 +34,11 @@ class AnimalCalvings extends Model
      public function calf()
      {
          return $this->belongsTo(AnimalDetail::class, 'calf_id');
+     }
+
+     //this function establish a realtionship to the user model
+     public function user()
+     {
+        return $this->belongsTo(User::class,'veterinarian_id');
      }
 }

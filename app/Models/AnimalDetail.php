@@ -24,6 +24,36 @@ class AnimalDetail extends Model
         'weight_at_first_service'
     ];
 
+
+    //<!-- this is the start of the self-join relationship-->
+
+      // Relationship to get the father of an animal
+    public function sire()
+    {
+        return $this->belongsTo(AnimalDetails::class, 'sire_id');
+    }
+
+      // Relationship to get the mother of an animal
+    public function dam()
+    {
+        return $this->belongsTo(AnimalDetails::class, 'dam_id');
+    }
+
+    // Relationship to get children where the animal is the father
+    public function offspringAsSire()
+    {
+        return $this->hasMany(AnimalDetails::class, 'sire_id');
+    }
+
+    // Relationship to get children where the animal is the mother
+    public function offspringAsDam()
+    {
+        return $this->hasMany(AnimalDetails::class, 'dam_id');
+    }
+
+   // <!-- this is the end of the self join relationship>
+
+
     public function AnimalType()
     {
         return $this->belongsTo(AnimalType::class);

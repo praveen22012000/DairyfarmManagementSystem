@@ -5,7 +5,7 @@
 <div class="col-md-12">
 
        
-            <h1>Animal Calvings Registration Form</h1>     
+            <h1>Animal Breedings Registration Form</h1>     
         
 
     <br>
@@ -75,7 +75,7 @@
         </fieldset>
 
         
-        <button type="submit" class="btn btn-success mt-3">Register Calvings</button>
+        <button type="submit" class="btn btn-success mt-3">Register Breedings</button>
     </form>
 </div>
 

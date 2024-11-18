@@ -36,6 +36,8 @@
     </div>
     @include('layouts/admin/_logout')
     @include('layouts/admin/_script')
+<!-- this line added by me-->@yield('scripts')
+
 </body>
 
 </html>

@@ -53,24 +53,55 @@
 
         <fieldset class="border p-4 mb-4">
         <legend class="w-auto px-2">Descriptive Information</legend>
-       
+
+
+        <!-- Checkbox for Known Parents -->
+        <div>
+            <label>
+                <input type="checkbox" id="parentKnownCheckbox">
+                Known Parents
+            </label>
+        </div>
+
+
+        <div class="row mb-3">
+        <!-- Sire ID Dropdown -->
+            <div class="col-md-6">
+                    <label for="sire_id">Sire (Male Cow):</label><br>
+                    <select name="sire_id" id="sire_id"  class="form-control">
+                    <option value="">Select Sire</option>
+                            @foreach($male_animals as $male_animal)
+                        <option value="{{ $male_animal->id }}">{{ $male_animal->animal_name }}</option>
+                            @endforeach
+                    </select>
+            </div>
+
+        <!-- Dam ID Dropdown -->
+            <div class="col-md-6">
+                    <label for="dam_id">Dam (Female Cow):</label><br>
+                    <select name="dam_id" id="dam_id"  class="form-control">
+
+                    <option value="">Select Dam</option>
+                            @foreach($female_Animals as $female_Animal)
+                        <option value="{{ $female_Animal->id }}">{{ $female_Animal->animal_name }}</option>
+                            @endforeach
+                        
+                    </select>
+            </div>
+
+
+
+        </div>
+
+
+         
         <div class="row mb-3">
                 <div class="col-md-6">
                     <label for="ear_tag" class="form-label">Ear Tag</label>
                     <input type="text" class="form-control rounded" id="ear_tag" name="ear_tag" placeholder="Enter Ear Tag">
                 </div>
-                <div class="col-md-6">
-                    <label for="sire_id" class="form-label">Sire ID</label>
-                    <input type="text" class="form-control rounded" id="sire_id" name="sire_id" placeholder="Enter Sire ID">
-                </div>
-        </div>
 
-
-        <div class="row mb-3">
-                <div class="col-md-6">
-                    <label for="dam_id" class="form-label">Dam ID</label>
-                    <input type="text" class="form-control rounded" id="dam_id" name="dam_id" placeholder="Enter Dam ID">
-                </div>
+       
                 <div class="col-md-6">
                     <label for="color" class="form-label">Color</label>
                     <input type="text" class="form-control rounded" id="color" name="color" placeholder="Enter Color">
@@ -91,7 +122,7 @@
                 @foreach ($breeds as $breed)
                 <option value="{{ $breed->id }}">{{ $breed->breed_name }}</option>
                 @endforeach
-            </select>
+        </select>
             
 
         </div>
@@ -106,12 +137,12 @@
         <div class="row mb-3">
             
                 <div class="col-md-6">
-                        <label for="weight_at_birth">Weight_at_Birth</label>
+                        <label for="weight_at_birth">Weight at Birth</label>
                         <input type="text" name="weight_at_birth" class="form-control rounded" id="weight_at_birth" required>
                 </div>
 
                 <div class="col-md-6">
-                        <label for="age_at_first_service">Age_at_First_Service</label>
+                        <label for="age_at_first_service">Age at First Service</label>
                         <input type="text" name="age_at_first_service" class="form-control rounded" id="age_at_first_service" required>
                 </div>
         </div>
@@ -119,13 +150,32 @@
 
        
         <div class="form-group">
-            <label for="weight_at_first_service">Weight_at_First_Service</label>
+            <label for="weight_at_first_service">Weight At First Service</label>
             <input type="text" name="weight_at_first_service" class="form-control rounded" id="weight_at_first_service" required>
         </div>
 
         
         <button type="submit" class="btn btn-success mt-3">Register Animal</button>
+
+
+        
     </form>
 </div>
 
+@endsection
+
+        <!-- below is added by me-->
+@section('scripts')
+<script>
+   
+   document.getElementById('parentKnownCheckbox').addEventListener('change', function() {
+        let sireDropdown = document.getElementById('sire_id');
+        let damDropdown = document.getElementById('dam_id');
+        let isChecked = this.checked;
+        
+        // Enable or disable dropdowns based on checkbox state
+        sireDropdown.disabled = !isChecked;
+        damDropdown.disabled = !isChecked;
+            });
+</script>
 @endsection
