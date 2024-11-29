@@ -13,7 +13,20 @@ return new class extends Migration
     {
         Schema::create('veterinarians', function (Blueprint $table) {
             $table->id();
-            
+
+            $table->string('specialization');
+            $table->date('hire_date');
+            $table->date('birth_date');
+            $table->string('license_number');
+            $table->string('gender');
+            $table->string('salary');
+          
+            $table->foreignId('veterinarian_id');
+
+            $table->unique('veterinarian_id'); 
+
+            $table->foreign('veterinarian_id')->references('id')->on('users')->onDelete('cascade');
+
             $table->timestamps();
         });
     }

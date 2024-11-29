@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AnimalController;
 use App\Http\Controllers\BreedingEventsController;
 use App\Http\Controllers\AnimalCalvingsController;
+use App\Http\Controllers\UserRegisterController;
 use Illuminate\Support\Facades\Route;
 
 use App\Models\AnimalDetail;
@@ -93,21 +94,31 @@ Route::middleware('auth')->prefix('animal_breedings')->group(function () {
 
       
     });
-
-   
  
 });
 
 
 
 
+Route::middleware('auth')->prefix('users')->group(function () {
 
+    Route::get('/', [UserRegisterController::class, 'index'])->name('users.list');
+  
+    Route::get('/create', [UserRegisterController::class, 'create'])->name('users.create');
+    Route::post('/store', [UserRegisterController::class, 'store'])->name('users.store');
 
+    Route::group(['prefix'=>'{veterinarian}'],function(){
+       
+        Route::get('/edit', [VeterinarianController::class, 'edit'])->name('veterinarians.edit');
+        Route::post('/update', [VeterinarianController::class, 'update'])->name('veterinarians.update');
 
+        Route::get('/delete', [VeterinarianController::class, 'delete'])->name('veterinarians.delete');
+        Route::post('/destroy', [VeterinarianController::class, 'destroy'])->name('veterinarians.destroy');
 
+      
+    });
 
-
-
+});
 
 
 

@@ -11,10 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('breeds', function (Blueprint $table) {
+        Schema::create('retailers', function (Blueprint $table) {
             $table->id();
-            $table->string('breed_name');
+
+            $table->string('store_name');
+            $table->string('business_type');
+            $table->string('tax_id');
+
+            $table->foreignId('retailer_id');
+
             $table->timestamps();
+
+            $table->foreign('retailer_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -23,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('breeds');
+        Schema::dropIfExists('retailers');
     }
 };

@@ -2,6 +2,16 @@
     <form method="POST" action="{{ route('register') }}">
         @csrf
 
+        @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
         <!-- Name -->
         <div>
             <x-input-label for="name" :value="__('Name')" />
@@ -82,9 +92,9 @@
                 --> 
 
         <div class="mt-4">
-            	<x-input-label for="role_id" :value="__('Role')" />
+            	<x-input-label for="role" :value="__('Role')" />
 
-                        <select class = "border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md w-full shadow-sm">
+                        <select class = "border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md w-full shadow-sm" id="role_id" name="role_id">
  
                                 <!-- it gets the $roles array from the RegisteredUserController. $i represent the key of the array
                                 $role represent the actual roles 

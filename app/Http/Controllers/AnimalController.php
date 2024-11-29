@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AnimalDetail;
-use App\Models\Breed;
+
 use App\Models\AnimalType;
 use Illuminate\Http\Request;
 
@@ -25,19 +25,11 @@ class AnimalController extends Controller
 
     public function create()//this method is used to display animal registration form 
     {
-        $breeds=Breed::all();
-        //get the all breed records from the database.and stored it in the $breeds variable
+        
 
 
         $animal_types=AnimalType::all();
         //get the all animaltypes records from the database.and stored it in the $animal_types variable
-
-
-
-      
-
-
-
 
 
         $female_animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');//newcode
@@ -51,8 +43,7 @@ class AnimalController extends Controller
 
         
         
-        
-        return view('animal.create',['breeds'=>$breeds,'animal_types'=>$animal_types,'female_Animals'=>$female_Animals,'male_animals'=>$male_animals]);
+        return view('animal.create',['animal_types'=>$animal_types,'female_Animals'=>$female_Animals,'male_animals'=>$male_animals]);
         //this method  pass the breeds to the animal.create view
 
     }
@@ -67,7 +58,6 @@ class AnimalController extends Controller
             'ear_tag'=>'required',
             'sire_id'=>'nullable|exists:animal_details,id',
             'dam_id'=>'nullable|exists:animal_details,id',
-            'breed_id'=>'required',
             'color'=>'required',
             'weight_at_birth'=>'required',
             'age_at_first_service'=>'required',
@@ -89,7 +79,6 @@ class AnimalController extends Controller
                 'ear_tag'=>$request->ear_tag,
                 'sire_id'=>$request->sire_id,
                 'dam_id'=>$request->dam_id,
-                'breed_id'=>$request->breed_id,
                 'color'=>$request->color,
                 'weight_at_birth'=>$request->weight_at_birth,
                 'age_at_first_service'=>$request->age_at_first_service,
@@ -112,9 +101,7 @@ class AnimalController extends Controller
          $animal_types=AnimalType::all();
          //get the all animaltypes records from the database.and stored it in the $animal_types variable
 
-         $breeds=Breed::all();
-         //get the all breed records from the database.and stored it in the $breeds variable
-
+    
         
          $female_animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');//newcode
 
@@ -127,7 +114,7 @@ class AnimalController extends Controller
          $male_animals=AnimalDetail::whereIn('animal_type_id',$male_animal_types_id)->where('id', '!=', $animaldetail->id)->get();//newcode
 
 
-        return view('animal.edit',['animal_types'=>$animal_types,'animaldetail'=>$animaldetail,'breeds'=>$breeds,'female_Animals'=>$female_Animals,'male_animals'=>$male_animals]);
+        return view('animal.edit',['animal_types'=>$animal_types,'animaldetail'=>$animaldetail,'female_Animals'=>$female_Animals,'male_animals'=>$male_animals]);
     }
 
 
@@ -141,8 +128,7 @@ class AnimalController extends Controller
          $animal_types=AnimalType::all();
          //get the all animaltypes records from the database.and stored it in the $animal_types variable
 
-         $breeds=Breed::all();
-         //get the all breed records from the database.and stored it in the $breeds variable
+        
 
         
          $female_animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');//newcode
@@ -156,7 +142,7 @@ class AnimalController extends Controller
          $male_animals=AnimalDetail::whereIn('animal_type_id',$male_animal_types_id)->where('id', '!=', $animaldetail->id)->get();//newcode
 
 
-        return view('animal.view',['animal_types'=>$animal_types,'animaldetail'=>$animaldetail,'breeds'=>$breeds,'female_Animals'=>$female_Animals,'male_animals'=>$male_animals]);
+        return view('animal.view',['animal_types'=>$animal_types,'animaldetail'=>$animaldetail,'female_Animals'=>$female_Animals,'male_animals'=>$male_animals]);
     }
 
     

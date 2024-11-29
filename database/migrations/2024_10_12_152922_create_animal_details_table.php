@@ -25,7 +25,7 @@ return new class extends Migration
 
 
        
-            $table->foreignId('breed_id');
+            
             $table->string('color');
             $table->string('weight_at_birth');
             $table->string('age_at_first_service');
@@ -36,8 +36,7 @@ return new class extends Migration
             //this line animal_type_id is the foreign_key of the Animal_details table
             $table->foreign('animal_type_id')->references('id')->on('animal_types')->onDelete('cascade');
 
-            //this line represent the breed_id is the foreign_key
-            $table->foreign('breed_id')->references('id')->on('breeds')->onDelete('cascade');
+         
 
 
 

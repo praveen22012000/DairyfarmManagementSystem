@@ -8,10 +8,13 @@
                 <div class="float-left">
                     <h2>Animals</h2>
                 </div>
+
                 <div class="float-right">
                 <a  class="btn btn-success btn-md btn-rounded" href="{{route('animal.create')}}"><i class="mdi mdi-plus-circle mdi-18px"></i>Add Animal</a>
                 </div>
+
             </div>
+            
             <div class="card-body">
                 @if (session('success'))
                 <div class="alert alert-success">
@@ -54,21 +57,21 @@
             <div class="pt-2">
                 <div class="float-right">
                    
-                </div>
+            </div>
             </div>
         </div>
     </div>
 </div>
 
 
-
+</div>
 
 @endsection
 
 
 
 
-@section('scripts')
+@section('js')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>

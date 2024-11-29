@@ -51,7 +51,7 @@ class AnimalCalvingsController extends Controller
     {
         $request->validate([
             'calf_id'=>'required',
-           // 'parent_cow_id'=>'required',
+          
             'veterinarian_id'=>'required',
             'calving_date'=>'required',
             'calving_notes'=>'required'
@@ -60,7 +60,7 @@ class AnimalCalvingsController extends Controller
 
         AnimalCalvings::create([
             'calf_id'=>$request->calf_id,
-           // 'parent_cow_id'=>$request->parent_cow_id,
+       
             'veterinarian_id'=>$request->veterinarian_id,
             'calving_date'=>$request->calving_date,
             'calving_notes'=>$request->calving_notes

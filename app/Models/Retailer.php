@@ -5,24 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Veterinarian extends Model
+class Retailer extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'specialization',
-        'hire_date',
-        'birth_date',
-        'license_number',
-        'gender',
-        'salary',
-      'veterinarian_id'
-       
+        'store_name',
+        'business_type',
+        'tax_id',
+        'retailer_id'
     ];
-
 
     public function user()
     {
         return $this->belongsTo(User::class,'user_id');
     }
+
 }

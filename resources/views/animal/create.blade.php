@@ -111,21 +111,7 @@
         
 
             <!--this is to list the breed types -->
-        <div class="form-group">
-            <label for="breed_id">Breed</label>
-           
-        <!-- this is used to list the breed types-->
-
-        <select name="breed_id" id="breed_id" class="form-control" required>
-                <option value="">Select Breed Type</option>
-             
-                @foreach ($breeds as $breed)
-                <option value="{{ $breed->id }}">{{ $breed->breed_name }}</option>
-                @endforeach
-        </select>
-            
-
-        </div>
+       
 
         
         </fieldset>
@@ -137,7 +123,7 @@
         <div class="row mb-3">
             
                 <div class="col-md-6">
-                        <label for="weight_at_birth">Weight at Birth</label>
+                        <label for="weight_at_birth">Weight at Birth (Kg)</label>
                         <input type="text" name="weight_at_birth" class="form-control rounded" id="weight_at_birth" required>
                 </div>
 
@@ -150,7 +136,7 @@
 
        
         <div class="form-group">
-            <label for="weight_at_first_service">Weight At First Service</label>
+            <label for="weight_at_first_service">Weight At First Service (Kg)</label>
             <input type="text" name="weight_at_first_service" class="form-control rounded" id="weight_at_first_service" required>
         </div>
 

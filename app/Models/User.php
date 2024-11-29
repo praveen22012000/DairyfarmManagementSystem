@@ -49,6 +49,16 @@ class User extends Authenticatable
         ];
     }
 
+    public function veterinarian()
+    {
+        return $this->belongsTo(Veterinarian::class,'user_id');
+    }
+
+    public function retailer()
+    {
+        return $this->belongsto(Retailer::class,'user_id');
+    }
+
     public function role()
     {
        return $this->belongsTo(Role::class);

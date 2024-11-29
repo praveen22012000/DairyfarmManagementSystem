@@ -124,24 +124,6 @@
 
         
 
-            <!--this is to list the breed types -->
-        <div class="form-group">
-            <label for="breed_id">Breed</label>
-           
-        <!-- this is used to list the breed types-->
-
-        <select name="breed_id" id="breed_id" class="form-control" required>
-                <option value="">Select Breed Type</option>
-             
-                @foreach ($breeds as $breed)
-                <option value="{{ $breed->id }}"
-                 {{ $animaldetail->breed_id == $breed->id ? 'selected' : '' }}
-                >{{ $breed->breed_name }}</option>
-                @endforeach
-            </select>
-            
-
-        </div>
 
         
         </fieldset>

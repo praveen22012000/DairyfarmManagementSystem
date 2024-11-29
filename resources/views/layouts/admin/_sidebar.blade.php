@@ -48,6 +48,12 @@
                     <span>AnimalCalvings</span></a>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('users.list') }}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Users</span></a>
+            </li>
+
             
             <li class="nav-item">
                 <a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#collapseUtilities"
@@ -68,6 +74,7 @@
             </li>
             
 
+            
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
