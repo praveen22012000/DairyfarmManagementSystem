@@ -19,13 +19,14 @@
 
         <div class="form-group">
         <label for="calf_id">Calf Name</label>
-        <select name="calf_id" id="calf_id" class="form-control">
+        <select name="calf_id" id="calf_id" class="form-control" >
             <option value="">Select Calf</option>
             @foreach($Child_animals as $Child_animal)
                 <option value="{{ $Child_animal->id }}">{{ $Child_animal->animal_name }}</option>
             @endforeach
         </select>
-    </div>
+        @error('calf_id') <span class="text-danger">{{ $message }}</span> @enderror
+        </div>
 
     
         <div class="form-group">
@@ -39,6 +40,8 @@
                 <option value="{{$veterinarian->id}}">{{$veterinarian->name}}</option>
                 @endforeach
             </select>
+
+            @error('veterinarian_id') <span class="text-danger">{{ $message }}</span> @enderror
 
         </div>
 
@@ -54,6 +57,7 @@
         <div class="form-group">
             <label for="calving_notes">Calving_Notes</label>
             <textarea class="form-control" id="calving_notes" name="calving_notes" rows="4" placeholder="Enter the calving notes here"></textarea>
+            @error('calving_notes') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
 
         </fieldset>
@@ -61,8 +65,11 @@
         
         <button type="submit" class="btn btn-success mt-3">Register Calvings</button>
     </form>
-</div>
 
+</div>
+@endsection
+
+@section('js')
 <script>
     document.getElementById('calf_id').addEventListener('change', function() {
         var calfId = this.value; // Get the selected calf ID
@@ -82,5 +89,6 @@
         }
     });
 </script>
+
 
 @endsection

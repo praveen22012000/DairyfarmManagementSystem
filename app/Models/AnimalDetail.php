@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use Carbon\Carbon;
+
 class AnimalDetail extends Model
 {
     use HasFactory;
@@ -23,6 +25,21 @@ class AnimalDetail extends Model
         'age_at_first_service',
         'weight_at_first_service'
     ];
+
+    public function getAgeAttribute()
+    {
+        $birthDate= Carbon::parse($this->animal_birthdate);
+
+        $now= Carbon::now();
+
+
+        $totalDays=$birthDate->diffInDays($now);
+
+        $years=intdiv($totalDays,365);
+        $remainingDays=$totalDays%365;
+
+        return "{$years} years and {$remainingDays} days";
+    }
 
 
     //<!-- this is the start of the self-join relationship-->
@@ -83,5 +100,10 @@ class AnimalDetail extends Model
     public function femaleBreedingEvents()
     {
         return $this->hasMany(BreedingEvents::class,'female_cow_id');
+    }
+
+    public function pregnancies()
+    {
+        return $this->hasMany(Pregnancies::class,'female_cow_id');
     }
 }

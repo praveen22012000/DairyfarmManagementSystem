@@ -26,20 +26,10 @@ class AnimalCalvingsController extends Controller
 
     public function create()
     {
-        //this is used to get the type of the animals cow,and heifer from the animal_type table in db.pluck() method return only the animal_type_id of the animals cow and heifer
-        //$animal_types_id contain the id's of the Animal Cow and Heifer
-    //    $animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');
-
-        
-        //$Parent_female_Animals variable contain the details of the animals which are Cow and heifer
-     //   $Parent_female_Animals = AnimalDetail::whereIn('animal_type_id', $animal_types_id)->get();
-     
-      
-        //this is used to get the type of the animals Heifer,and BullCalf from the animal_type table in db.pluck() method return only the animal_type_id of the animals Heifer and BullCalf
-        $calf_animal_types_id= AnimalType::whereIn('animal_type',['Heifer','BullCalf'])->pluck('id');
-
-        //$Child_animals variable contain the details of the animal which are heifer and BullCalf
-        $Child_animals=AnimalDetail::whereIn('animal_type_id',$calf_animal_types_id)->get();
+        $Child_animals = AnimalDetail::whereNotNull('sire_id')
+                                ->whereNotNull('dam_id')
+                                ->whereNotIn('id', AnimalCalvings::pluck('calf_id')->toArray())
+                                ->get();
 
        $veterinarians_id=Role::whereIn('role_name',['Veterinarian'])->pluck('id');
         $veterinarians=User::whereIn('role_id', $veterinarians_id)->get();
@@ -50,13 +40,16 @@ class AnimalCalvingsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'calf_id'=>'required',
+            'calf_id'=>'required|unique:animal_calvings,calf_id',
           
-            'veterinarian_id'=>'required',
+            'veterinarian_id'=>'required|exists:users,id',
             'calving_date'=>'required',
             'calving_notes'=>'required'
 
         ]);
+
+    
+
 
         AnimalCalvings::create([
             'calf_id'=>$request->calf_id,
@@ -66,48 +59,55 @@ class AnimalCalvingsController extends Controller
             'calving_notes'=>$request->calving_notes
         ]);
 
-        return redirect()->route('animal_calvings.list');
+        return redirect()->route('animal_calvings.list')->with('success', 'Calving record added successfully!');
     }
 
     public function edit(AnimalCalvings $animalcalvings)
     {
-       //this is used to get the type of the animals cow,and heifer from the animal_type table in db.pluck() method return only the animal_type_id of the animals cow and heifer
-        //$animal_types_id contain the id's of the Animal Cow and Heifer
-        $animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');
-
-        
-        //$Parent_female_Animals variable contain the details of the animals which are Cow and heifer
-        $Parent_female_Animals = AnimalDetail::whereIn('animal_type_id', $animal_types_id)->get();
-     
       
-        //this is used to get the type of the animals Heifer,and BullCalf from the animal_type table in db.pluck() method return only the animal_type_id of the animals Heifer and BullCalf
-        $calf_animal_types_id= AnimalType::whereIn('animal_type',['Heifer','BullCalf'])->pluck('id');
 
-        //$Child_animals variable contain the details of the animal which are heifer and BullCalf
-        $Child_animals=AnimalDetail::whereIn('animal_type_id',$calf_animal_types_id)->get();
+       // $Child_animals=AnimalCalvings::all();
+
+       // Retrieve unique Child_animals (calves) from the AnimalCalvings table
+        $Calf_animals = AnimalCalvings::distinct('calf_id')->with('calf')->get();
 
 
         $veterinarians_id=Role::whereIn('role_name',['Veterinarian'])->pluck('id');
         $veterinarians=User::whereIn('role_id', $veterinarians_id)->get();
 
-        return view('animal_calving.edit',['animalcalvings'=>$animalcalvings,'Parent_female_Animals'=>$Parent_female_Animals,'Child_animals'=>$Child_animals,'veterinarians'=>$veterinarians]);
+
+
+
+    
+        return view('animal_calving.edit',['Calf_animals'=>$Calf_animals,'veterinarians'=>$veterinarians,'animalcalvings'=>$animalcalvings]);
 
     }
 
     public function update(Request $request,AnimalCalvings $animalcalvings)
     {
+    
+       
+
         $data=$request->validate([
-            'calf_id'=>'required',
-        //    'parent_cow_id'=>'required',
+            'calf_id'=>"required|unique:animal_calvings,calf_id,$animalcalvings->id",
+      
+          
             'calving_date'=>'required',
             'veterinarian_id'=>'required',
             'calving_notes'=>'required'
 
         ]);
 
-        $animalcalvings->update($data);
-
-        return redirect()->route('animal_calvings.list');
+       
+        
+         
+            // Create a new calving record
+            $animalcalvings->update($data);
+          
+            // Redirect back with a success SweetAlert
+            return redirect()->route('animal_calvings.list')->with('success', 'Calving record updated successfully!');
+        
+       
 
 
     }
@@ -133,9 +133,20 @@ class AnimalCalvingsController extends Controller
 
     public function view(AnimalCalvings $animalcalvings)
     {
+
+
+        $Calf_animals = AnimalCalvings::distinct('calf_id')->with('calf')->get();
+
+
         
+       $veterinarians_id=Role::whereIn('role_name',['Veterinarian'])->pluck('id');
+       $veterinarians=User::whereIn('role_id', $veterinarians_id)->get();
+
+         return view('animal_calving.view',['Calf_animals'=>$Calf_animals,'veterinarians'=>$veterinarians,'animalcalvings'=>$animalcalvings]);
 
     }
+
+    
 
     public function getCalfDetails($calfId)
     {

@@ -13,7 +13,7 @@ class AnimalCalvings extends Model
     protected $fillable = [
        
         'calf_id',
-           // 'parent_cow_id',
+          
             'veterinarian_id',
             'calving_date',
             'calving_notes'

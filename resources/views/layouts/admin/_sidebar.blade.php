@@ -53,7 +53,6 @@
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Users</span></a>
             </li>
-
             
             <li class="nav-item">
                 <a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#collapseUtilities"
@@ -66,7 +65,7 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Custom Utilities:</h6>
                         <a class="collapse-item" href="{{route('animal_breedings.list')}}">breeding_event</a>
-                        <a class="collapse-item" href="utilities-border.html">Borders</a>
+                        <a class="collapse-item" href="{{route('animal_pregnancies.create')}}">Pregnancies</a>
                         <a class="collapse-item" href="utilities-animation.html">Animations</a>
                         <a class="collapse-item" href="utilities-other.html">Other</a>
                     </div>

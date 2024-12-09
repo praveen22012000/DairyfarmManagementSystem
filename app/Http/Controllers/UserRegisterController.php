@@ -14,10 +14,37 @@ class UserRegisterController extends Controller
 
     public function index()
     {
-        $veterinarians=Veterinarian::with('user')->get();
         
+        $veterinarians=Veterinarian::all();
 
-        return view('users.index',$veterinarians);
+        $numberOfVeterinarians = $veterinarians->count();
+
+        $retailers=Retailer::all();
+
+        $numberOfRetailers= $retailers->count();
+
+        return view('users.index',['numberOfVeterinarians'=>$numberOfVeterinarians,'numberOfRetailers'=>$numberOfRetailers]);
+
+       
+    }
+
+    public function veterinarian_index()
+    {
+
+        $veterinarians=Veterinarian::with('user')->get();
+  
+   
+
+        return view('veterinarians.index',['veterinarians'=>$veterinarians]);
+        
+    }
+
+    public function retailer_index()
+    {
+        $retailers=Retailer::with('user')->get();
+
+        return view('retailers.index',['retailers'=>$retailers]);
+        
     }
 
     public function create()
@@ -50,11 +77,11 @@ class UserRegisterController extends Controller
                 'specialization'=>'required|string',
                 'hire_date'=>'required|date',
                 'birth_date'=>'required|date',
-                'license_number'=>'required',
+                'license_number'=>'required|unique:veterinarians,license_number',
                 'gender'=>'required',
                 'salary'=>'required',
               
-                'veterinarian_id' => 'required',
+                'veterinarian_id' => 'required|exists:users,id'
 
 
             ]);
@@ -71,6 +98,8 @@ class UserRegisterController extends Controller
                 'veterinarian_id'=>$request->veterinarian_id
 
                 ]);
+
+                return redirect()->route('veterinarians.list')->with('success', 'Veterinarian record added successfully!');
         }
 
         else if($request->role_id == 3)
@@ -82,7 +111,7 @@ class UserRegisterController extends Controller
 
                 'store_name'=>'required|string',
                 'business_type'=>'required|string',
-                'tax_id'=>'required|string'
+                'tax_id'=>'required|string|unique:retailers,tax_id'
                     
             ]);
 
@@ -97,6 +126,8 @@ class UserRegisterController extends Controller
 
 
             ]);
+
+            return redirect()->route('retailers.list')->with('success', 'Veterinarian record added successfully!');
         }
     }
 

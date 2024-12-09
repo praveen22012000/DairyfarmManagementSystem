@@ -6,7 +6,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="float-left">
-                    <h2>Animals</h2>
+                    <h2>Animals Breedings</h2>
                 </div>
                 <div class="float-right">
                 <a  class="btn btn-success btn-md btn-rounded" href="{{route('animal_breedings.create')}}"><i class="mdi mdi-plus-circle mdi-18px"></i>Add Breeding Events</a>
@@ -26,29 +26,37 @@
                         <th>Male Name</th>
                         <th>insemination Type</th>
                         <th>Breeding Notes</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                      
+                        <th>Actions</th>
                     </tr>
                 </thead>
-                
+                    @foreach($breedings as $breeding)
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>{{$breeding->id}}</td>
+                        <td>{{$breeding->femalecow->animal_name}}</td>
+                        <td>{{$breeding->malecow->animal_name}}</td>
+                        <td>{{$breeding->insemination_type}}</td>
+                        <td>{{$breeding->notes}}</td>
 
-                        <td><a href="">Edit</a></td>
-                        <td><a href="">Delete</a></td>
-                        <td></td>
+                        <td>
+                        <a href="{{ route('animal_breedings.view',$breeding->id)}}" class="btn btn-info">View</a>
+                    
+                        <a href="{{ route('animal_breedings.edit',$breeding->id) }}" class="btn btn-primary">Edit</a>
+                        <button class="btn btn-danger" onclick="confirmDelete({{ $breeding->id }})">Delete</button>
+                        
+                        </td>
                     </tr>
-                  
+                    @endforeach
                 <tbody>
             
                 </tbody>
             </table>
+
+            <form id="deleteForm" method="post" style="display:none;">
+            @csrf
+            @method('POST')
+            </form>
+
+
             <div class="pt-2">
                 <div class="float-right">
                    
@@ -58,4 +66,30 @@
     </div>
 </div>
 </div>
+@endsection
+
+@section('js')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+   function confirmDelete(breedingId) {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "This will permanently delete the animal breedings record.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Set form action dynamically based on animal ID
+                let deleteForm = document.getElementById("deleteForm");
+                deleteForm.action = `/animal_breedings/${breedingId}/destroy`;
+                deleteForm.submit();
+            }
+        });
+    }
+</script>
+
 @endsection

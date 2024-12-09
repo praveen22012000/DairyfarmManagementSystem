@@ -6,21 +6,24 @@
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <div class="card-header">
+            
+        <div class="card-header d-flex justify-content-between align-items-center">
                 <h1>Users</h1>
-            </div>
+                <a class="btn btn-success btn-md btn-rounded" href="{{ route('users.create') }}">
+                <i class="mdi mdi-plus-circle mdi-18px"></i> Add User</a>
+                
+        </div>
 
-            <a  class="btn btn-success btn-md btn-rounded" href="{{route('users.create')}}"><i class="mdi mdi-plus-circle mdi-18px"></i>Add User</a>
 
             <div class="row">
-                <!-- Admin Card -->
+                <!--Farm Owner Admin Card -->
                 <div class="col-md-4 col-sm-12 mb-4"> 
                     <div class="card shadow h-100">
                         <div class="card-body text-center">
                             <div class="rounded-circle mx-auto" style="width: 100px; height: 100px; background-color: #f8f9fa;">
                                 <img src="https://its.gmu.edu/wp-content/uploads/user-blue.png" alt="Admin" class="img-fluid rounded-square" style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
-                            <!-- get admin count dynamically -->
+                            <!-- get farm Owner count dynamically -->
                             <h5 class="card-title mt-3"></h5>
                             <!-- link admin show blade  -->
                             <p class="card-text"> <a href=""> Farm Owner </a> </p>
@@ -28,32 +31,32 @@
                     </div>
                 </div>
 
-                <!-- Branch Staff Card -->
+                <!-- Veterinarians Card -->
                 <div class="col-md-4 col-sm-12 mb-4">
                     <div class="card shadow h-100">
                         <div class="card-body text-center">
                             <div class="rounded-circle mx-auto" style="width: 100px; height: 100px; background-color: #f8f9fa;">
-                                <img src="https://www.clipartmax.com/png/middle/333-3330554_hospital-staff-icon-clipart-clinic-computer-icons-medicine-icon.png" alt="Branch Staff" class="img-fluid rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="" alt="Veterinarians" class="img-fluid rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
-                            <!-- get branchstaff count dynamically -->
-                            <h5 class="card-title mt-3"></h5>
-                            <!-- link branchstaff show blade  -->
-                            <p class="card-text"> <a href=""> Veterinarian </a> </p>
+                            <!-- get veterinarian count dynamically -->
+                            <h5 class="card-title mt-3">{{$numberOfVeterinarians}}</h5>
+                            <!-- link veterinarian show blade  -->
+                            <p class="card-text"> <a href="{{ route('veterinarians.list') }}"> Veterinarian </a> </p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Instructor Card -->
+                <!-- Retailer Card -->
                 <div class="col-md-4 col-sm-12 mb-4">
                     <div class="card shadow h-100">
                         <div class="card-body text-center">
                             <div class="rounded-circle mx-auto" style="width: 100px; height: 100px; background-color: #f8f9fa;">
-                                <img src="https://static.vecteezy.com/system/resources/thumbnails/008/854/358/small/karate-illustration-modern-design-file-png.png" alt="Instructor" class="img-fluid rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="https://static.vecteezy.com/system/resources/thumbnails/008/854/358/small/karate-illustration-modern-design-file-png.png" alt="Retailer" class="img-fluid rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
-                            <!-- get instructor count dynamically -->
-                            <h5 class="card-title mt-3"></h5>
-                            <!-- link instructor show blade  -->
-                            <p class="card-text"> <a href=""> Instructor </a></p>
+                            <!-- get  count dynamically -->
+                            <h5 class="card-title mt-3">{{$numberOfRetailers}}</h5>
+                            <!-- link retailer show blade  -->
+                            <p class="card-text"> <a href="{{ route('retailers.list') }}"> Retailer </a></p>
                         </div>
                     </div>
                 </div>
@@ -68,7 +71,7 @@
                             <!-- get student count dynamically -->
                             <h5 class="card-title mt-3"></h5>
                             <!-- link student show blade  -->
-                            <p class="card-text"> <a href="#"> Student </a></p>
+                            <p class="card-text"> <a href="#"> supplier </a></p>
                         </div>
                     </div>
                 </div>

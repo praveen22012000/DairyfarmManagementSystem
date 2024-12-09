@@ -9,6 +9,14 @@ class BreedingEvents extends Model
 {
     use HasFactory;
 
+    protected $fillable=['female_cow_id',
+                        'male_cow_id',
+                        'veterinarian_id',
+                        'breeding_date',
+                        'insemination_type',
+                        'notes'
+];
+
 
 //this function create a relationship to the AnimalDetail model
     public function malecow()
@@ -25,5 +33,10 @@ class BreedingEvents extends Model
     public function user()
     {
         return $this->belongsTo(User::class,'veterinarian_id');
+    }
+
+    public function pregnancies()
+    {
+        return $this->belongsTo(Pregnancies::class,'breeding_id');
     }
 }

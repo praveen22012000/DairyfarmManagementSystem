@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+
+use Illuminate\Validation\Rule;
+
 use App\Models\AnimalDetail;
 
 use App\Models\AnimalType;
@@ -18,8 +21,7 @@ class AnimalController extends Controller
         //this line get the AnimalType details along with AnimalDetail using the AnimalType relationship(define on the AnimalDetailModel)
         $animals=AnimalDetail::with('AnimalType')->get();
 
-       
-
+        
         return view('animal.index',['animals'=>$animals]);
     }
 
@@ -50,12 +52,13 @@ class AnimalController extends Controller
 
     public function store(Request $request)
     {
+
         $request->validate([
            
             'animal_type_id'=>'required',
             'animal_birthdate'=>'required',
-            'animal_name'=>'required|string|max:255',
-            'ear_tag'=>'required',
+            'animal_name'=>'required|string|max:255|unique:animal_details,animal_name',
+            'ear_tag'=>'required|unique:animal_details,ear_tag',
             'sire_id'=>'nullable|exists:animal_details,id',
             'dam_id'=>'nullable|exists:animal_details,id',
             'color'=>'required',
@@ -65,11 +68,7 @@ class AnimalController extends Controller
 
         ]);
 
-     /*   $imagePath = null;
-        if ($request->hasFile('animal_image')) {
-            $imagePath = $request->file('animal_image')->store('animal_images', 'public');
-        }*/
-
+     
         AnimalDetail::create(
             [
                 
@@ -86,7 +85,7 @@ class AnimalController extends Controller
             ]);
 
 
-            return redirect()->route('animal.list');
+            return redirect()->route('animal.list')->with('success', 'Animal record added successfully!');
 
 
     }
@@ -153,11 +152,14 @@ class AnimalController extends Controller
         $data=$request->validate([
             'animal_type_id'=>'required',
             'animal_birthdate'=>'required',
-            'animal_name'=>'required|string|max:255',
-            'ear_tag'=>'required',
+            'animal_name'=>"required|string|max:255|unique:animal_details,animal_name,$animaldetail->id",
+
+            'ear_tag'=>"required|string|max:255|unique:animal_details,animal_name,$animaldetail->id",
+
+            
             'sire_id'=>'nullable|exists:animal_details,id',
             'dam_id'=>'nullable|exists:animal_details,id',
-            'breed_id'=>'required',
+           
             'color'=>'required',
             'weight_at_birth'=>'required',
             'age_at_first_service'=>'required',
@@ -170,14 +172,11 @@ class AnimalController extends Controller
 
         $animaldetail->update($data);
 
-        return redirect()->route('animal.list');
+        return redirect()->route('animal.list')->with('success', 'Animal record updated successfully!');
 
     }
 
-    public function delete(AnimalDetail $animaldetail)
-    {
-        return view('animal.delete',['animaldetail'=>$animaldetail]);
-    }
+  
 
     public function destroy(AnimalDetail $animaldetail)
     {

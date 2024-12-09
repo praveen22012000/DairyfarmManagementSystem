@@ -21,12 +21,11 @@
       
          <div id="doctor_fields" class="d-none" >
 
-     
-
-
+    
             <div class="form-group">
                 <label for="specialization">Specialization:</label>
                 <input type="text" id="specialization" name="specialization" class="form-control">
+                @error('specialization') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
 
@@ -35,17 +34,20 @@
             <div class="form-group">
                 <label for="hire_date">Hire Date:</label>
                 <input type="date" id="hire_date" name="hire_date" class="form-control">
+                @error('hire_date') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
             <div class="form-group">
                 <label for="birth_date">Date of Birth</label>
                 <input type="date" name="birth_date" class="form-control rounded" id="birth_date" >
+                @error('birth_date') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
 
             <div class="form-group">
                 <label for="license_number">License Number:</label>
                 <input type="text" id="license_number" name="license_number" class="form-control">
+                @error('license_number') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
 
@@ -61,7 +63,7 @@
 
                 <input type="radio" id="others" name="gender" value="Others">
                 <label for="others">Others</label>
-
+                @error('gender') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
             <div class="form-group">
@@ -74,12 +76,14 @@
                                 @endforeach
                             
                             </select>
+                @error('veterinarian_id') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
 
             <div class="form-group">
                 <label for="salary">Salary(Rs.)</label>
                 <input type="text" name="salary" class="form-control rounded" id="salary" >
+                @error('salary') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
 
@@ -101,6 +105,7 @@
                                     @endforeach
                             
                         </select>
+                        @error('retailer_id') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
            
@@ -109,16 +114,20 @@
             <div class="form-group">
                 <label for="store_name">Store Name:</label>
                 <input type="text" id="store_name" name="store_name" class="form-control">
+
+                @error('store_name') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
             <div class="form-group">
                 <label for="business_type">Business Type:</label>
                 <input type="text" id="business_type" name="business_type" class="form-control">
+                @error('business_type') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
             <div class="form-group">
                 <label for="tax_id">Tax ID:</label>
                 <input type="text" id="tax_id" name="tax_id" class="form-control">
+                @error('tax_id') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
             

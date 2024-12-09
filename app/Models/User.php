@@ -51,12 +51,12 @@ class User extends Authenticatable
 
     public function veterinarian()
     {
-        return $this->belongsTo(Veterinarian::class,'user_id');
+        return $this->belongsTo(Veterinarian::class,'veterinarian_id');
     }
 
     public function retailer()
     {
-        return $this->belongsto(Retailer::class,'user_id');
+        return $this->belongsto(Retailer::class,'retailer_id');
     }
 
     public function role()
@@ -73,5 +73,11 @@ class User extends Authenticatable
     public function AnimalCalvings()
     {
         return $this->hasMany(AnimalCalvings::class,'veterinarian_id');
+    }
+
+//this function establish the relationship between the User and Pregnancy model
+    public function pregnancies()
+    {
+        return $this->hasMany(Pregnancies::class,'veterinarian_id');
     }
 }

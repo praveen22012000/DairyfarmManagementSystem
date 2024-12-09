@@ -27,8 +27,8 @@
                         <th> ID</th>
                         <th>Animal Name</th>
                         <th>Animal Type</th>
-                        <th></th>
-                        <th></th>
+                        <th>Age</th>
+                        <th>Actions</th>
                         <th></th>
                       
                     </tr>
@@ -38,10 +38,11 @@
                         <td>{{$animal->id}}</td>
                         <td>{{$animal->animal_name}}</td>
                         <td>{{$animal->AnimalType->animal_type}}</td>
-                        <td><a href="{{route('animal.view',$animal->id)}}" class="btn btn-info">View</a></td>
-                        <td><a href="{{route('animal.edit',$animal->id)}}" class="btn btn-primary">Edit</a></td>
+                        <td>{{$animal->age}}</td>
+                        <td><a href="{{route('animal.view',$animal->id)}}" class="btn btn-info">View</a>
+                        <a href="{{route('animal.edit',$animal->id)}}" class="btn btn-primary">Edit</a>
                      
-                        <td><button class="btn btn-danger" onclick="confirmDelete({{ $animal->id }})">Delete</button></td>
+                        <button class="btn btn-danger" onclick="confirmDelete({{ $animal->id }})">Delete</button></td>
                     </tr>
                     @endforeach
                 <tbody>
@@ -97,8 +98,3 @@
 
 @endsection
 
-<form id="delete-form" method="POST" style="display: none;">
-    @csrf
-    @method('DELETE')
-    <input type="hidden" name="animal_id" id="animal-id">
-</form>

@@ -24,27 +24,29 @@
             <label for="animal_type_id">Animal Type</label>
            
         <!-- this is used to list the animal types-->
-        <select name="animal_type_id" id="animal_type_id" class="form-control" required>
+        <select name="animal_type_id" id="animal_type_id" class="form-control" >
                 <option value="">Select Animal Type</option>
              
                 @foreach ($animal_types as $animal_type)
                 <option value="{{ $animal_type->id }}">{{ $animal_type->animal_type}}</option>
                 @endforeach
             </select>
-
+            @error('animal_type_id') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
 
         
         <!--this is get the animal birthdate-->
         <div class="form-group">
             <label for="animal_birthdate">Animal Birthdate</label>
-                <input type="date" name="animal_birthdate" class="form-control rounded" id="animal_birthdate" required>
+                <input type="date" name="animal_birthdate" class="form-control rounded" id="animal_birthdate">
+                @error('animal_birthdate') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
 
         <!--this is to get the Animalname-->
         <div class="form-group">
             <label for="animal_name">Animal Name</label>
-            <input type="text" name="animal_name" class="form-control rounded" id="animal_name" required>
+            <input type="text" name="animal_name" class="form-control rounded" id="animal_name" >
+            @error('animal_name') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
 
         </fieldset>
@@ -74,6 +76,7 @@
                         <option value="{{ $male_animal->id }}">{{ $male_animal->animal_name }}</option>
                             @endforeach
                     </select>
+                    @error('sire_id') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
         <!-- Dam ID Dropdown -->
@@ -87,6 +90,7 @@
                             @endforeach
                         
                     </select>
+                    @error('dam_id') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
 
@@ -99,12 +103,14 @@
                 <div class="col-md-6">
                     <label for="ear_tag" class="form-label">Ear Tag</label>
                     <input type="text" class="form-control rounded" id="ear_tag" name="ear_tag" placeholder="Enter Ear Tag">
+                    @error('ear_tag') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
        
                 <div class="col-md-6">
                     <label for="color" class="form-label">Color</label>
                     <input type="text" class="form-control rounded" id="color" name="color" placeholder="Enter Color">
+                    @error('color') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
         </div>
 
@@ -124,12 +130,14 @@
             
                 <div class="col-md-6">
                         <label for="weight_at_birth">Weight at Birth (Kg)</label>
-                        <input type="text" name="weight_at_birth" class="form-control rounded" id="weight_at_birth" required>
+                        <input type="text" name="weight_at_birth" class="form-control rounded" id="weight_at_birth" >
+                        @error('weight_at_birth') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
                 <div class="col-md-6">
                         <label for="age_at_first_service">Age at First Service</label>
-                        <input type="text" name="age_at_first_service" class="form-control rounded" id="age_at_first_service" required>
+                        <input type="text" name="age_at_first_service" class="form-control rounded" id="age_at_first_service" >
+                        @error('age_at_first_service') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
         </div>
 
@@ -137,7 +145,8 @@
        
         <div class="form-group">
             <label for="weight_at_first_service">Weight At First Service (Kg)</label>
-            <input type="text" name="weight_at_first_service" class="form-control rounded" id="weight_at_first_service" required>
+            <input type="text" name="weight_at_first_service" class="form-control rounded" id="weight_at_first_service">
+            @error('weight_at_first_service') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
 
         
@@ -151,7 +160,7 @@
 @endsection
 
         <!-- below is added by me-->
-@section('scripts')
+@section('js')
 <script>
    
    document.getElementById('parentKnownCheckbox').addEventListener('change', function() {

@@ -152,6 +152,8 @@
             <input type="text" name="weight_at_first_service" class="form-control rounded" id="weight_at_first_service" value="{{$animaldetail->weight_at_first_service}}" required>
         </div>
 
+        <a href="{{ route('animal.list') }}" class="btn btn-info">Back</a>
+
         <script>
 
             document.getElementById('parentKnownCheckbox').addEventListener('change', function() {
