@@ -32,7 +32,7 @@
         <div class="form-group">
             <label for="veterinarian_id">Veterinarian</label>
            
-        <!-- this is used to list the parent_cow_id-->
+        <!-- this is used to list the veterinarian_id-->
         <select name="veterinarian_id" id="veterinarian_id" class="form-control" required>
                 <option value="">Select Veterinarian</option>
              
@@ -42,6 +42,25 @@
             </select>
 
             @error('veterinarian_id') <span class="text-danger">{{ $message }}</span> @enderror
+
+        </div>
+
+        <div class="form-group">
+            <label for="pregnancy_id">Pregnancy ID</label>
+           
+        <!-- this is used to list the pregnancy_id-->
+        <select name="pregnancy_id" id="pregnancy_id" class="form-control" required>
+                <option value="">Select Pregnancy</option>
+             
+               @foreach($pregnancies as $preg)
+                    <option value="{{$preg->id}}">
+                         Breeding_ID: {{ $preg->breeding_event->id ?? 'N/A' }} |
+                            Female_cow: {{ $preg->AnimalDetail->animal_name ?? 'N/A' }}
+                    </option>
+                @endforeach
+            </select>
+
+            @error('pregnancy_id') <span class="text-danger">{{ $message }}</span> @enderror
 
         </div>
 
@@ -70,25 +89,39 @@
 @endsection
 
 @section('js')
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
 <script>
-    document.getElementById('calf_id').addEventListener('change', function() {
-        var calfId = this.value; // Get the selected calf ID
+
+$(document).ready(function () {
+    $('#calf_id').on('change', function () {
+        var calfId = $(this).val(); // Get the selected calf ID
 
         if (calfId) {
             // Send an AJAX request to fetch calving details
-            fetch(`/animal_calvings/${calfId}/details`)
-                .then(response => response.json())
-                .then(data => {
+            $.ajax({
+                url: `/animal_calvings/${calfId}/details`,
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
                     // If data is returned, populate the form fields
                     if (data) {
-                        document.getElementById('calving_date').value = data.calving_date;
-                      
+                        $('#calving_date').val(data.calving_date);
                     }
-                })
-                .catch(error => console.error('Error fetching calving details:', error));
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching calving details:', error);
+                }
+            });
         }
     });
-</script>
+});
 
+
+
+
+</script>
 
 @endsection

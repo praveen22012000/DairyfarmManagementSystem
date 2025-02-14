@@ -93,8 +93,7 @@
                     @error('dam_id') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
-
-
++
         </div>
 
 
@@ -128,26 +127,28 @@
 
         <div class="row mb-3">
             
-                <div class="col-md-6">
+                <div class="col-md-4">
                         <label for="weight_at_birth">Weight at Birth (Kg)</label>
                         <input type="text" name="weight_at_birth" class="form-control rounded" id="weight_at_birth" >
                         @error('weight_at_birth') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-4">
                         <label for="age_at_first_service">Age at First Service</label>
                         <input type="text" name="age_at_first_service" class="form-control rounded" id="age_at_first_service" >
                         @error('age_at_first_service') <span class="text-danger">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="col-md-4">
+                        <label for="weight_at_first_service">Weight At First Service (Kg)</label>
+                        <input type="text" name="weight_at_first_service" class="form-control rounded" id="weight_at_first_service">
+                        @error('weight_at_first_service') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
         </div>
 
 
        
-        <div class="form-group">
-            <label for="weight_at_first_service">Weight At First Service (Kg)</label>
-            <input type="text" name="weight_at_first_service" class="form-control rounded" id="weight_at_first_service">
-            @error('weight_at_first_service') <span class="text-danger">{{ $message }}</span> @enderror
-        </div>
+      
 
         
         <button type="submit" class="btn btn-success mt-3">Register Animal</button>

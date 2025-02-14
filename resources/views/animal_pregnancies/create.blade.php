@@ -10,7 +10,7 @@
 
     <br>
 
-    <form  method="POST" enctype="multipart/form-data" action="">
+    <form  method="POST" enctype="multipart/form-data" action="{{route('animal_pregnancies.store')}}">
         @csrf
 
         <fieldset class="border p-4 mb-4">
@@ -64,6 +64,9 @@
             </select>
             @error('veterinarian_id') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
+
+
+        
 
 
         

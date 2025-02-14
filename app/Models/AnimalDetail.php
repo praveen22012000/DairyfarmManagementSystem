@@ -42,6 +42,13 @@ class AnimalDetail extends Model
     }
 
 
+    public function ProductionMilk()
+    {
+        return $this->hasMany(ProductionMilk::class,'animal_id');
+    }
+
+
+
     //<!-- this is the start of the self-join relationship-->
 
       // Relationship to get the father of an animal

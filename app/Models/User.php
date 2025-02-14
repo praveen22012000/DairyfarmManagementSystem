@@ -80,4 +80,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(Pregnancies::class,'veterinarian_id');
     }
+
+//this function is used to establish the relationship with ProductionMilk model
+    public function ProductionMilk()
+    {
+        return $this->hasMany(ProductionMilk::class,'user_id');
+    }
+
+    public function DisposeMilk()
+    {
+        return $this->hasMany(DisposeMilk::class,'user_id');
+    }
 }

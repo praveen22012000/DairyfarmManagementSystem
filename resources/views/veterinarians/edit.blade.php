@@ -116,27 +116,36 @@
 <script>
 
 $(document).ready(function () {
-    // Show role-specific fields on page load (for editing)
-    toggleRoleFields($('#role_id').val());
+   function changeFields() {
+    
+        let roleId = $('#role_id').val();
 
-    // Show role-specific fields when the role changes
-    $('#role_id').change(function () {
-        toggleRoleFields(this.value);
-    });
 
-    // Function to show/hide fields based on the selected role
-    function toggleRoleFields(roleId) {
-        if (roleId == 3) { // Assuming '3' is Retailer
+        // Show relevant fields based on the selected role
+        if (roleId == 3) { // Assuming '1' is Retailer
+
             $('#retailer_fields').removeClass('d-none');
             $('#doctor_fields').addClass('d-none');
-        } else if (roleId == 2) { // Assuming '2' is Doctor
+          
+        } 
+
+        else if(roleId==2){ // Assuming '2' is Doctor
             $('#doctor_fields').removeClass('d-none');
             $('#retailer_fields').addClass('d-none');
-        } else {
-            $('#doctor_fields').addClass('d-none');
-            $('#retailer_fields').addClass('d-none');
+         
+          
         }
+        // Add more conditions for other roles as needed
     }
+   
+    changeFields();
+
+    $('#role_id').change( function () {
+     
+        changeFields();
+
+    });
+
 });
 
 </script>

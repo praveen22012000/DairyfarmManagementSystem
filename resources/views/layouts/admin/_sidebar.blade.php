@@ -37,10 +37,35 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="{{route('production_milk.list')}}">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Milk Records</span></a>
             </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('dispose_milk.create')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Dispose Milk</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('milk_allocated_for_manufacturing.index')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Milk Records for Manufacturing</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('manufacture_product.create')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Manufacture Products</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('milk_product.list')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Milk Products</span></a>
+            </li>
+
 
             <li class="nav-item">
                 <a class="nav-link" href="{{route('animal_calvings.list')}}">
@@ -65,7 +90,7 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Custom Utilities:</h6>
                         <a class="collapse-item" href="{{route('animal_breedings.list')}}">breeding_event</a>
-                        <a class="collapse-item" href="{{route('animal_pregnancies.create')}}">Pregnancies</a>
+                        <a class="collapse-item" href="{{route('animal_pregnancies.list')}}">Pregnancies</a>
                         <a class="collapse-item" href="utilities-animation.html">Animations</a>
                         <a class="collapse-item" href="utilities-other.html">Other</a>
                     </div>

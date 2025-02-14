@@ -10,21 +10,21 @@
 
         <div class="form-group">
             <label for="role_id">Role:</label>
-            <select id="role_id" name="role_id" class="form-control">
+            <select id="role_id" name="role_id" class="form-control" value="{{ old('role_id') }}">
                 <option value="">-- Select Role --</option>
                 @foreach($roles as $role)
-                <option value="{{ $role->id }}">{{ $role->role_name }}</option>
+                <option value="{{ $role->id }}"{{ old('role_id') == $role->id ? 'selected' : '' }}>{{ $role->role_name }}</option>
                 @endforeach
             </select>
         </div>
 
-      
-         <div id="doctor_fields" class="d-none" >
+        <!-- Doctor fileds -->
+        <div id="doctor_fields" class="d-none" >
 
     
             <div class="form-group">
                 <label for="specialization">Specialization:</label>
-                <input type="text" id="specialization" name="specialization" class="form-control">
+                <input type="text" id="specialization" name="specialization" class="form-control" value="{{ old('specialization') }}">
                 @error('specialization') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
@@ -161,11 +161,10 @@
 <script>
 
 $(document).ready(function () {
-   $('#role_id').change( function () {
-        var roleId = this.value;
+   function changeFields() {
+    
+        let roleId = $('#role_id').val();
 
-       
-       
 
         // Show relevant fields based on the selected role
         if (roleId == 3) { // Assuming '1' is Retailer
@@ -182,10 +181,19 @@ $(document).ready(function () {
           
         }
         // Add more conditions for other roles as needed
-    });
+    }
    
+    changeFields();
+
+    $('#role_id').change( function () {
+     
+        changeFields();
+
+    });
 
 });
+
+
 </script>
 
 

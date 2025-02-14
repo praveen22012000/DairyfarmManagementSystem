@@ -25,6 +25,7 @@
                         <th>Calf Name</th>
                         <th>Calving Date</th>
                         <th>Calving Notes</th>
+                 
                         <th>Actions</th>
                       
                     </tr>
@@ -36,6 +37,8 @@
                       
                         <td>{{$animal_calvings_detail->calving_date}}</td>
                         <td>{{$animal_calvings_detail->calving_notes}}</td>
+
+            
 
                         <td>
                         <a href="{{route('animal_calvings.view',$animal_calvings_detail->id)}}" class="btn btn-info">View</a>

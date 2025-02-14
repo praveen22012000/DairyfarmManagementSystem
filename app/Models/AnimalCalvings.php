@@ -13,13 +13,18 @@ class AnimalCalvings extends Model
     protected $fillable = [
        
         'calf_id',
-          
+          'pregnancy_id',
             'veterinarian_id',
             'calving_date',
             'calving_notes'
        
     ];
 
+    //this function establish a relationship to the Pregnancies model
+     public function Pregnancies()
+     {
+        return $this->belongsTo(Pregnancies::class,'pregnancy_id');
+     }
 
     
      // Get the parent animal (cow) for each calving

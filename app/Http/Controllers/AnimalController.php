@@ -14,16 +14,63 @@ class AnimalController extends Controller
 {
     //
 
-    public function index()
+    public function index(Request $request)
     {
-        //this methos is used to list the Animal List
+        $q=$request->input('q');
 
-        //this line get the AnimalType details along with AnimalDetail using the AnimalType relationship(define on the AnimalDetailModel)
-        $animals=AnimalDetail::with('AnimalType')->get();
+        if($q)
+        {
+            $animals = AnimalDetail::where('animal_name','like',"%{$q}%")
+            ->orWhere('animal_type_id','like',"%{$q}%")
+            ->with('AnimalType')
+            ->orderBy('id', 'desc')
+            ->paginate();
+        }
+        else
+        {
+            $animals = AnimalDetail::with('AnimalType')
+            ->orderBy('id', 'desc')
+            ->paginate(5);
+        }
 
-        
-        return view('animal.index',['animals'=>$animals]);
+        $animal_types=AnimalType::all();
+
+           // Return the view with the paginated results
+           return view('animal.index', [
+            'animals' => $animals,
+            'animal_types'=>$animal_types
+        ]);
+      
     }
+
+
+    public function filterByType(Request $request)
+    {
+        $animalTypeId = $request->input('animal_type_id');
+
+        $animals = AnimalDetail::where('animal_type_id', $animalTypeId)
+        ->with('AnimalType') // Load the related animal type
+        ->get()
+        ->map(function ($animal) {
+            return [
+                'id' => $animal->id,
+                'animal_name' => $animal->animal_name,
+                'animal_type' => $animal->AnimalType->animal_type ?? 'Unknown', // Access relationship safely
+                'age' => $animal->age, // Make sure age is computed or available
+            ];
+        });
+
+        //map() is a function in Laravel's collections that takes every item in a collection, 
+        // applies a transformation (a change), and returns a new collection with the transformed items.
+
+
+
+        //below is the purpose of the json
+        //Convert PHP data (like arrays, objects, or collections) into a JSON (JavaScript Object Notation) format.
+        //Send this JSON-formatted data as an HTTP response to the client (usually the frontend or an API consumer).
+        return response()->json($animals);
+    }  
+    
 
     public function create()//this method is used to display animal registration form 
     {

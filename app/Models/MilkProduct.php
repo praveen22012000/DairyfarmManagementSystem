@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class MilkProduct extends Model
+{
+    use HasFactory;
+
+    protected $fillable=[
+        'product_name',
+        'unit_price'
+
+    ];
+
+    public function production_supply_details()
+    {
+        return $this->hasMany(ProductionSupplyDetails::class,'product_id');
+    }
+
+    public function ingredients()
+    {
+        return $this->hasMany(ingredient::class,'product_id');
+    }
+}

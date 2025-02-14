@@ -8,6 +8,8 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\AnimalCalvings;
 use App\Models\AnimalDetail;
+use App\Models\Pregnancies;
+
 use Illuminate\Http\Request;
 
 class AnimalCalvingsController extends Controller
@@ -34,14 +36,21 @@ class AnimalCalvingsController extends Controller
        $veterinarians_id=Role::whereIn('role_name',['Veterinarian'])->pluck('id');
         $veterinarians=User::whereIn('role_id', $veterinarians_id)->get();
 
-        return view('animal_calving.create',['Child_animals'=>$Child_animals,'veterinarians'=>$veterinarians]);
+
+        $pregnancies = Pregnancies::with(['AnimalCalving','breeding_event','AnimalDetail'])->get();
+
+
+        return view('animal_calving.create',['Child_animals'=>$Child_animals,'veterinarians'=>$veterinarians,'pregnancies'=>$pregnancies]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'calf_id'=>'required|unique:animal_calvings,calf_id',
+            'calf_id'=>'required|unique:animal_calvings,calf_id|exists:animal_details,id',
           
+            'pregnancy_id' => 'required|exists:pregnancies,id|unique:animal_calvings,pregnancy_id',
+
+
             'veterinarian_id'=>'required|exists:users,id',
             'calving_date'=>'required',
             'calving_notes'=>'required'
@@ -54,6 +63,7 @@ class AnimalCalvingsController extends Controller
         AnimalCalvings::create([
             'calf_id'=>$request->calf_id,
        
+            'pregnancy_id'=>$request->pregnancy_id,
             'veterinarian_id'=>$request->veterinarian_id,
             'calving_date'=>$request->calving_date,
             'calving_notes'=>$request->calving_notes
@@ -75,11 +85,9 @@ class AnimalCalvingsController extends Controller
         $veterinarians_id=Role::whereIn('role_name',['Veterinarian'])->pluck('id');
         $veterinarians=User::whereIn('role_id', $veterinarians_id)->get();
 
-
-
-
+        $pregnancies = Pregnancies::with(['AnimalCalving','breeding_event','AnimalDetail'])->get();
     
-        return view('animal_calving.edit',['Calf_animals'=>$Calf_animals,'veterinarians'=>$veterinarians,'animalcalvings'=>$animalcalvings]);
+        return view('animal_calving.edit',['Calf_animals'=>$Calf_animals,'veterinarians'=>$veterinarians,'animalcalvings'=>$animalcalvings,'pregnancies'=>$pregnancies]);
 
     }
 
@@ -91,6 +99,7 @@ class AnimalCalvingsController extends Controller
         $data=$request->validate([
             'calf_id'=>"required|unique:animal_calvings,calf_id,$animalcalvings->id",
       
+            'pregnancy_id'=>"required|exists:pregnancies,id|unique:animal_calvings,pregnancy_id,$animalcalvings->id",
           
             'calving_date'=>'required',
             'veterinarian_id'=>'required',
@@ -142,7 +151,9 @@ class AnimalCalvingsController extends Controller
        $veterinarians_id=Role::whereIn('role_name',['Veterinarian'])->pluck('id');
        $veterinarians=User::whereIn('role_id', $veterinarians_id)->get();
 
-         return view('animal_calving.view',['Calf_animals'=>$Calf_animals,'veterinarians'=>$veterinarians,'animalcalvings'=>$animalcalvings]);
+       $pregnancies = Pregnancies::with(['AnimalCalving','breeding_event','AnimalDetail'])->get();
+
+         return view('animal_calving.view',['Calf_animals'=>$Calf_animals,'veterinarians'=>$veterinarians,'animalcalvings'=>$animalcalvings,'pregnancies'=>$pregnancies]);
 
     }
 

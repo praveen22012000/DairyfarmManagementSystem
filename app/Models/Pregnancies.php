@@ -19,6 +19,8 @@ class Pregnancies extends Model
                     'confirmation_date'
     ];
 
+
+
     //this function establish the relationship to the breedingEvents table
     public function breeding_event()
     {
@@ -29,6 +31,12 @@ class Pregnancies extends Model
     public function AnimalDetail()
     {
         return $this->belongsTo(AnimalDetail::class,'female_cow_id');
+    }
+
+    //this function establish the relationship to the Pregnancies model
+    public function AnimalCalving()
+    {
+        return $this->belongsTo(AnimalCalvings::class,'pregnancy_id');
     }
 
     //this function establish the relationship to the User model

@@ -10,8 +10,7 @@
                 </div>
 
                 <div class="float-right">
-                <a  class="btn btn btn-secondary btn-md btn-rounded" href="{{ route('users.list')}}"><i class="mdi mdi-plus-circle mdi-18px"></i>Back</a>
-                <a  class="btn btn-success btn-md btn-rounded" href="{{ route('users.create')}}"><i class="mdi mdi-plus-circle mdi-18px"></i>Add Veterinarian</a>
+               
                 </div>
 
             </div>

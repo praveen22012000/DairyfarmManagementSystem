@@ -109,6 +109,7 @@
             @error('notes') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
 
+        <a href="{{ route('animal_breedings.list') }}" class="btn btn-info">Back</a>
 
         </fieldset>
 
