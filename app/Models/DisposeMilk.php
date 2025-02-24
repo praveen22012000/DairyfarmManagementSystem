@@ -9,6 +9,15 @@ class DisposeMilk extends Model
 {
     use HasFactory;
 
+    protected $fillable=[
+        'production_milk_id',
+        'user_id',
+           'dispose_quantity',
+        'date',
+        'reason_for_dispose',
+     
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class,'user_id');

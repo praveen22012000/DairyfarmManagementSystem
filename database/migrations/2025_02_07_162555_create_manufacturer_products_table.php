@@ -21,12 +21,12 @@ return new class extends Migration
             $table->date('manufacture_date');
             $table->date('expire_date');
 
-            $table->foreignId('employee_id');//employee_id is equal to the user_id in users table
+            $table->foreignId('user_id');//employee_id is equal to the user_id in users table
 
 
             $table->foreign('manufacturer_id')->references('id')->on('manufacturers')->onDelete('cascade');
             $table->foreign('product_id')->references('id')->on('milk_products')->onDelete('cascade');
-            $table->foreign('employee_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->timestamps();
         });

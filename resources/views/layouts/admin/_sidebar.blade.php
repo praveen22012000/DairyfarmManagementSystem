@@ -43,7 +43,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{{route('dispose_milk.create')}}">
+                <a class="nav-link" href="{{route('dispose_milk.list')}}">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Dispose Milk</span></a>
             </li>

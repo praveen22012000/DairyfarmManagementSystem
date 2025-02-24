@@ -34,16 +34,18 @@
 
     <div class="col-md-12" id="ingredientFields">
 
-        <label for="ingredients">Ingredients</label>
-      
-       
-       
+            <label for="ingredients">Ingredients</label>
+
+           
+                <input type="text" name="ingredients[]" class="col-md-12 form-control rounded"  required>  
+            
+        <br>
+
     </div>
-    
 
-    <button type="button" onclick="addIngredient()">Add Ingredient</button>
+    <button type="button" class="btn btn-primary" onclick="addIngredient()">Add Ingredient</button>
 
-    <button type="submit">Save Product</button>
+    <button type="submit" class="btn btn-success">Save Product</button>
 
     </form>
 
@@ -61,7 +63,7 @@
 <script>
     function addIngredient() {
         let div = document.createElement("div");
-        div.innerHTML = '<input type="text" name="ingredients[]" class="col-md-12 form-control rounded" required>  <button type="button" onclick="this.parentNode.remove()">Remove</button> <br><br>';
+        div.innerHTML = '<input type="text" name="ingredients[]" class="col-md-12 form-control rounded" required>  <button type="button" class="btn btn-danger" onclick="this.parentNode.remove()">Remove</button> <br><br>';
         document.getElementById("ingredientFields").appendChild(div);
     }
 </script>

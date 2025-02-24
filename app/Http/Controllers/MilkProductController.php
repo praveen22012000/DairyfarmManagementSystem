@@ -75,45 +75,35 @@ class MilkProductController extends Controller
 
     }
 
-    public function update(Request $request,MilkProduct $milkProduct)
-    {
-        $request->validate([
+    public function update(Request $request, MilkProduct $milkProduct)
+{
+    $data = $request->validate([
+        'product_name' => 'required|string|max:255',
+        'unit_price' => 'required|numeric|min:1',
+        'ingredients' => 'required|array',
+        'ingredients.*' => 'required|string|max:255',
+    ]);
 
-            'product_name'=>'required|string|max:255',
-            'unit_price'=>'required|numeric|min:0',
-            'ingredients' => 'required|array',
-            'ingredients.*' => 'required|string|max:255',
+    // **Update the existing MilkProduct**
+    $milkProduct->update([
+        'product_name' => $request->product_name,
+        'unit_price' => $request->unit_price,
+    ]);
 
+    // **Delete old ingredients to prevent duplication**
+    $milkProduct->ingredients()->delete();
+
+    // **Store new ingredients**
+    foreach ($request->ingredients as $ingredient) {
+        ingredient::create([
+            'product_id' => $milkProduct->id,
+            'ingredients' => $ingredient,
         ]);
-
-       
-        
-
-
-         // Create the milk product
-         $milkProduct = MilkProduct::create([
-            'product_name' => $request->product_name,
-            'unit_price' => $request->unit_price,
-        ]);
-
-       
-      
-
-        // Store ingredients
-        foreach ($request->ingredients as $ingredient) {
-
-      
-
-            ingredient::create([
-                'product_id' => $milkProduct->id,
-                'ingredients' => $ingredient,
-            ]);
-        }
-
-  
-        return redirect()->route('milk_product.list')->with('success', 'Milking updated added successfully!');
-
     }
+
+    return redirect()->route('milk_product.list')->with('success', 'Milk product updated successfully!');
+}
+
 
     public function view(MilkProduct $milkProduct)
     {

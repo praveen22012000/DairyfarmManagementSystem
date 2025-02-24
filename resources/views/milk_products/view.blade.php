@@ -6,7 +6,7 @@
 <div class="col-md-12">
 
        
-            <h1>Milk Products Form</h1>     
+            <h1>Milk Products Details</h1>     
         
 
     <br>
@@ -44,7 +44,7 @@
        
     </div>
     
-
+    <a href="{{ route('milk_product.list') }}" class="btn btn-info">Back</a>
   
 
    

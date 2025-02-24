@@ -1,3 +1,4 @@
+
 @extends('layouts.admin.master')
 @section('title','Animal List')
 @section('content')
@@ -6,13 +7,13 @@
         <div class="card">
             <div class="card-header">
                 <div class="float-left">
-                    <h2>Milk Productions Details</h2>
+                    <h2>Dispose Milk Productions </h2>
                 </div>
 
                 <div class="float-right">
 
-                    <a class="btn btn-success btn-md btn-rounded" href="{{route('production_milk.create')}}">
-                        <i class="mdi mdi-plus-circle mdi-18px"></i> Add Milk Record
+                    <a class="btn btn-success btn-md btn-rounded" href="{{route('dispose_milk.create')}}">
+                        <i class="mdi mdi-plus-circle mdi-18px"></i> Dispose Milk
                     </a>
                
                 </div>
@@ -29,33 +30,32 @@
                 <thead class="thead-dark">
                     <tr>
                         <th> ID</th>
-                        <th>Female Cow Name</th>
-                        <th>Production Date</th>
-                        <th>Shift</th>
-                        <th>Quantity Liters</th>
-                        <th>Stock Quantity</th>
+                        <th>Milk Production Item  </th>
+                        <th>Disposed By </th>
+                        <th>Date</th>
+                        <th>Dispose Amount</th>
+                     
                         <th>Actions</th>
                        
                       
                     </tr>
                 </thead>
                  
-                @foreach($production_milk_details as $production_milk_detail)
+                @foreach($disposeMilks as $disposeMilk)
                     <tr>
                       
 
-                        <td>{{$production_milk_detail->id}}</td>
-                        <td>{{$production_milk_detail->AnimalDetail->animal_name}}</td>
-                        <td>{{$production_milk_detail->production_date}}</td>
-                        <td>{{$production_milk_detail->shift}}</td>
-                        <td>{{$production_milk_detail->Quantity_Liters}}</td>
-                        <td>{{$production_milk_detail->stock_quantity}}</td>
-
+                        <td>{{$disposeMilk->id}}</td>
+                        <td>{{$disposeMilk->production_milk->AnimalDetail->animal_name.'|'.$disposeMilk->production_milk->production_date.'|'.$disposeMilk->production_milk->shift}}</td>
+                        <td>{{$disposeMilk->user->name}}</td>
+                        <td>{{$disposeMilk->date}}</td>
+                        <td>{{$disposeMilk->dispose_quantity}}</th>
+                
                         <td>
 
-                        <a href="{{ route('production_milk.view',$production_milk_detail->id) }}" class="btn btn-info">View</a>
-                        <a href="{{ route('production_milk.edit',$production_milk_detail->id) }}" class="btn btn-primary">Edit</a>
-                        <button class="btn btn-danger" onclick="confirmDelete({{ $production_milk_detail->id }})">Delete</button>
+                        <a href="{{route('dispose_milk.view',$disposeMilk->id)}}" class="btn btn-info">View</a>
+                        <a href="{{route('dispose_milk.edit',$disposeMilk->id)}}" class="btn btn-primary">Edit</a>
+                        <button class="btn btn-danger" onclick="confirmDelete({{ $disposeMilk->id }})">Delete</button>
                     
                         </td>
                     </tr>
@@ -91,10 +91,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-   function confirmDelete(milkProductionDetailId) {
+   function confirmDelete(disposeMilkId) {
         Swal.fire({
             title: "Are you sure?",
-            text: "This will permanently delete the milk Production record.",
+            text: "This will permanently delete the Dipose milk record.",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#d33",
@@ -104,7 +104,7 @@
             if (result.isConfirmed) {
                 // Set form action dynamically based on animal ID
                 let deleteForm = document.getElementById("deleteForm");
-                deleteForm.action = `/milk_production_details/${milkProductionDetailId}/destroy`;
+                deleteForm.action = `/milk_dispose/${disposeMilkId}/destroy`;
                 deleteForm.submit();
             }
         });

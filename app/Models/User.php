@@ -49,6 +49,12 @@ class User extends Authenticatable
         ];
     }
 
+    public function manufacture_product()
+    {
+        return $this->hasMany(ManufacturerProduct::class,'user_id');
+    }
+
+
     public function veterinarian()
     {
         return $this->belongsTo(Veterinarian::class,'veterinarian_id');

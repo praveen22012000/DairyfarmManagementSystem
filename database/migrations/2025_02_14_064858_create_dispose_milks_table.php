@@ -19,6 +19,7 @@ return new class extends Migration
 
             $table->date('date');
             $table->string('reason_for_dispose');
+            $table->decimal('dispose_quantity');
 
             $table->foreign('production_milk_id')->references('id')->on('production_milks')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->on('users')->onDelete('cascade');

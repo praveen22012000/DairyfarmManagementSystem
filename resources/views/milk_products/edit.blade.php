@@ -4,7 +4,7 @@
 
 <form action="{{route('milk_product.update',$milkProduct->id)}}" method="POST">
     @csrf
-
+    <h1>Milk Products Details</h1>
 
     <div class="col-md-12">
 
@@ -31,21 +31,17 @@
         @foreach($milkProduct->ingredients as $ingredient)
         <input type="text" name="ingredients[]" class="col-md-12 form-control rounded" value="{{$ingredient->ingredients}}" required>  
                 @endforeach
-       <br>
+       
        
     </div>
     
+    <br>
+    <button type="button" class="btn btn-primary" onclick="addIngredient()">Add Ingredient</button>
 
+    <button type="submit" class="btn btn-success">Update Product</button>
 
-    <button type="submit">Update Product</button>
 </form>
 
-
-
-
-
-
-       
 
   
 @endsection
@@ -54,10 +50,13 @@
 @section('js')
 
 <script>
-    document.getElementById('Quantity_Liters').addEventListener('input', function () {
-        document.getElementById('stock_quantity').value = this.value;
-    });
+    function addIngredient() {
+        let div = document.createElement("div");
+        div.innerHTML = '<input type="text" name="ingredients[]" class="col-md-12 form-control rounded" required>  <button type="button" class="btn btn-danger" onclick="this.parentNode.remove()">Remove</button> <br><br>';
+        document.getElementById("ingredientFields").appendChild(div);
+    }
 </script>
+     
 
 
 @endsection

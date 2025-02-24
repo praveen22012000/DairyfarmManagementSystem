@@ -80,21 +80,28 @@ Route::middleware('auth')->prefix('milk_production_details')->group(function () 
 
 
 //this below group is used to dispose milk
-Route::middleware('auth')->prefix('milk_production_details')->group(function () {
-    Route::get('/', [ProductionMilkController::class, 'index'])->name('production_milk.list');
+Route::middleware('auth')->prefix('milk_dispose')->group(function () {
+    Route::get('/', [DisposeMilkController::class, 'index'])->name('dispose_milk.list');
     Route::get('/create', [DisposeMilkController::class, 'create'])->name('dispose_milk.create');
-    Route::post('/store', [ProductionMilkController::class, 'store'])->name('production_milk.store');
+    Route::post('/store', [DisposeMilkController::class, 'store'])->name('dispose_milk.store');
     
 
-    Route::group(['prefix'=>'{productionmilk}'],function(){
+    Route::group(['prefix'=>'{disposeMilk}'],function(){
        
-        Route::get('/edit', [ProductionMilkController::class, 'edit'])->name('production_milk.edit');
-        Route::post('/update', [ProductionMilkController::class, 'update'])->name('production_milk.update');
+        Route::get('/edit', [DisposeMilkController::class, 'edit'])->name('dispose_milk.edit');
+        Route::post('/update', [DisposeMilkController::class, 'update'])->name('dispose_milk.update');
 
-        Route::get('/view', [ProductionMilkController::class, 'view'])->name('production_milk.view');
+        Route::get('/view', [DisposeMilkController::class, 'view'])->name('dispose_milk.view');
 
       
-        Route::post('/destroy', [ProductionMilkController::class, 'destroy'])->name('production_milk.destroy');
+        Route::post('/destroy', [DisposeMilkController::class, 'destroy'])->name('dispose_milk.destroy');
+    });
+
+    Route::group(['prefix'=>'{productionMilkId}'],function(){
+       
+        Route::get('/details', [DisposeMilkController::class, 'getStockQuantityDetails']);
+
+      
     });
  
 });
