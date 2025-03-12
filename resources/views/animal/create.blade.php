@@ -49,6 +49,23 @@
             @error('animal_name') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
 
+        <div class="form-group">
+            <label for="status">Status</label>
+                <select name="status" id="status" class="form-control" style="width: 100%;">
+                    <option value="alive" selected>Alive</option>
+                    <option value="deceased">Deceased</option>
+                </select>
+        </div>
+
+
+        <div class="form-group d-none" id="death_date_container">
+            <label for="death_date" class="block font-semibold">Death Date</label>
+            <input type="date" name="death_date" id="death_date" class="form-control rounded">
+        </div>
+
+
+
+
         </fieldset>
 
       
@@ -93,7 +110,7 @@
                     @error('dam_id') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
-+
+
         </div>
 
 
@@ -174,4 +191,28 @@
         damDropdown.disabled = !isChecked;
             });
 </script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let deathDateContainer = document.getElementById('death_date_container');
+        let statusSelect = document.getElementById('status');
+
+        // Hide the death date field when the page loads
+        if (statusSelect.value === 'alive') {
+            deathDateContainer.classList.add('d-none');
+        }
+
+        // Listen for status change
+        statusSelect.addEventListener('change', function () {
+            if (this.value === 'deceased') {
+                deathDateContainer.classList.remove('d-none'); // Show when deceased is selected
+            } else {
+                deathDateContainer.classList.add('d-none'); // Hide when alive is selected
+            }
+        });
+    });
+</script>
+
+
+
 @endsection

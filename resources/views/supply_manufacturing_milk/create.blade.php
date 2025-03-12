@@ -1,45 +1,35 @@
 @extends('layouts.admin.master')
 
 @section('content')
-
+<!-- this code work properly but some issues -->
 <div class="col-md-12">
-    <h1 class="text-3xl font-bold mb-10 text-center text-gray-700">Milk Consumption For Manufacturing Products </h1>
+    <h1 class="text-3xl font-bold mb-10 text-center text-gray-700">Milk Consumption For Manufacturing Products</h1>
 
     <form action="{{route('milk_allocated_for_manufacturing.store')}}" method="POST" class="space-y-8">
         @csrf
-
-        <br>
-
-     
-
 
         <!-- Date and Time Section -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
                 <label for="date" class="block text-lg font-medium text-gray-700 mb-2">Date</label>
-                <br>
-                <input type="date" name="date" id="date" class="form-control rounded" required>
+                <input type="date" name="date" id="date" class="form-control rounded" value="{{old('date')}}" required>
                 @error('date') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
-            <br>
 
             <div>
                 <label for="time" class="block text-lg font-medium text-gray-700 mb-2">Time</label>
-                <br>
-                <input type="time" name="time" id="time" class="form-control rounded" required>
+                <input type="time" name="time" id="time" class="form-control rounded" value="{{old('time')}}" required>
                 @error('time') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
-            <br>
             <div>
                 <label for="entered_by" class="block text-lg font-medium text-gray-700 mb-2">Entered By</label>
-                <br>
-                <input type="text" name="entered_by" id="entered_by" placeholder="Enter your name" class="form-control rounded" required>
+                <input type="text" name="entered_by" id="entered_by" placeholder="Enter your name" class="form-control rounded" value="{{old('entered_by')}}" required>
                 @error('entered_by') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
-
-            <br>
         </div>
+
+        <br>
 
         <!-- Milk Production Table -->
         <div class="overflow-x-auto">
@@ -54,38 +44,57 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="milk-row">
+                    @php
+                        $oldProductionMilkIds = old('production_milk_id', []);
+                        $oldConsumedQuantities = old('consumed_quantity', []);
+                        $oldProductIds = old('product_id', []);
+                        $rowCount = max(count($oldProductionMilkIds), 1);
+                    @endphp
+
+                    @for ($i = 0; $i < $rowCount; $i++)
+                    <tr  class="milk-row">
                         <td class="border-t px-6 py-4 text-left text-gray-800">
                             <select name="production_milk_id[]" class="border border-gray-400 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none">
                                 <option value="">Select the Product</option>
                                 @foreach($ProductionsMilk as $ProMilk)
-                                    <option value="{{$ProMilk->id}}">{{ $ProMilk->AnimalDetail->animal_name.' | '.$ProMilk->production_date.' | '.$ProMilk->shift }}</option>
+                                    <option value="{{$ProMilk->id}}" 
+                                        {{ (isset($oldProductionMilkIds[$i]) && $oldProductionMilkIds[$i] == $ProMilk->id) ? 'selected' : '' }}>
+                                        {{ $ProMilk->AnimalDetail->animal_name.' | '.$ProMilk->production_date.' | '.$ProMilk->shift }}
+                                    </option>
                                 @endforeach
                             </select>
-                            @error('production_milk_id.*') <span class="text-danger">{{ $message }}</span> @enderror
+                            @error("production_milk_id.$i") <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
-                        <td class="border-t px-6 py-4 text-left text-gray-800"></td>
+                        <td class="border-t px-6 py-4 text-left text-gray-800">
+                        <input type="number" class="form-control" name="quantity[]" value="{{ $oldManufacturedQuantities[$i] ?? '' }} "  style="width: 100px;">
+                        @error('quantity.*') <span class="text-danger">{{ $message }}</span> @enderror  
+
+                        </td>
 
                         <td class="border-t px-6 py-4">
-                            <input type="text" name="consumed_quantity[]" class="form-control rounded">
-                            @error('consumed_quantity.*') <span class="text-danger">{{ $message }}</span> @enderror
+                            <input type="text" name="consumed_quantity[]" class="form-control rounded" value="{{ $oldConsumedQuantities[$i] ?? '' }}">
+                            @error("consumed_quantity.$i") <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
                         <td>
                             <select name="product_id[]" class="border border-gray-400 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none">
                                 <option value="">Select the Product</option>
                                 @foreach($milkProducts as $milkProduct)
-                                    <option value="{{$milkProduct->id }}">{{ $milkProduct->product_name }}</option>
+                                    <option value="{{$milkProduct->id}}" 
+                                        {{ (isset($oldProductIds[$i]) && $oldProductIds[$i] == $milkProduct->id) ? 'selected' : '' }}>
+                                        {{ $milkProduct->product_name }}
+                                    </option>
                                 @endforeach
                             </select>
-                            @error('product_id.*') <span class="text-danger">{{ $message }}</span> @enderror
+                            @error("product_id.$i") <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
                         <td class="border-t px-6 py-4">
                             <button type="button" class="btn btn-danger remove-row">Remove</button>
                         </td>
                     </tr>
+                    @endfor
                 </tbody>
             </table>
         </div>
@@ -102,41 +111,162 @@
     </form>
 </div>
 
+
 @endsection
 
 @section('js')
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        let today = new Date().toISOString().split("T")[0];
-        document.getElementById("date").setAttribute("max", today);
+   $(document).ready(function () {
+    let today = new Date().toISOString().split("T")[0];
+    $("#date").attr("max", today);
 
-        document.getElementById("addRow").addEventListener("click", function () {
-            let table = document.getElementById("milkTable").getElementsByTagName('tbody')[0];
-            let newRow = table.rows[0].cloneNode(true);
 
-            // Clear input values in the new row
-            newRow.querySelectorAll("input").forEach(input => input.value = "");
-            newRow.querySelectorAll("select").forEach(select => select.selectedIndex = 0);
 
-            table.appendChild(newRow);
-        });
+    // Function to check for validation errors in the table rows
+    function checkForErrors() {
+        let hasErrors = false;
 
-        document.addEventListener("click", function (e) {
-            if (e.target.classList.contains("remove-row")) {
-                let row = e.target.closest("tr");
-                let table = document.getElementById("milkTable").getElementsByTagName('tbody')[0];
-
-                // Ensure at least one row remains
-                if (table.rows.length > 1) {
-                    row.remove();
-                } else {
-                    alert("At least one row is required.");
-                }
+        // Loop through all rows and check for error messages
+        $("#milkTable tbody tr").each(function () {
+            if ($(this).find(".text-danger").length > 0) {
+                hasErrors = true;
+                return false; // Exit the loop if an error is found
             }
         });
+
+        // Hide the "Add" button if there are errors
+        if (hasErrors) {
+            $("#addRow").hide();
+        } else {
+            updateAddButtonVisibility(); // Otherwise, update visibility based on row count
+        }
+    }
+
+
+    //This function controls whether the "Add" button (#addRow) should be shown or hidden.
+    function updateAddButtonVisibility() {
+
+        //Finds the first <tr> in #milkTable tbody (first row of the table).
+        //Retrieves the number of <option> elements inside the production_milk_id[] dropdown but subtracts 1 to exclude the default "Select the Product" option.
+        //Counts the total rows currently present in the table.
+        let totalMilkItems = $("#milkTable tbody tr:first").find("select[name='production_milk_id[]'] option").length - 1; // Exclude the default option
+        let totalRows = $("#milkTable tbody tr").length;
+
+
+        //If the number of rows equals or exceeds the number of available milk items, the "Add" button is hidden.
+        //Otherwise, the "Add" button remains visible.
+        if (totalRows >= totalMilkItems) {
+            $("#addRow").hide();
+        } else {
+            $("#addRow").show();
+        }
+    }
+
+    $("#addRow").click(function () {
+
+        //Find the Table and Clone the First Row
+        let table = $("#milkTable tbody");
+        let newRow = table.find("tr:first").clone();
+
+        // Clear input values in the new row
+        
+        newRow.find("input").val("");//Empties all input fields (.val("")) to prevent duplicate values.
+        newRow.find("select").prop("selectedIndex", 0);//Resets dropdowns (prop("selectedIndex", 0)) to the first (default) option
+
+        table.append(newRow);//Adds the new row to the table (append(newRow)
+
+        updateMilkItemOptions(); // Update options in all rows
+        updateAddButtonVisibility(); // Check visibility of the Add button
     });
+
+    // Remove a Row When Clicking the "Remove" Button
+    $(document).on("click", ".remove-row", function () {
+        //Uses $(document).on() because .remove-row buttons are dynamically added (not present when the page loads).
+
+        //Selects the table body.
+        let table = $("#milkTable tbody");
+
+        //Checks if there is more than one row in the table.
+        if (table.find("tr").length > 1) {
+            $(this).closest("tr").remove();
+            updateMilkItemOptions(); // Re-update dropdowns when a row is removed
+            updateAddButtonVisibility(); // Check visibility of the Add button
+        } else {
+            alert("At least one row is required.");
+        }
+    });
+
+  //  Ensures that each row has a unique milk item selection.
+    function updateMilkItemOptions() {
+
+        let selectedItems = [];//Creates an empty array selectedItems.
+
+       // Loops through all dropdowns named production_milk_id[] and stores selected values in selectedItems.
+        $("select[name='production_milk_id[]']").each(function () {
+            let selectedValue = $(this).val();
+            if (selectedValue) {
+                selectedItems.push(selectedValue);
+            }
+        });
+
+        
+
+        //It iterates over all <select> dropdowns that have the name production_milk_id[] and hides any option 
+        // --that has already been selected in another dropdown
+        $("select[name='production_milk_id[]']").each(function () {
+            let currentValue = $(this).val();
+            $(this).find("option").each(function () {
+                if ($(this).val() !== "" && selectedItems.includes($(this).val()) && $(this).val() !== currentValue) {
+                    $(this).hide(); // Hide already selected items
+                } else {
+                    $(this).show(); // Show unselected items
+                }
+            });
+        });
+    }
+
+    // Function to update the stock quantity field
+    function updateStockQuantity(selectElement) {
+        let productionMilkId = $(selectElement).val();
+        let quantityField = $(selectElement).closest('tr').find('input[name="quantity[]"]');
+
+        if (productionMilkId) {
+            $.ajax({
+                url: '/get-stock-quantity/' + productionMilkId,
+                method: 'GET',
+                success: function(response) {
+                    quantityField.val(response.stock_quantity);
+                },
+                error: function() {
+                    quantityField.val(0);
+                }
+            });
+        } else {
+            quantityField.val('');
+        }
+    }
+
+    // Trigger update when a milk item is selected
+    $(document).on("change", "select[name='production_milk_id[]']", function () {
+        updateMilkItemOptions();
+        updateAddButtonVisibility();
+
+       /**this experiment code */ updateStockQuantity(this);
+    });
+
+    checkForErrors();
+
+// Check for errors whenever an input or select field changes
+$(document).on("input", "#milkTable tbody input, #milkTable tbody select", function () {
+    checkForErrors();
+});
+});
+
+
+
 </script>
+
 
 <script>
 

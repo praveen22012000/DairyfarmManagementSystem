@@ -129,8 +129,7 @@
                     @error('lactose_percentage') <span class="text-danger">{{ $message }}</span> @enderror
                 </div>
 
-                   <!-- Hidden stock_quantity field -->
-                <input type="hidden" name="stock_quantity" id="stock_quantity" value="">
+             
 
 
                 
@@ -158,11 +157,6 @@
       
 @section('js')
 
-<script>
-    document.getElementById('Quantity_Liters').addEventListener('input', function () {
-        document.getElementById('stock_quantity').value = this.value;
-    });
-</script>
 
 
 @endsection

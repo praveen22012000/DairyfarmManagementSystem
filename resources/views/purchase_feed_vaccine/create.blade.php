@@ -65,59 +65,45 @@
                     </tr>
                 </thead>
               
-                @php
-                        $oldMilkProductIds = old('product_id', []);
-                        $oldManufacturedQuantities = old('quantity', []);
-
-                        $oldManufactureDate=old('manufacture_date',[]);
-                        $oldExpireDate=old('expire_date',[]);
-                        $oldUser=old('user_id',[]);
-
-                      
-                        $rowCount = max(count($oldMilkProductIds), 1);
-                    @endphp
-
-                    @for ($i = 0; $i < $rowCount; $i++)
+                
                 <tr clas="milk-row">
                     <!-- ID -->
                         <td>
                                 <select name="product_id[]" id="product_id" class="border border-gray-400 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none">
                                     <option value="">Select the Product</option>
-                                            @foreach($milkProducts as $milkProduct)
-                                    <option value="{{$milkProduct->id}}"
-                                    {{ (isset($oldMilkProductIds[$i]) && $oldMilkProductIds[$i] == $milkProduct->id) ? 'selected' : '' }}
-                                    >{{ $milkProduct->product_name }}</option>
-                                            @endforeach
+                                      
+                                    <option value=""
+                                  
+                                    ></option>
+                                         
                                 </select>
                             @error('product_id.*') <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
                         <!-- MilkDetails (Smaller Width) -->
                         <td>
-                            <input type="number" class="form-control" name="quantity[]" value="{{ $oldManufacturedQuantities[$i] ?? '' }} "  style="width: 100px;">
+                            <input type="number" class="form-control" name="quantity[]" value=""  style="width: 100px;">
                             @error('quantity.*') <span class="text-danger">{{ $message }}</span> @enderror  
                         </td>
 
                         <!-- Stock Quantity (Smaller Width) -->
                         <td>
-                            <input type="date" name="manufacture_date[]" value="{{ $oldManufactureDate[$i] ?? '' }}" class="border border-gray-400 rounded-lg px-2 py-1 w-28 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <input type="date" name="manufacture_date[]" value="" class="border border-gray-400 rounded-lg px-2 py-1 w-28 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             @error('manufacture_date.*') <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
                         <!-- Quantity (Smaller Width) -->
                         <td>
-                            <input type="date" name="expire_date[]" value="{{ $oldExpireDate[$i] ?? '' }}" class="border border-gray-400 rounded-lg px-2 py-1 w-28 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <input type="date" name="expire_date[]" value="" class="border border-gray-400 rounded-lg px-2 py-1 w-28 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             @error('expire_date.*') <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
                         <td>
                             <select name="user_id[]" id="user_id" class="border border-gray-400 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none">
                                     <option value="">Select the Farm Labor</option>
-                                        @foreach($farm_labors as $farm_labor)
-                                    <option value="{{$farm_labor->id}}"
-                                    {{ (isset($oldUser[$i]) && $oldUser[$i] == $farm_labor->id) ? 'selected' : '' }}
-                                    >{{$farm_labor->name}}</option>
-                                        @endforeach
+                                  
+                                    <option value=""></option>
+                                       
                             </select>
                             @error('user_id.*') <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
@@ -130,7 +116,7 @@
                         
                        
                 </tr>
-                @endfor
+          
               
      
       

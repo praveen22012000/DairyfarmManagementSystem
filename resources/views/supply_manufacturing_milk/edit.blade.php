@@ -32,78 +32,70 @@
                 <label for="entered_by" class="block text-lg font-medium text-gray-700 mb-2">Entered By</label>
                 <br>
                 <input type="text" name="entered_by" id="entered_by" placeholder="Enter your name" class="form-control rounded"
-                    class="border border-gray-300 rounded-lg px-4 py-3 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none" required value="{{$productionSupplyDetails-> production_supply->time}}">
+                    class="border border-gray-300 rounded-lg px-4 py-3 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none" required value="{{$productionSupplyDetails-> production_supply->entered_by}}">
                     @error('entered_by') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
             <br>
         </div>
 
-        <!-- Milk Production Table -->
-        <div class="overflow-x-auto">
-            <table class="table">
+        
+         <!-- Milk Production Table -->
+         <div class="overflow-x-auto">
+            <table id="milkTable" class="table">
                 <thead class="thead-dark">
                     <tr>
-                        <th class="border-b px-6 py-4 text-left">ID</th>
                         <th class="border-b px-6 py-4 text-left">MilkDetails</th>
                         <th class="border-b px-6 py-4 text-left">Stock Quantity (SQ)</th>
-                        <th class="border-b px-6 py-4 text-left">Quantity</th>
+                        <th class="border-b px-6 py-4 text-left">Consumed Quantity</th>
                         <th class="border-b px-6 py-4 text-left">Product</th>
-
+                        
                     </tr>
                 </thead>
                 <tbody>
-              
-                  
-                        <tr class="hover:bg-gray-50">
-                            <!-- ID -->
-                            <td class="border-t px-6 py-4 text-left text-gray-800">
-                            {{$productionSupplyDetails->id}}
-                            </td>
+                    
+                    
+                    <tr class="milk-row">
+                        <td class="border-t px-6 py-4 text-left text-gray-800">
+                            <select name="production_milk_id" class="border border-gray-400 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <option value="">Select the Product</option>
+                                @foreach($ProductionsMilk as $ProMilk)
+                                    <option value="{{$ProMilk->id}}" 
+                                    {{ $productionSupplyDetails->production_milk_id==$ProMilk->id ? 'selected':''}}
+                                   >
+                                        {{ $ProMilk->AnimalDetail->animal_name.' | '.$ProMilk->production_date.' | '.$ProMilk->shift }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error("production_milk_id") <span class="text-danger">{{ $message }}</span> @enderror
+                        </td>
 
-                             <!-- MilkDetails -->
-                             <td class="border-t px-6 py-4 text-left text-gray-800">
-                             {{$productionSupplyDetails->production_milk->AnimalDetail->animal_name.'|'.$productionSupplyDetails->production_milk->production_date.'|'.$productionSupplyDetails->production_milk->shift}}
-    
-                            </td>
+                        <td class="border-t px-6 py-4 text-left text-gray-800"></td>
 
+                        <td class="border-t px-6 py-4">
+                            <input type="text" name="consumed_quantity" class="form-control rounded" value="{{$productionSupplyDetails-> consumed_quantity}}">
+                            @error("consumed_quantity") <span class="text-danger">{{ $message }}</span> @enderror
+                        </td>
 
-                            <!-- Stock Quantity -->
-                            <td class="border-t px-6 py-4 text-left text-gray-800">
-                            {{$productionSupplyDetails->production_milk->stock_quantity}}
-                            </td>
+                        <td>
+                            <select name="product_id" class="border border-gray-400 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <option value="">Select the Product</option>
+                                @foreach($milkProducts as $milkProduct)
+                                    <option value="{{$milkProduct->id}}"
+                                    {{ $productionSupplyDetails->product_id==$milkProduct->id ? 'selected':''}}
+                                       >
+                                        {{ $milkProduct->product_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error("product_id") <span class="text-danger">{{ $message }}</span> @enderror
+                        </td>
 
-                            <!-- Quantity -->
-                            <td class="border-t px-6 py-4 text-left text-gray-800">
-                                <input type="text" name="consumed_quantity" value="{{$productionSupplyDetails->consumed_quantity}}" 
-                                class="form-control rounded">
-                                    @error('consumed_quantity') <span class="text-danger">{{ $message }}</span> @enderror
-                            </td>
-
-                            
-
-                            <td>
-                                <div class="col-md-12">
-                                   
-                                    <select name="product_id" id="product_id"  class="form-control">
-
-                                        <option value="">Select the Product</option>
-                                             @foreach($milkProducts as $milkProduct)
-                                                    <option value="{{$milkProduct->id }}"
-                                                    {{$productionSupplyDetails->product_id==$milkProduct->id ? "selected" : ''}}
-                                                    >{{ $milkProduct->product_name }}</option>
-                                         @endforeach
-                        
-                                    </select>
-                                        @error('product_id') <span class="text-danger">{{ $message }}</span> @enderror
-                                </div>
-
-</td>
-                        </tr>
-                
+                      
+                    </tr>
+                 
                 </tbody>
             </table>
         </div>
-
          <!-- Submit Button -->
          <div class="flex justify-center">
                 <button type="submit" class="btn btn-success mt-3">Update</button>

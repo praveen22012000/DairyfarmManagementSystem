@@ -19,7 +19,8 @@ class ProductionMilk extends Model
         'protein_percentage',
         'lactose_percentage',
         'somatic_cell_count',
-        'stock_quantity'
+        'stock_quantity',
+        'initial_quantity_liters'
     ];
 
     public function AnimalDetail()

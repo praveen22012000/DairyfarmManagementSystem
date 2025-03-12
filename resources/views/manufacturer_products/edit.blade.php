@@ -5,10 +5,9 @@
 <div class="col-md-12">
     <h1 class="text-3xl font-bold mb-10 text-center text-gray-700">Manufacturing Milk Products</h1>
 
-    <form action="{{route('manufacture_product.store')}}" method="POST" class="space-y-8">
+    <form action="{{route('manufacture_product.update',$manufacturerProduct->id)}}" method="POST" class="space-y-8">
         @csrf
 
-   
         @if ($errors->any())
     <div class="alert alert-danger">
         <ul>
@@ -19,13 +18,13 @@
     </div>
 @endif
 
+        
         <!-- Date, Time, and Entered By Section -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
                 <label for="date" class="block text-lg font-medium text-gray-700 mb-2">Date</label>
                 <br>
-                <input type="date" name="date" id="date" class="form-control rounded"
-                  >
+                <input type="date" name="date" id="date" class="form-control rounded" value="{{$manufacturerProduct->manufacturer->date}}">
                 @error('date') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
             <br>
@@ -33,7 +32,7 @@
             <div>
                 <label for="time" class="block text-lg font-medium text-gray-700 mb-2">Time</label>
                 <br>
-                <input type="time" name="time" id="time"  class="form-control rounded">
+                <input type="time" name="time" id="time"  class="form-control rounded" value="{{$manufacturerProduct->manufacturer->time}}">
                 @error('time') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
             <br>
@@ -41,8 +40,7 @@
             <div>
                 <label for="enter_by" class="block text-lg font-medium text-gray-700 mb-2">Entered By</label>
                 <br>
-                <input type="text" name="enter_by" id="enter_by" placeholder="Enter your name" class="form-control rounded"
-                   >
+                <input type="text" name="enter_by" id="enter_by" placeholder="Enter your name" class="form-control rounded" value="{{$manufacturerProduct->manufacturer->enter_by}}">
                 @error('enter_by') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
             <br>
@@ -58,79 +56,63 @@
                         <th class="border-b px-6 py-4 text-left">Manufacture Date</th>
                         <th class="border-b px-6 py-4 text-left">ExpiryDate</th>
                         <th class="border-b px-6 py-4 text-left">Manufactured By</th>
-                        <th  class="border-b px-6 py-4 text-left">Actions</th>
+                     
                        
 
 
                     </tr>
                 </thead>
               
-                @php
-                        $oldMilkProductIds = old('product_id', []);
-                        $oldManufacturedQuantities = old('quantity', []);
-
-                        $oldManufactureDate=old('manufacture_date',[]);
-                        $oldExpireDate=old('expire_date',[]);
-                        $oldUser=old('user_id',[]);
-
-                      
-                        $rowCount = max(count($oldMilkProductIds), 1);
-                    @endphp
-
-                    @for ($i = 0; $i < $rowCount; $i++)
+               
                 <tr clas="milk-row">
                     <!-- ID -->
                         <td>
-                                <select name="product_id[]" id="product_id" class="border border-gray-400 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <select name="product_id" id="product_id" class="border border-gray-400 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none">
                                     <option value="">Select the Product</option>
                                             @foreach($milkProducts as $milkProduct)
                                     <option value="{{$milkProduct->id}}"
-                                    {{ (isset($oldMilkProductIds[$i]) && $oldMilkProductIds[$i] == $milkProduct->id) ? 'selected' : '' }}
+                                   {{$manufacturerProduct->product_id==$milkProduct->id ? 'selected': ''}}
                                     >{{ $milkProduct->product_name }}</option>
                                             @endforeach
                                 </select>
-                            @error('product_id.*') <span class="text-danger">{{ $message }}</span> @enderror
+                            @error('product_id') <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
                         <!-- MilkDetails (Smaller Width) -->
                         <td>
-                            <input type="number" class="form-control" name="quantity[]" value="{{ $oldManufacturedQuantities[$i] ?? '' }} "  style="width: 100px;">
-                            @error('quantity.*') <span class="text-danger">{{ $message }}</span> @enderror  
+                            <input type="number" class="form-control" name="quantity" value="{{$manufacturerProduct-> quantity}}"  style="width: 100px;">
+                            @error('quantity') <span class="text-danger">{{ $message }}</span> @enderror  
                         </td>
 
                         <!-- Stock Quantity (Smaller Width) -->
                         <td>
-                            <input type="date" name="manufacture_date[]" value="{{ $oldManufactureDate[$i] ?? '' }}" class="border border-gray-400 rounded-lg px-2 py-1 w-28 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                            @error('manufacture_date.*') <span class="text-danger">{{ $message }}</span> @enderror
+                            <input type="date" name="manufacture_date" value="{{$manufacturerProduct-> manufacture_date}}" class="border border-gray-400 rounded-lg px-2 py-1 w-28 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            @error('manufacture_date') <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
                         <!-- Quantity (Smaller Width) -->
                         <td>
-                            <input type="date" name="expire_date[]" value="{{ $oldExpireDate[$i] ?? '' }}" class="border border-gray-400 rounded-lg px-2 py-1 w-28 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                            @error('expire_date.*') <span class="text-danger">{{ $message }}</span> @enderror
+                            <input type="date" name="expire_date" value="{{$manufacturerProduct-> expire_date}}" class="border border-gray-400 rounded-lg px-2 py-1 w-28 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            @error('expire_date') <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
                         <td>
-                            <select name="user_id[]" id="user_id" class="border border-gray-400 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <select name="user_id" id="user_id" class="border border-gray-400 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none">
                                     <option value="">Select the Farm Labor</option>
                                         @foreach($farm_labors as $farm_labor)
                                     <option value="{{$farm_labor->id}}"
-                                    {{ (isset($oldUser[$i]) && $oldUser[$i] == $farm_labor->id) ? 'selected' : '' }}
+                                    {{$manufacturerProduct->user_id==$farm_labor->id ? 'selected': ''}}
                                     >{{$farm_labor->name}}</option>
                                         @endforeach
                             </select>
-                            @error('user_id.*') <span class="text-danger">{{ $message }}</span> @enderror
+                            @error('user_id') <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
 
-                        <td>
-                            <button type="button" class="btn btn-danger remove-row">Remove</button>
-                        </td>
-
+                      
                         
                        
                 </tr>
-                @endfor
               
      
       
@@ -139,12 +121,10 @@
             </table>
         </div>
 
-        <div class="flex justify-center mt-3">
-            <button type="button" id="addRow" class="btn btn-primary">Add</button>
-        </div>
+        
         <!-- Submit Button -->
         <div class="flex justify-center">
-            <button type="submit" class="btn btn-success mt-3">Save Manufacture Product</button>
+            <button type="submit" class="btn btn-success mt-3">Update</button>
         </div>
     </form>
 </div>
@@ -154,9 +134,6 @@
 
       
 @section('js')
-
-
-
 <script>
 $(document).ready(function () {
     // Function to check for validation errors in the table rows

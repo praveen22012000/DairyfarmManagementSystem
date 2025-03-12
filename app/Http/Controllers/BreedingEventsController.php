@@ -26,12 +26,16 @@ class BreedingEventsController extends Controller
 
         $female_animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');
 
-        $female_Animals = AnimalDetail::whereIn('animal_type_id', $female_animal_types_id)->get();
+        $female_Animals = AnimalDetail::whereIn('animal_type_id', $female_animal_types_id)
+                                        ->where('status','alive')
+                                        ->get();
 
 
         $male_animal_types_id= AnimalType::whereIn('animal_type',['Bull','BullCalf'])->pluck('id');
 
-        $male_animals=AnimalDetail::whereIn('animal_type_id',$male_animal_types_id)->get();
+        $male_animals=AnimalDetail::whereIn('animal_type_id',$male_animal_types_id)
+                                    ->where('status','alive')
+                                    ->get();
 
 
        $veterinarian_id=Role::whereIn('role_name',['veterinarian'])->pluck('id');
@@ -73,12 +77,16 @@ class BreedingEventsController extends Controller
     {
         $female_animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');
 
-        $female_Animals = AnimalDetail::whereIn('animal_type_id', $female_animal_types_id)->get();
+        $female_Animals = AnimalDetail::whereIn('animal_type_id', $female_animal_types_id)
+                                        ->where('status','alive')
+                                        ->get();
 
 
         $male_animal_types_id= AnimalType::whereIn('animal_type',['Bull','BullCalf'])->pluck('id');
 
-        $male_animals=AnimalDetail::whereIn('animal_type_id',$male_animal_types_id)->get();
+        $male_animals=AnimalDetail::whereIn('animal_type_id',$male_animal_types_id)
+                                    ->where('status','alive')
+                                    ->get();
 
 
         $veterinarian_id=Role::whereIn('role_name',['veterinarian'])->pluck('id');
@@ -98,12 +106,16 @@ class BreedingEventsController extends Controller
     {
         $female_animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');
 
-        $female_Animals = AnimalDetail::whereIn('animal_type_id', $female_animal_types_id)->get();
+        $female_Animals = AnimalDetail::whereIn('animal_type_id', $female_animal_types_id)
+                                        ->where('status','alive')
+                                        ->get();
 
 
         $male_animal_types_id= AnimalType::whereIn('animal_type',['Bull','BullCalf'])->pluck('id');
 
-        $male_animals=AnimalDetail::whereIn('animal_type_id',$male_animal_types_id)->get();
+        $male_animals=AnimalDetail::whereIn('animal_type_id',$male_animal_types_id)
+                                    ->where('status','alive')
+                                    ->get();
 
 
         $veterinarian_id=Role::whereIn('role_name',['veterinarian'])->pluck('id');

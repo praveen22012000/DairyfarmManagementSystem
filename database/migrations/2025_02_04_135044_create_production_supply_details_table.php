@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('production_supply_id');
             $table->foreignId('product_id');
 
-            $table->string('consumed_quantity');
+            $table->decimal('consumed_quantity');
 
             $table->foreign('production_milk_id')->references('id')->on('production_milks')->onDelete('cascade');
             $table->foreign('production_supply_id')->references('id')->on('production_supplies')->onDelete('cascade');

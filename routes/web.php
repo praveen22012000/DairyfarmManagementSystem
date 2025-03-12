@@ -13,6 +13,9 @@ use App\Http\Controllers\ProductionSupplyDetailsController;
 use App\Http\Controllers\MilkProductController;
 use App\Http\Controllers\ManufacturerProductController;
 use App\Http\Controllers\DisposeMilkController;
+use App\Http\Controllers\DisposeMilkProductsController;
+use App\Http\Controllers\FeedVaccineDetailsController;
+use App\Http\Controllers\PurchaseItemsController;
 
 
 use Illuminate\Support\Facades\Route;
@@ -61,6 +64,27 @@ Route::middleware('auth')->prefix('animal')->group(function () {
 Route::middleware('auth')->prefix('milk_production_details')->group(function () {
     Route::get('/', [ProductionMilkController::class, 'index'])->name('production_milk.list');
     Route::get('/create', [ProductionMilkController::class, 'create'])->name('production_milk.create');
+    Route::post('/store', [ProductionMilkController::class, 'store'])->name('production_milk.store');
+    
+
+    Route::group(['prefix'=>'{productionmilk}'],function(){
+       
+        Route::get('/edit', [ProductionMilkController::class, 'edit'])->name('production_milk.edit');
+        Route::post('/update', [ProductionMilkController::class, 'update'])->name('production_milk.update');
+
+        Route::get('/view', [ProductionMilkController::class, 'view'])->name('production_milk.view');
+
+      
+        Route::post('/destroy', [ProductionMilkController::class, 'destroy'])->name('production_milk.destroy');
+    });
+ 
+});
+
+
+//this below group is used to manage purchase details
+Route::middleware('auth')->prefix('milk_production_details')->group(function () {
+    Route::get('/', [ProductionMilkController::class, 'index'])->name('production_milk.list');
+    Route::get('/create', [PurchaseItemsController::class, 'create'])->name('purchase_items.create');
     Route::post('/store', [ProductionMilkController::class, 'store'])->name('production_milk.store');
     
 
@@ -154,19 +178,19 @@ Route::middleware('auth')->prefix('details_about_the_milk_allocated_for_producti
 
 //this group is used for manufacture product details
 Route::middleware('auth')->prefix('milk_products_manufacture_details')->group(function () {
-    Route::get('/', [MilkProductionController::class, 'index'])->name('milk_manufacturing_production.index');
+    Route::get('/', [ManufacturerProductController::class, 'index'])->name('manufacture_product.index');
     Route::get('/create', [ManufacturerProductController::class, 'create'])->name('manufacture_product.create');
     Route::post('/store', [ManufacturerProductController::class, 'store'])->name('manufacture_product.store');
     
 
   
 
-    Route::group(['prefix'=>'{milkproduction}'],function(){
+    Route::group(['prefix'=>'{manufacturerProduct}'],function(){
        
-        Route::get('/edit', [ProductionSupplyDetailsController::class, 'edit'])->name('milk_production.edit');
-        Route::post('/update', [ProductionSupplyDetailsController::class, 'update'])->name('milk_production.update');
+        Route::get('/edit', [ManufacturerProductController::class, 'edit'])->name('manufacture_product.edit');
+        Route::post('/update', [ManufacturerProductController::class, 'update'])->name('manufacture_product.update');
 
-        Route::get('/view', [ProductionSupplyDetailsController::class, 'view'])->name('milk_production.view');
+        Route::get('/view', [ManufacturerProductController::class, 'view'])->name('manufacture_product.view');
 
       
         Route::post('/destroy', [ProductionSupplyDetailsController::class, 'destroy'])->name('milk_production.destroy');
@@ -174,11 +198,60 @@ Route::middleware('auth')->prefix('milk_products_manufacture_details')->group(fu
  
 });
 
+//this group is used to dipsose the milk products
+Route::middleware('auth')->prefix('dispose_milk_products')->group(function () {
+    Route::get('/', [DisposeMilkProductsController::class, 'index'])->name('dispose_milk_product.index');
+    Route::get('/create', [DisposeMilkProductsController::class, 'create'])->name('dispose_milk_product.create');
+    Route::post('/store', [DisposeMilkProductsController::class, 'store'])->name('dispose_milk_product.store');
+    
+
+  
+
+    Route::group(['prefix'=>'{disposeMilkProducts}'],function(){
+       
+        Route::get('/edit', [DisposeMilkProductsController::class, 'edit'])->name('dispose_milk_product.edit');
+
+        Route::post('/update', [DisposeMilkProductsController::class, 'update'])->name('dispose_milk_product.update');
+
+        Route::get('/view', [DisposeMilkProductsController::class, 'view'])->name('dispose_milk_product.view');
+
+      
+        Route::post('/destroy', [DisposeMilkProductsController::class, 'destroy'])->name('dispose_milk_product.destroy');
+    });
 
 
+    Route::group(['prefix'=>'{productionMilkId}'],function(){
+       
+        Route::get('/details', [DisposeMilkProductsController::class, 'getStockQuantityDetails']);
+
+      
+    });
 
 
+    
+ 
+});
 
+
+//this below group is used to manage the feed and vaccine details
+Route::middleware('auth')->prefix('food_vaccine_details')->group(function () {
+    Route::get('/', [ProductionMilkController::class, 'index'])->name('production_milk.list');
+    Route::get('/create', [FeedVaccineDetailsController::class, 'create'])->name('feed_vaccine.create');
+    Route::post('/store', [FeedVaccineDetailsController::class, 'store'])->name('feed_vaccine.store');
+    
+
+    Route::group(['prefix'=>'{productionmilk}'],function(){
+       
+        Route::get('/edit', [ProductionMilkController::class, 'edit'])->name('production_milk.edit');
+        Route::post('/update', [ProductionMilkController::class, 'update'])->name('production_milk.update');
+
+        Route::get('/view', [ProductionMilkController::class, 'view'])->name('production_milk.view');
+
+      
+        Route::post('/destroy', [ProductionMilkController::class, 'destroy'])->name('production_milk.destroy');
+    });
+ 
+});
 
 
 

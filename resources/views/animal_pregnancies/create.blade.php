@@ -10,6 +10,7 @@
 
     <br>
 
+ 
     <form  method="POST" enctype="multipart/form-data" action="{{route('animal_pregnancies.store')}}">
         @csrf
 

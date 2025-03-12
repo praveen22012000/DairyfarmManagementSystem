@@ -17,6 +17,8 @@ class AnimalDetail extends Model
         'animal_birthdate',
         'animal_name',
         'ear_tag',
+        'status',
+        'death_date',
         'sire_id',
         'dam_id',
         'breed_id',

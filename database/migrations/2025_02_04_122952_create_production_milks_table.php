@@ -22,6 +22,8 @@ return new class extends Migration
             $table->date('production_date');
 
             $table->decimal('Quantity_Liters',8,2)->default(0);
+            $table->decimal('initial_quantity_liters', 8, 2)->default(0);
+         
             
             $table->string('shift');
         

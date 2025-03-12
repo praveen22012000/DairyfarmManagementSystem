@@ -5,27 +5,37 @@
 <div class="col-md-12">
 
        
-            <h1>Dispose Milk Registration Form</h1>     
+            <h1>Dispose Milk Products Registration Form</h1>     
         
 
     <br>
 
-    <form  method="POST" enctype="multipart/form-data" action="{{route('dispose_milk.store')}}">
+    <form  method="POST" enctype="multipart/form-data" action="{{route('dispose_milk_product.store')}}">
         @csrf
 
+        @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
         <fieldset class="border p-4 mb-4">
         <legend class="w-auto px-2">General Information</legend>
 
 
         <div class="form-group">
-        <label for="production_milk_id">Milk Production Item</label>
-        <select name="production_milk_id" id="production_milk_id" class="form-control" >
+        <label for="manufacturer_product_id">Milk Production Item</label>
+        <select name="manufacturer_product_id" id="manufacturer_product_id" class="form-control" >
             <option value="">Select the Milk Production Item</option>
-            @foreach($ProductionsMilks as $ProductionsMilk)
-                <option value="{{$ProductionsMilk->id}}">{{ $ProductionsMilk->AnimalDetail->animal_name.'|'. $ProductionsMilk->production_date.'|'.$ProductionsMilk->shift}}</option>
-            @endforeach
+      
+            @foreach($manufacturedMilkProducts as $manufacturedMilkProduct)
+                <option value="{{$manufacturedMilkProduct->id}}">{{$manufacturedMilkProduct->id.'|'.$manufacturedMilkProduct->milk_product->product_name.'|'.$manufacturedMilkProduct->manufacture_date}}</option>
+                @endforeach
         </select>
-        @error('production_milk_id') <span class="text-danger">{{ $message }}</span> @enderror
+        @error('manufacturer_product_id') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
 
     
@@ -34,14 +44,14 @@
            
         <!-- this is used to list the farm labors-->
         <select name="user_id" id="user_id" class="form-control" required>
+
                 <option value="">Select Farm Labor</option>
              
-            @foreach($farm_labors as $farm_labor)
-
+                @foreach($farm_labors as $farm_labor)
                 <option value="{{$farm_labor->id}}">{{$farm_labor->name}}</option>
-            @endforeach
+                @endforeach
 
-            </select>
+        </select>
 
             @error('user_id') <span class="text-danger">{{ $message }}</span> @enderror
 
@@ -79,7 +89,7 @@
        
         <!--this is used to mention the reason foir the disposal-->
         <div class="form-group">
-            <label for="reason_for_dispose">Reason For Milk Product Disposal</label>
+            <label for="reason_for_dispose">Reason For Milk Disposal</label>
             <textarea class="form-control" id="reason_for_dispose" name="reason_for_dispose" rows="4" placeholder="Enter the reson for the disposal"></textarea>
             @error('reason_for_dispose') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
@@ -87,7 +97,7 @@
         </fieldset>
 
         
-        <button type="submit" class="btn btn-success mt-3">Dispose Milk Product Record</button>
+        <button type="submit" class="btn btn-success mt-3">Dispose Record</button>
     </form>
 
 </div>
@@ -103,13 +113,13 @@
 <script>
 
 $(document).ready(function () {
-    $('#production_milk_id').on('change', function () {
-        var productionMilkId = $(this).val(); // Get the selected calf ID
+    $('#manufacturer_product_id').on('change', function () {
+        var manufacturerProductId = $(this).val(); // Get the selected calf ID
      
-        if (productionMilkId) {
+        if (manufacturerProductId) {
             // Send an AJAX request to fetch calving details
             $.ajax({
-                url: `/milk_dispose/${productionMilkId}/details`,
+                url: `/dispose_milk_products/${manufacturerProductId}/details`,
                 method: 'GET',
                 dataType: 'json',
                 success: function (data) {

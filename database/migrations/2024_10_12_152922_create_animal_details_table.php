@@ -20,6 +20,9 @@ return new class extends Migration
             $table->string('animal_name');
             $table->string('ear_tag');
 
+            $table->enum('status', ['alive', 'deceased'])->default('alive');
+            $table->date('death_date')->nullable();
+
             $table->foreignId('sire_id')->nullable()->constrained('animal_details')->nullOnDelete();
             $table->foreignId('dam_id')->nullable()->constrained('animal_details')->nullOnDelete();
 

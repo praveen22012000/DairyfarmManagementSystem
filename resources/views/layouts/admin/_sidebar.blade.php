@@ -55,15 +55,34 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{{route('manufacture_product.create')}}">
+                <a class="nav-link" href="{{route('manufacture_product.index')}}">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Manufacture Products</span></a>
             </li>
+
 
             <li class="nav-item">
                 <a class="nav-link" href="{{route('milk_product.list')}}">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Milk Products</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('dispose_milk_product.index')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Dispose Milk Products</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('feed_vaccine.create')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Feed & Vaccine</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('purchase_items.create')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Purchase Details</span></a>
             </li>
 
 

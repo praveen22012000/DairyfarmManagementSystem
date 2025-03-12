@@ -82,6 +82,7 @@ class DisposeMilkController extends Controller
 
             ]);
 
+            return redirect()->route('dispose_milk.list')->with('success', 'Dispose Milk record saved successfully');
 
     }
 
@@ -112,19 +113,23 @@ class DisposeMilkController extends Controller
 
     public function update(Request $request,DisposeMilk $disposeMilk)
     {
-      
+ 
         $data=$request->validate([
 
-            'production_milk_id'=>"required|exists:production_milks,id,$disposeMilk->id",
+            'production_milk_id'=>"required|exists:production_milks,id",
             'user_id'=>"required|exists:users,id",
             'date'=>'required',
             'dispose_quantity'=>'required|numeric|min:0',
             'reason_for_dispose'=>'required'
 
         ]);
+      
+        $new_consumed_quantity =$disposeMilk->production_milk->stock_quantity+$disposeMilk->dispose_quantity-$request->dispose_quantity;
 
-    
-     
+        
+        $disposeMilk->production_milk->update([
+            'stock_quantity'=>$new_consumed_quantity
+        ]);
     
         $disposeMilk->update($data);
 
@@ -140,13 +145,14 @@ class DisposeMilkController extends Controller
 
     public function getStockQuantityDetails($productionMilkId)
     {
-        // Fetch the calf's details along with the parent cow (dam)
+      
+        //Fetch the milk production details of the particular milk item
         $productionMilk = ProductionMilk::find($productionMilkId);
 
 
 
         if ( $productionMilk) {
-            // Return the calving details as JSON
+            
             return response()->json([
                 'stock_quantity' => $productionMilk->stock_quantity, // Calving date equals birthdate
                

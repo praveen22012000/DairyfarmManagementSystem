@@ -49,6 +49,13 @@ class User extends Authenticatable
         ];
     }
 
+
+    public function dispose_milk_product()
+    {
+        return $this->hasMany(DisposeMilk::class,'user_id');
+    }
+
+
     public function manufacture_product()
     {
         return $this->hasMany(ManufacturerProduct::class,'user_id');

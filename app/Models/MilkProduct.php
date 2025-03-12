@@ -24,4 +24,14 @@ class MilkProduct extends Model
     {
         return $this->hasMany(ingredient::class,'product_id');
     }
+
+    public function manufacturer_product()
+    {
+        return $this->hasMany(ManufacturerProduct::class,'product_id');
+    }
+
+    public function manufacturer_product_inventory()
+    {
+        return $this->hasMany(ManufacturerProductInventory::class,'product_id');
+    }
 }

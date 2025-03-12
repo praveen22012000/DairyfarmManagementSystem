@@ -40,7 +40,7 @@ class ProductionSupplyDetailsController extends Controller
     }
 
     public function store(Request $request)
-{
+    {
     $request->validate([
         'date' => 'required|date',
         'time' => 'required',
@@ -62,7 +62,8 @@ class ProductionSupplyDetailsController extends Controller
     $errors = [];
 
     // First, check if any row exceeds stock quantity
-    foreach ($productionMilkIds as $index => $productionMilkId) {
+    foreach ($productionMilkIds as $index => $productionMilkId) 
+    {
         $stockMilk = ProductionMilk::find($productionMilkId);
 
         if ($stockMilk && $consumedQuantities[$index] > $stockMilk->stock_quantity) {
@@ -73,7 +74,8 @@ class ProductionSupplyDetailsController extends Controller
     }
 
    
-    if (!empty($errors)) {
+    if (!empty($errors)) 
+    {
         return redirect()->back()->withErrors($errors)->withInput();
     }
     
@@ -193,13 +195,81 @@ class ProductionSupplyDetailsController extends Controller
     {
         $milkProducts=MilkProduct::all();
 
+        $ProductionsMilk = ProductionMilk::where('stock_quantity', '>', 0)->get();
+
         // Ensure the relationship is loaded
         $productionSupplyDetails->load('production_milk', 'milk_product', 'production_supply');
 
-    
-
-        return view('supply_manufacturing_milk.edit',['milkProducts'=>$milkProducts,'productionSupplyDetails'=>$productionSupplyDetails]);
+        
+        return view('supply_manufacturing_milk.edit',['milkProducts'=>$milkProducts,'productionSupplyDetails'=>$productionSupplyDetails,'ProductionsMilk'=>$ProductionsMilk]);
     }
+
+    public function update(ProductionSupplyDetails $productionSupplyDetails,Request $request)
+    {
+
+        $request->validate([
+            'date' => 'required|date',
+            'time' => 'required',
+            'entered_by' => 'required|string',
+            'production_milk_id' => 'required|exists:production_milks,id',
+            'consumed_quantity' => 'required|numeric|min:0',
+            'product_id' => 'required|exists:milk_products,id',
+        ]);
+
+        $errors = [];
+
+
+
+      
+        if ($request->consumed_quantity > $productionSupplyDetails->production_milk->stock_quantity) 
+            {
+
+             
+            //  $invalidRows[] = $index + 1; // Store row number for error message
+            $errors["consumed_quantity"] = "The entered quantity  exceeds the available stock quantity .";
+             
+            }
+
+          if (!empty($errors)) 
+          {
+            return redirect()->back()->withErrors($errors)->withInput();
+          }
+
+
+
+
+          $productionSupplyDetails->update([
+            'date' => $request->date,
+            'time' => $request->time,
+            'entered_by' => $request->entered_by,
+        ]);
+
+        $new_consumed_quantity =$productionSupplyDetails->production_milk->stock_quantity+$productionSupplyDetails->consumed_quantity-$request->consumed_quantity;
+
+        
+        $productionSupplyDetails->update([
+            'production_milk_id' => $request->production_milk_id,
+            'production_supply_id' => $productionSupplyDetails->production_supply_id,
+            'product_id' => $request->product_id,
+            'consumed_quantity' => $request->consumed_quantity,
+        ]);
+
+        $productionSupplyDetails->production_milk->update([
+            'stock_quantity'=>$new_consumed_quantity
+        ]);
+
+        return redirect()->route('milk_allocated_for_manufacturing.index')->with('success', 'Milk consumption record saved successfully.');
+    }
+
+    public function destroy(ProductionSupplyDetails $productionSupplyDetails)
+    {
+        $productionSupplyDetails->delete();
+
+        return redirect()->route('milk_allocated_for_manufacturing.index');
+    }
+
 
     
 }
+
+
