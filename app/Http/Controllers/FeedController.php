@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\FeedVaccineDetails;
+use App\Models\Feed;
 
-class FeedVaccineDetailsController extends Controller
+class FeedController extends Controller
 {
+    //
     //
 
     public function index()
     {
-        $feedVaccineDetails=FeedVaccineDetails::all();
+        $feedVaccineDetails=Feed::all();
 
         return view('feed_details.index',['feedVaccineDetails'=>$feedVaccineDetails]);
     }
@@ -31,7 +32,7 @@ class FeedVaccineDetailsController extends Controller
             'unit_price'=>'required'
         ]);
 
-        FeedVaccineDetails::create([
+        Feed::create([
             'feed_name'=>$request->feed_name,
             'manufacturer'=>$request->manufacturer,
         

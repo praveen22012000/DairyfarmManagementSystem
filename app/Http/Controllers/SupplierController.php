@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Models\FeedVaccineDetails;
+use App\Models\Feed;
 use App\Models\Vaccine;
 use App\Models\Supplier;
 use App\Models\SupplierFeed;
@@ -15,13 +15,13 @@ class SupplierController extends Controller
     //
     public function index()
     {
-        $suppliers=Suppliers::all();
+        $suppliers=Supplier::all();
 
         return view('supplier_feed_vaccine_details.index',['suppliers'=>$suppliers]);
     }
     public function create()
     {
-        $feeds=FeedVaccineDetails::all();
+        $feeds=Feed::all();
         $vaccines=Vaccine::all();
 
         
@@ -38,7 +38,7 @@ class SupplierController extends Controller
         'address'=>'required',
 
         'feeds' => 'nullable|array|required_without:vaccines', // Ensure feeds is an array (if provided)
-        'feeds.*' => 'exists:feed_vaccine_details,id', // Ensure each feed ID exists in the feeds table
+        'feeds.*' => 'exists:feeds,id', // Ensure each feed ID exists in the feeds table
         'vaccines' => 'nullable|array|required_without:feeds', // Ensure vaccines is an array (if provided)
         'vaccines.*' => 'exists:vaccines,id', // Ensure each vaccine ID exists in the vaccines table
     ]);

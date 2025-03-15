@@ -87,7 +87,7 @@
 
             <!--supplier feed vaccine details -->
             <li class="nav-item">
-                <a class="nav-link" href="{{route('supply_feed_vaccine.create')}}">
+                <a class="nav-link" href="{{route('supply_feed_vaccine.list')}}">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Supply Feed Vaccine Details</span></a>
             </li>

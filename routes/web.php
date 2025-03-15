@@ -14,7 +14,7 @@ use App\Http\Controllers\MilkProductController;
 use App\Http\Controllers\ManufacturerProductController;
 use App\Http\Controllers\DisposeMilkController;
 use App\Http\Controllers\DisposeMilkProductsController;
-use App\Http\Controllers\FeedVaccineDetailsController;
+use App\Http\Controllers\FeedController;
 use App\Http\Controllers\PurchaseItemsController;
 use App\Http\Controllers\VaccineController;
 use App\Http\Controllers\SupplierController;
@@ -236,9 +236,9 @@ Route::middleware('auth')->prefix('dispose_milk_products')->group(function () {
 
 //this below group is used to manage the feed  details only.just insert the feed details to feed table
 Route::middleware('auth')->prefix('feed_details')->group(function () {
-    Route::get('/', [FeedVaccineDetailsController::class, 'index'])->name('feed_vaccine.list');
-    Route::get('/create', [FeedVaccineDetailsController::class, 'create'])->name('feed_vaccine.create');
-    Route::post('/store', [FeedVaccineDetailsController::class, 'store'])->name('feed_vaccine.store');
+    Route::get('/', [FeedController::class, 'index'])->name('feed_vaccine.list');
+    Route::get('/create', [FeedController::class, 'create'])->name('feed_vaccine.create');
+    Route::post('/store', [FeedController::class, 'store'])->name('feed_vaccine.store');
     
 
     Route::group(['prefix'=>'{productionmilk}'],function(){
@@ -278,7 +278,7 @@ Route::middleware('auth')->prefix('vaccine_details')->group(function () {
 //this below group is used to manage the supplier_feed_vaccine_details.
 // this means it handles the feed and vaccine details prodvided by the supplier
 Route::middleware('auth')->prefix('supply_feed_vaccine_details')->group(function () {
-    Route::get('/', [VaccineController::class, 'index'])->name('vaccine.list');
+    Route::get('/', [SupplierController::class, 'index'])->name('supply_feed_vaccine.list');
     Route::get('/create', [SupplierController::class, 'create'])->name('supply_feed_vaccine.create');
     Route::post('/store', [SupplierController::class, 'store'])->name('supply_feed_vaccine.store');
     

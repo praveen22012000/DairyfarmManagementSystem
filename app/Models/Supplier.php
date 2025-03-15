@@ -13,7 +13,7 @@ class Supplier extends Model
 
     public function feeds()
     {
-        return $this->belongsToMany(FeedVaccineDetails::class, 'supplier_feeds');
+        return $this->belongsToMany(Feed::class, 'supplier_feeds');
     }
 
     // Relationship with vaccines
