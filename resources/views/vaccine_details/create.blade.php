@@ -6,7 +6,7 @@
 
     <br>
 
-    <form  method="POST" enctype="multipart/form-data" action="{{route('feed_vaccine.store')}}">
+    <form  method="POST" enctype="multipart/form-data" action="{{route('vaccine.store')}}">
 
     @csrf
     
@@ -21,12 +21,12 @@
 @endif
 
 
-    <h1>Feed  & Vaccine Registration Form</h1>     
+    <h1>Vaccine  Registration Form</h1>     
         
         <!-- Name Field -->
         <div class="mb-4">
-            <label class="block text-gray-700 font-medium" for="name">Feed or Vaccine Name</label>
-            <input type="text" id="name" name="name" class="form-control rounded" value="{{ old('name') }}" 
+            <label class="block text-gray-700 font-medium" for="vaccine_name">Vaccine Name</label>
+            <input type="text" id="vaccine_name" name="vaccine_name" class="form-control rounded" value="{{ old('vaccine_name') }}" 
                    class="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300">
         </div>
 
@@ -38,19 +38,13 @@
         </div>
 
 
-        <!-- Type ENUM Dropdown -->
-        <div class="mb-4">
-            <label class="block text-gray-700 font-medium" for="type">Type</label>
-            <select id="type" name="type"  class="form-control" class="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300">
-                <option value="feed" {{ old('type') == 'feed' ? 'selected' : '' }}>Feed</option>
-                <option value="vaccine" {{ old('type') == 'vaccine' ? 'selected' : '' }}>Vaccine</option>
-            </select>
-        </div>
+        
 
         <!-- Unit Type ENUM Dropdown -->
         <div class="mb-4">
             <label class="block text-gray-700 font-medium" for="unit_type">Unit Type</label>
-            <select id="unit_type" name="unit_type" class="form-control" class="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300">
+            <select id="unit_type" name="unit_type" class="form-control" class="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300">\
+                <option value="">Select the Unit Type</option>
                 <option value="g" {{ old('unit_type') == 'g' ? 'selected' : '' }}>Grams (g)</option>
                 <option value="mg" {{ old('unit_type') == 'mg' ? 'selected' : '' }}>Milligrams (mg)</option>
                 <option value="kg" {{ old('unit_type') == 'kg' ? 'selected' : '' }}>Kilograms (kg)</option>

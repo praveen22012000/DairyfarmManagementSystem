@@ -74,13 +74,26 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{{route('feed_vaccine.create')}}">
+                <a class="nav-link" href="{{route('feed_vaccine.list')}}">
                     <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Feed & Vaccine</span></a>
+                    <span>Feed Details</span></a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{{route('purchase_items.create')}}">
+                <a class="nav-link" href="{{route('vaccine.list')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Vaccine Details</span></a>
+            </li>
+
+            <!--supplier feed vaccine details -->
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('supply_feed_vaccine.create')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Supply Feed Vaccine Details</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Purchase Details</span></a>
             </li>

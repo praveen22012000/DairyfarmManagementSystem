@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('feed_vaccine_details', function (Blueprint $table) {
+        Schema::create('suppliers', function (Blueprint $table) {
             $table->id();
 
-            $table->string('feed_name')->unique(); // e.g., "Dairy Feed", "Bovine Vaccine"
-            $table->string('manufacturer'); 
-            $table->string('unit_type');
-            $table->string('unit_price');
-          
+            $table->string('name');
+            $table->string('phone_no', 10);
+            $table->string('email')->unique();
+            $table->string('address');
+
 
             $table->timestamps();
         });
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('feed_vaccine_details');
+        Schema::dropIfExists('suppliers');
     }
 };

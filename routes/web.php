@@ -16,7 +16,8 @@ use App\Http\Controllers\DisposeMilkController;
 use App\Http\Controllers\DisposeMilkProductsController;
 use App\Http\Controllers\FeedVaccineDetailsController;
 use App\Http\Controllers\PurchaseItemsController;
-
+use App\Http\Controllers\VaccineController;
+use App\Http\Controllers\SupplierController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -80,10 +81,10 @@ Route::middleware('auth')->prefix('milk_production_details')->group(function () 
  
 });
 
-
+/*
 //this below group is used to manage purchase details
-Route::middleware('auth')->prefix('milk_production_details')->group(function () {
-    Route::get('/', [ProductionMilkController::class, 'index'])->name('production_milk.list');
+Route::middleware('auth')->prefix('feed_purchase_details')->group(function () {
+    //Route::get('/', [ProductionMilkController::class, 'index'])->name('production_milk.list');
     Route::get('/create', [PurchaseItemsController::class, 'create'])->name('purchase_items.create');
     Route::post('/store', [ProductionMilkController::class, 'store'])->name('production_milk.store');
     
@@ -99,7 +100,7 @@ Route::middleware('auth')->prefix('milk_production_details')->group(function () 
         Route::post('/destroy', [ProductionMilkController::class, 'destroy'])->name('production_milk.destroy');
     });
  
-});
+});*/
 
 
 
@@ -233,11 +234,53 @@ Route::middleware('auth')->prefix('dispose_milk_products')->group(function () {
 });
 
 
-//this below group is used to manage the feed and vaccine details
-Route::middleware('auth')->prefix('food_vaccine_details')->group(function () {
-    Route::get('/', [ProductionMilkController::class, 'index'])->name('production_milk.list');
+//this below group is used to manage the feed  details only.just insert the feed details to feed table
+Route::middleware('auth')->prefix('feed_details')->group(function () {
+    Route::get('/', [FeedVaccineDetailsController::class, 'index'])->name('feed_vaccine.list');
     Route::get('/create', [FeedVaccineDetailsController::class, 'create'])->name('feed_vaccine.create');
     Route::post('/store', [FeedVaccineDetailsController::class, 'store'])->name('feed_vaccine.store');
+    
+
+    Route::group(['prefix'=>'{productionmilk}'],function(){
+       
+        Route::get('/edit', [ProductionMilkController::class, 'edit'])->name('production_milk.edit');
+        Route::post('/update', [ProductionMilkController::class, 'update'])->name('production_milk.update');
+
+        Route::get('/view', [ProductionMilkController::class, 'view'])->name('production_milk.view');
+
+      
+        Route::post('/destroy', [ProductionMilkController::class, 'destroy'])->name('production_milk.destroy');
+    });
+ 
+});
+
+//this below group is used to manage the vaccine details only.just insert the vaccine details to the vaccine table
+Route::middleware('auth')->prefix('vaccine_details')->group(function () {
+    Route::get('/', [VaccineController::class, 'index'])->name('vaccine.list');
+    Route::get('/create', [VaccineController::class, 'create'])->name('vaccine.create');
+    Route::post('/store', [VaccineController::class, 'store'])->name('vaccine.store');
+    
+
+    Route::group(['prefix'=>'{productionmilk}'],function(){
+       
+        Route::get('/edit', [ProductionMilkController::class, 'edit'])->name('production_milk.edit');
+        Route::post('/update', [ProductionMilkController::class, 'update'])->name('production_milk.update');
+
+        Route::get('/view', [ProductionMilkController::class, 'view'])->name('production_milk.view');
+
+      
+        Route::post('/destroy', [ProductionMilkController::class, 'destroy'])->name('production_milk.destroy');
+    });
+ 
+});
+
+
+//this below group is used to manage the supplier_feed_vaccine_details.
+// this means it handles the feed and vaccine details prodvided by the supplier
+Route::middleware('auth')->prefix('supply_feed_vaccine_details')->group(function () {
+    Route::get('/', [VaccineController::class, 'index'])->name('vaccine.list');
+    Route::get('/create', [SupplierController::class, 'create'])->name('supply_feed_vaccine.create');
+    Route::post('/store', [SupplierController::class, 'store'])->name('supply_feed_vaccine.store');
     
 
     Route::group(['prefix'=>'{productionmilk}'],function(){

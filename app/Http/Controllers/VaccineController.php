@@ -3,36 +3,36 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\FeedVaccineDetails;
+use App\Models\Vaccine;
 
-class FeedVaccineDetailsController extends Controller
+class VaccineController extends Controller
 {
     //
 
     public function index()
     {
-        $feedVaccineDetails=FeedVaccineDetails::all();
+        $vaccines=Vaccine::all();
 
-        return view('feed_details.index',['feedVaccineDetails'=>$feedVaccineDetails]);
+        return view('vaccine_details.index',['vaccines'=>$vaccines]);
     }
 
     public function create()
     {
-        return view('feed_details.create');
+        return view('vaccine_details.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'feed_name'=>'required',
+            'vaccine_name'=>'required',
             'manufacturer'=>'required',
           
             'unit_type'=>'required',
             'unit_price'=>'required'
         ]);
 
-        FeedVaccineDetails::create([
-            'feed_name'=>$request->feed_name,
+        Vaccine::create([
+            'vaccine_name'=>$request->vaccine_name,
             'manufacturer'=>$request->manufacturer,
         
             'unit_type'=>$request->unit_type,
