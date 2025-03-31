@@ -39,6 +39,36 @@ class VaccineController extends Controller
             'unit_price'=>$request->unit_price
         ]);
 
+        return redirect()->route('vaccine.list')->with('success', 'Vaccine record created successfully!');
+    }
+
+    public function edit(Vaccine $vaccine)
+    {
+        return view('vaccine_details.edit',['vaccine'=>$vaccine]);
+    }
+
+    public function update(Request $request,Vaccine $vaccine)
+    {
+        $data=$request->validate([
+            'vaccine_name'=>'required',
+            'manufacturer'=>'required',
+          
+            'unit_type'=>'required',
+            'unit_price'=>'required'
+        ]);
+
+        $vaccine->update($data);
+
+
+        return redirect()->route('vaccine.list')->with('success', 'Vaccine record updated successfully!');
+
+    }
+
+    public function destroy(Vaccine $vaccine)
+    {
+        $vaccine->delete();
+
+        return redirect()->route('vaccine.list');
 
     }
 }

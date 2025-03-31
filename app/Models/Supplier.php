@@ -22,4 +22,9 @@ class Supplier extends Model
         return $this->belongsToMany(Vaccine::class, 'supplier_vaccines');
     }
 
+    public function purchase_feed()
+    {
+        return $this->hasMany(PurchaseFeed::class,'supplier_id');
+    }
+
 }

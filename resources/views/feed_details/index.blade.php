@@ -12,7 +12,7 @@
                 <div class="float-right">
 
                     <a class="btn btn-success btn-md btn-rounded" href="{{route('feed_vaccine.create')}}">
-                        <i class="mdi mdi-plus-circle mdi-18px"></i> Add a Feed And Vaccine Record
+                        <i class="mdi mdi-plus-circle mdi-18px"></i> Add a Feed  Record
                     </a>
                
                 </div>
@@ -37,25 +37,25 @@
                       
                     </tr>
                 </thead>
-                @foreach($feedVaccineDetails as $feedVaccineDetail)
+                @foreach($feedDetails as $feedDetail)
               
                     <tr>
                       
 
-                        <td>{{$feedVaccineDetail->id}}</td>
-                        <td>{{$feedVaccineDetail->feed_name}}</td>
-                        <td>{{$feedVaccineDetail->manufacturer}}</td>
+                        <td>{{$feedDetail->id}}</td>
+                        <td>{{$feedDetail->feed_name}}</td>
+                        <td>{{$feedDetail->manufacturer}}</td>
                     
-                        <td>{{$feedVaccineDetail->unit_type}}</td>
-                        <td>{{$feedVaccineDetail->unit_price}}</td>
+                        <td>{{$feedDetail->unit_type}}</td>
+                        <td>{{$feedDetail->unit_price}}</td>
                        
                  
 
                         <td>
 
-                        <a href="" class="btn btn-info">View</a>
-                        <a href="" class="btn btn-primary">Edit</a>
-                        <button class="btn btn-danger" onclick="">Delete</button>
+                        <a href="{{route('feed_vaccine.view',$feedDetail->id)}}" class="btn btn-info">View</a>
+                        <a href="{{route('feed_vaccine.edit',$feedDetail->id)}}" class="btn btn-primary">Edit</a>
+                        <button class="btn btn-danger" onclick="confirmDelete({{$feedDetail->id}})">Delete</button>
                     
                         </td>
                     </tr>
@@ -91,10 +91,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-   function confirmDelete(manufacturerProductId) {
+   function confirmDelete(feedDetailId) {
         Swal.fire({
             title: "Are you sure?",
-            text: "This will permanently delete the Manufacture milk Product record.",
+            text: "This will permanently delete the Feed record.",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#d33",
@@ -104,7 +104,7 @@
             if (result.isConfirmed) {
                 // Set form action dynamically based on animal ID
                 let deleteForm = document.getElementById("deleteForm");
-                deleteForm.action = `/milk_products_manufacture_details/${manufacturerProductId}/destroy`;
+                deleteForm.action = `/feed_details/${feedDetailId}/destroy`;
                 deleteForm.submit();
             }
         });

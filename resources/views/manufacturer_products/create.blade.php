@@ -89,25 +89,25 @@
                                     >{{ $milkProduct->product_name }}</option>
                                             @endforeach
                                 </select>
-                            @error('product_id.*') <span class="text-danger">{{ $message }}</span> @enderror
+                            @error("product_id.$i") <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
                         <!-- MilkDetails (Smaller Width) -->
                         <td>
                             <input type="number" class="form-control" name="quantity[]" value="{{ $oldManufacturedQuantities[$i] ?? '' }} "  style="width: 100px;">
-                            @error('quantity.*') <span class="text-danger">{{ $message }}</span> @enderror  
+                            @error("quantity.$i") <span class="text-danger">{{ $message }}</span> @enderror  
                         </td>
 
                         <!-- Stock Quantity (Smaller Width) -->
                         <td>
                             <input type="date" name="manufacture_date[]" value="{{ $oldManufactureDate[$i] ?? '' }}" class="border border-gray-400 rounded-lg px-2 py-1 w-28 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                            @error('manufacture_date.*') <span class="text-danger">{{ $message }}</span> @enderror
+                            @error("manufacture_date.$i") <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
                         <!-- Quantity (Smaller Width) -->
                         <td>
                             <input type="date" name="expire_date[]" value="{{ $oldExpireDate[$i] ?? '' }}" class="border border-gray-400 rounded-lg px-2 py-1 w-28 focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                            @error('expire_date.*') <span class="text-danger">{{ $message }}</span> @enderror
+                            @error("expire_date.$i") <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
                         <td>
@@ -119,7 +119,7 @@
                                     >{{$farm_labor->name}}</option>
                                         @endforeach
                             </select>
-                            @error('user_id.*') <span class="text-danger">{{ $message }}</span> @enderror
+                            @error("user_id.$i") <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
 
@@ -229,6 +229,14 @@ $(document).ready(function () {
             });
         });
     }
+
+      // Trigger update when a milk item is selected
+      $(document).on("change", "select[name='product_id[]']", function () {
+        updateMilkItemOptions();
+        updateAddButtonVisibility();
+
+       
+    });
 
    
     // Check for errors on page load

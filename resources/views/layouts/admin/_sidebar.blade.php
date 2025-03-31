@@ -92,18 +92,37 @@
                     <span>Supply Feed Vaccine Details</span></a>
             </li>
 
+
+
             <li class="nav-item">
-                <a class="nav-link" href="">
+                <a class="nav-link" href="{{route('purchase_feed_items.list')}}">
                     <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Purchase Details</span></a>
+                    <span>Purchase Feed Items</span></a>
+            </li>
+            
+         
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('dispose_feed_items.list')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Dispose Feed Items</span></a>
             </li>
 
 
             <li class="nav-item">
-                <a class="nav-link" href="{{route('animal_calvings.list')}}">
+                <a class="nav-link" href="{{route('purchase_vaccine_items.list')}}">
                     <i class="fas fa-fw fa-chart-area"></i>
-                    <span>AnimalCalvings</span></a>
+                    <span>Purchase Vaccine Items</span></a>
             </li>
+            
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('dispose_vaccine_items.list')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Dispose Vaccine Items</span></a>
+            </li>
+
+
+           
 
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('users.list') }}">

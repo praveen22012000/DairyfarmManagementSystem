@@ -18,6 +18,12 @@ use App\Http\Controllers\FeedController;
 use App\Http\Controllers\PurchaseItemsController;
 use App\Http\Controllers\VaccineController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\PurchaseFeedItemsController;
+use App\Http\Controllers\DisposeFeedItemsController;
+use App\Http\Controllers\PurchaseVaccineItemsController;
+use App\Http\Controllers\DisposeVaccineItemsController;
+
+
 
 use Illuminate\Support\Facades\Route;
 
@@ -241,15 +247,15 @@ Route::middleware('auth')->prefix('feed_details')->group(function () {
     Route::post('/store', [FeedController::class, 'store'])->name('feed_vaccine.store');
     
 
-    Route::group(['prefix'=>'{productionmilk}'],function(){
+    Route::group(['prefix'=>'{feed}'],function(){
        
-        Route::get('/edit', [ProductionMilkController::class, 'edit'])->name('production_milk.edit');
-        Route::post('/update', [ProductionMilkController::class, 'update'])->name('production_milk.update');
+        Route::get('/edit', [FeedController::class, 'edit'])->name('feed_vaccine.edit');
+        Route::post('/update', [FeedController::class, 'update'])->name('feed_vaccine.update');
 
-        Route::get('/view', [ProductionMilkController::class, 'view'])->name('production_milk.view');
+        Route::get('/view', [FeedController::class, 'view'])->name('feed_vaccine.view');
 
       
-        Route::post('/destroy', [ProductionMilkController::class, 'destroy'])->name('production_milk.destroy');
+        Route::post('/destroy', [FeedController::class, 'destroy'])->name('feed_vaccine.destroy');
     });
  
 });
@@ -261,15 +267,15 @@ Route::middleware('auth')->prefix('vaccine_details')->group(function () {
     Route::post('/store', [VaccineController::class, 'store'])->name('vaccine.store');
     
 
-    Route::group(['prefix'=>'{productionmilk}'],function(){
+    Route::group(['prefix'=>'{vaccine}'],function(){
        
-        Route::get('/edit', [ProductionMilkController::class, 'edit'])->name('production_milk.edit');
-        Route::post('/update', [ProductionMilkController::class, 'update'])->name('production_milk.update');
+        Route::get('/edit', [VaccineController::class, 'edit'])->name('vaccine.edit');
+        Route::post('/update', [VaccineController::class, 'update'])->name('vaccine.update');
 
-        Route::get('/view', [ProductionMilkController::class, 'view'])->name('production_milk.view');
+        Route::get('/view', [VaccineController::class, 'view'])->name('vaccine.view');
 
       
-        Route::post('/destroy', [ProductionMilkController::class, 'destroy'])->name('production_milk.destroy');
+        Route::post('/destroy', [VaccineController::class, 'destroy'])->name('vaccine.destroy');
     });
  
 });
@@ -283,9 +289,9 @@ Route::middleware('auth')->prefix('supply_feed_vaccine_details')->group(function
     Route::post('/store', [SupplierController::class, 'store'])->name('supply_feed_vaccine.store');
     
 
-    Route::group(['prefix'=>'{productionmilk}'],function(){
+    Route::group(['prefix'=>'{supplier}'],function(){
        
-        Route::get('/edit', [ProductionMilkController::class, 'edit'])->name('production_milk.edit');
+        Route::get('/edit', [SupplierController::class, 'edit'])->name('supply_feed_vaccine.edit');
         Route::post('/update', [ProductionMilkController::class, 'update'])->name('production_milk.update');
 
         Route::get('/view', [ProductionMilkController::class, 'view'])->name('production_milk.view');
@@ -297,8 +303,128 @@ Route::middleware('auth')->prefix('supply_feed_vaccine_details')->group(function
 });
 
 
+//this below group is used to manage purchase feed details
+Route::middleware('auth')->prefix('purchase_feed_items')->group(function () {
+
+   Route::get('/', [PurchaseFeedItemsController::class, 'index'])->name('purchase_feed_items.list');
+  
+    Route::get('/create', [PurchaseFeedItemsController::class, 'create'])->name('purchase_feed_items.create');
+    Route::post('/store', [PurchaseFeedItemsController::class, 'store'])->name('purchase_feed_items.store');
+
+    Route::group(['prefix'=>'{purchasefeeditem}'],function(){
+       
+        Route::get('/edit', [PurchaseFeedItemsController::class, 'edit'])->name('purchase_feed_items.edit');
+        Route::post('/update', [PurchaseFeedItemsController::class, 'update'])->name('purchase_feed_items.update');
+
+        Route::get('/view', [PurchaseFeedItemsController::class, 'view'])->name('purchase_feed_items.view');
+        Route::post('/destroy', [PurchaseFeedItemsController::class, 'destroy'])->name('purchase_feed_items.destroy');
+
+      
+    });
 
 
+   
+ 
+});
+
+//this below group is used to manage dispose feed item details
+Route::middleware('auth')->prefix('dispose_feed_items')->group(function () {
+
+    Route::get('/', [DisposeFeedItemsController::class, 'index'])->name('dispose_feed_items.list');
+   
+     Route::get('/create', [DisposeFeedItemsController::class, 'create'])->name('dispose_feed_items.create');
+     Route::post('/store', [DisposeFeedItemsController::class, 'store'])->name('dispose_feed_items.store');
+ 
+     Route::group(['prefix'=>'{disposefeeditem}'],function(){
+        
+         Route::get('/edit', [DisposeFeedItemsController::class, 'edit'])->name('dispose_feed_items.edit');
+         Route::post('/update', [DisposeFeedItemsController::class, 'update'])->name('dispose_feed_items.update');
+ 
+         Route::get('/view', [DisposeFeedItemsController::class, 'view'])->name('dispose_feed_items.view');
+         Route::post('/destroy', [DisposeFeedItemsController::class, 'destroy'])->name('dispose_feed_items.destroy');
+ 
+       
+     });
+ 
+ 
+    
+  
+ });
+
+
+ //this below group is used to manage purchase vaccine details
+Route::middleware('auth')->prefix('purchase_vaccine_items')->group(function () {
+
+    Route::get('/', [PurchaseVaccineItemsController::class, 'index'])->name('purchase_vaccine_items.list');
+   
+     Route::get('/create', [PurchaseVaccineItemsController::class, 'create'])->name('purchase_vaccine_items.create');
+     Route::post('/store', [PurchaseVaccineItemsController::class, 'store'])->name('purchase_vaccine_items.store');
+ 
+     Route::group(['prefix'=>'{purchasevaccineitem}'],function(){
+        
+         Route::get('/edit', [PurchaseVaccineItemsController::class, 'edit'])->name('purchase_vaccine_items.edit');
+         Route::post('/update', [PurchaseVaccineItemsController::class, 'update'])->name('purchase_vaccine_items.update');
+ 
+         Route::get('/view', [PurchaseVaccineItemsController::class, 'view'])->name('purchase_vaccine_items.view');
+         Route::post('/destroy', [PurchaseVaccineItemsController::class, 'destroy'])->name('purchase_vaccine_items.destroy');
+ 
+       
+     });
+ 
+ 
+    
+  
+ });
+
+
+ //this below group is used to manage dispose vaccine item details
+Route::middleware('auth')->prefix('dispose_vaccine_items')->group(function () {
+
+    Route::get('/', [DisposeVaccineItemsController::class, 'index'])->name('dispose_vaccine_items.list');
+   
+     Route::get('/create', [DisposeVaccineItemsController::class, 'create'])->name('dispose_vaccine_items.create');
+     Route::post('/store', [DisposeVaccineItemsController::class, 'store'])->name('dispose_vaccine_items.store');
+ 
+     Route::group(['prefix'=>'{disposevaccineitem}'],function(){
+        
+        Route::get('/edit', [DisposeVaccineItemsController::class, 'edit'])->name('dispose_vaccine_items.edit');
+        Route::post('/update', [DisposeVaccineItemsController::class, 'update'])->name('dispose_vaccine_items.update');
+ 
+        Route::get('/view', [DisposeVaccineItemsController::class, 'view'])->name('dispose_vaccine_items.view');
+        Route::post('/destroy', [DisposeVaccineItemsController::class, 'destroy'])->name('dispose_vaccine_items.destroy');
+ 
+       
+     });
+ 
+ 
+    
+  
+ });
+
+
+  //this below group is used to manage feed consumption details
+Route::middleware('auth')->prefix('dispose_vaccine_items')->group(function () {
+
+   //Route::get('/', [DisposeVaccineItemsController::class, 'index'])->name('dispose_vaccine_items.list');
+   
+     Route::get('/create', [FeedConsumeItemsController::class, 'create'])->name('feed_consume_items.create');
+     Route::post('/store', [DisposeVaccineItemsController::class, 'store'])->name('dispose_vaccine_items.store');
+ 
+     Route::group(['prefix'=>'{disposevaccineitem}'],function(){
+        
+        Route::get('/edit', [DisposeVaccineItemsController::class, 'edit'])->name('dispose_vaccine_items.edit');
+        Route::post('/update', [DisposeVaccineItemsController::class, 'update'])->name('dispose_vaccine_items.update');
+ 
+        Route::get('/view', [DisposeVaccineItemsController::class, 'view'])->name('dispose_vaccine_items.view');
+        Route::post('/destroy', [DisposeVaccineItemsController::class, 'destroy'])->name('dispose_vaccine_items.destroy');
+ 
+       
+     });
+ 
+ 
+    
+  
+ });
 
 
 

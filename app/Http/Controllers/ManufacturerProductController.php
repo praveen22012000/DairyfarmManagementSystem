@@ -35,8 +35,7 @@ class ManufacturerProductController extends Controller
 
         $farm_labors=User::where('role_id',$farm_labor_id)->get();
 
-     
-
+    
         return view('manufacturer_products.create',['milkProducts'=>$milkProducts,'farm_labors'=>$farm_labors]);
 
 

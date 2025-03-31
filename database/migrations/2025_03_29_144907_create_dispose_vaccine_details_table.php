@@ -11,10 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('purchases', function (Blueprint $table) {
+        Schema::create('dispose_vaccine_details', function (Blueprint $table) {
             $table->id();
 
-            
+
+            $table->date('dispose_date');
+            $table->time('dispose_time');
+            $table->foreignId('user_id');
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->timestamps();
         });
@@ -25,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('purchases');
+        Schema::dropIfExists('dispose_vaccine_details');
     }
 };

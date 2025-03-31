@@ -13,9 +13,15 @@ class Feed extends Model
     protected $fillable=['feed_name','manufacturer','unit_type','unit_price'];
 
     
-    // Relationship with suppliers
-    public function suppliers()
+    
+
+    public function purchase_feed_items()
     {
-        return $this->belongsToMany(Supplier::class, 'supplier_feeds');
+        return $this->hasMany(PurchaseFeedItems::class,'feed_id');
+    }
+
+    public function feed_consume_items()
+    {
+        return $this->hasMany(FeedConsumeItems::class,'feed_id');
     }
 }

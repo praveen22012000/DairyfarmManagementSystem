@@ -58,7 +58,9 @@
                                 <option value="">Select the Product</option>
                                 @foreach($ProductionsMilk as $ProMilk)
                                     <option value="{{$ProMilk->id}}" 
-                                        {{ (isset($oldProductionMilkIds[$i]) && $oldProductionMilkIds[$i] == $ProMilk->id) ? 'selected' : '' }}>
+                                        {{ (isset($oldProductionMilkIds[$i]) && $oldProductionMilkIds[$i] == $ProMilk->id) ? 'selected' : '' }}
+                                        data-stock_quantity="{{ $ProMilk->stock_quantity }}"
+                                        >
                                         {{ $ProMilk->AnimalDetail->animal_name.' | '.$ProMilk->production_date.' | '.$ProMilk->shift }}
                                     </option>
                                 @endforeach
@@ -67,9 +69,7 @@
                         </td>
 
                         <td class="border-t px-6 py-4 text-left text-gray-800">
-                        <input type="number" class="form-control" name="quantity[]" value="{{ $oldManufacturedQuantities[$i] ?? '' }} "  style="width: 100px;">
-                        @error('quantity.*') <span class="text-danger">{{ $message }}</span> @enderror  
-
+                            <input type="number" class="form-control" name="quantity[]" value="{{ isset($oldProductionMilkIds[$i]) ? ($ProductionsMilk->firstWhere('id', $oldProductionMilkIds[$i])?->stock_quantity ?? '') : '' }}" style="width: 90px;" readonly>
                         </td>
 
                         <td class="border-t px-6 py-4">
@@ -118,8 +118,25 @@
 
 <script>
    $(document).ready(function () {
-    let today = new Date().toISOString().split("T")[0];
+   let today = new Date().toISOString().split("T")[0];
     $("#date").attr("max", today);
+
+
+      // Restore stock quantity on page load
+      $("select[name='production_milk_id[]']").each(function () {
+        let selectedOption = $(this).find(":selected");
+        let stockQuantity = selectedOption.data("stock_quantity");
+
+        $(this).closest("tr").find("input[name='quantity[]']").val(stockQuantity);
+    });
+
+    // Update stock quantity dynamically on selection change
+    $(document).on("change", "select[name='production_milk_id[]']", function () {
+        let selectedOption = $(this).find(":selected");
+        let stockQuantity = selectedOption.data("stock_quantity");
+
+        $(this).closest("tr").find("input[name='quantity[]']").val(stockQuantity);
+    });
 
 
 
@@ -226,27 +243,7 @@
         });
     }
 
-    // Function to update the stock quantity field
-    function updateStockQuantity(selectElement) {
-        let productionMilkId = $(selectElement).val();
-        let quantityField = $(selectElement).closest('tr').find('input[name="quantity[]"]');
-
-        if (productionMilkId) {
-            $.ajax({
-                url: '/get-stock-quantity/' + productionMilkId,
-                method: 'GET',
-                success: function(response) {
-                    quantityField.val(response.stock_quantity);
-                },
-                error: function() {
-                    quantityField.val(0);
-                }
-            });
-        } else {
-            quantityField.val('');
-        }
-    }
-
+    
     // Trigger update when a milk item is selected
     $(document).on("change", "select[name='production_milk_id[]']", function () {
         updateMilkItemOptions();

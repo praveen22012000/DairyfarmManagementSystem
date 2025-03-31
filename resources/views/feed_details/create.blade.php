@@ -25,7 +25,7 @@
         
         <!-- Name Field -->
         <div class="mb-4">
-            <label class="block text-gray-700 font-medium" for="feed_name">Feed or Vaccine Name</label>
+            <label class="block text-gray-700 font-medium" for="feed_name">Feed Name</label>
             <input type="text" id="feed_name" name="feed_name" class="form-control rounded" value="{{ old('feed_name') }}" 
                    class="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300">
         </div>

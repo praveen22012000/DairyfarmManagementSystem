@@ -26,11 +26,10 @@ class DisposeMilkProductsController extends Controller
 
       $farm_labore_id=Role::where('role_name','FarmLabore')->pluck('id');
 
-        $farm_labors=User::where('role_id',$farm_labore_id)->get();
+      $farm_labors=User::where('role_id',$farm_labore_id)->get();
 
 
-
-
+      
        return view('dispose_milk_products.create',['manufacturedMilkProducts'=>$manufacturedMilkProducts,'farm_labors'=>$farm_labors]);
     }
 
@@ -96,7 +95,7 @@ class DisposeMilkProductsController extends Controller
     public function edit(DisposeMilkProducts $disposeMilkProducts)
     {
 
-      $manufacturedMilkProducts=ManufacturerProduct::where('stock_quantity','>',0)->get();
+      $manufacturedMilkProducts=ManufacturerProduct::where('stock_quantity','>=',0)->get();
 
       $farm_labore_id=Role::where('role_name','FarmLabore')->pluck('id');
 
@@ -141,7 +140,7 @@ class DisposeMilkProductsController extends Controller
         return redirect()->route('dispose_milk_product.index');
     }
 
-    public function getStockQuantityDetails($manufacturerProductId)
+   public function getStockQuantityDetails($manufacturerProductId)
     {
        
         //fetch the milk product details of the particular product

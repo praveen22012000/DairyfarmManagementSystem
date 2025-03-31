@@ -61,6 +61,7 @@
                                 @foreach($ProductionsMilk as $ProMilk)
                                     <option value="{{$ProMilk->id}}" 
                                     {{ $productionSupplyDetails->production_milk_id==$ProMilk->id ? 'selected':''}}
+                                    data-stock_quantity="{{ $ProMilk->stock_quantity }}"
                                    >
                                         {{ $ProMilk->AnimalDetail->animal_name.' | '.$ProMilk->production_date.' | '.$ProMilk->shift }}
                                     </option>
@@ -69,7 +70,9 @@
                             @error("production_milk_id") <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
-                        <td class="border-t px-6 py-4 text-left text-gray-800"></td>
+                        <td class="border-t px-6 py-4 text-left text-gray-800">
+                            <input type="number" class="form-control" name="quantity" value="" style="width: 80px;" readonly>
+                        </td>
 
                         <td class="border-t px-6 py-4">
                             <input type="text" name="consumed_quantity" class="form-control rounded" value="{{$productionSupplyDetails-> consumed_quantity}}">
@@ -82,7 +85,8 @@
                                 @foreach($milkProducts as $milkProduct)
                                     <option value="{{$milkProduct->id}}"
                                     {{ $productionSupplyDetails->product_id==$milkProduct->id ? 'selected':''}}
-                                       >
+                                       
+                                    >
                                         {{ $milkProduct->product_name }}
                                     </option>
                                 @endforeach
@@ -111,7 +115,28 @@
       
 @section('js')
 
+<script>
+  $(document).ready(function () {
+    let today = new Date().toISOString().split("T")[0];
+    $("#date").attr("max", today);
 
+    // Update stock quantity when selection changes
+    $(document).on("change", "select[name='production_milk_id']", function () {
+        let selectedOption = $(this).find(":selected");
+        let stockQuantity = selectedOption.data("stock_quantity");
+        $(this).closest("tr").find("input[name='quantity']").val(stockQuantity);
+    });
+
+    // Initialize stock quantity on page load
+    let initialSelection = $("select[name='production_milk_id']").find(":selected");
+    if (initialSelection.length > 0) {
+        let stockQuantity = initialSelection.data("stock_quantity");
+        $("input[name='quantity']").val(stockQuantity);
+    }
+});
+
+
+</script>
 
 
 @endsection

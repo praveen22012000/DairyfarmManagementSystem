@@ -104,4 +104,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(DisposeMilk::class,'user_id');
     }
+
+    public function feed_consume_detail()
+    {
+        return $this->hasMany(FeedConsumeDetail::class,'user_id');
+    }
 }

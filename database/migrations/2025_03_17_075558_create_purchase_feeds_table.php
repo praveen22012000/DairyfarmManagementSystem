@@ -11,14 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('supplier_feeds', function (Blueprint $table) {
+        Schema::create('purchase_feeds', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('feed_id');
             $table->foreignId('supplier_id');
+            $table->date('purchase_date');
+            $table->string('pay_mode')->default('cash');
+            
+            $table->foreignId('user_id');
 
-            $table->foreign('feed_id')->references('id')->on('feed_vaccine_details')->onDelete('cascade');
             $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->timestamps();
         });
@@ -29,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('supplier_feeds');
+        Schema::dropIfExists('purchase_feeds');
     }
 };

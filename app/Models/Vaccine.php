@@ -11,9 +11,10 @@ class Vaccine extends Model
 
     protected $fillable=['vaccine_name','manufacturer','unit_type','unit_price'];
 
-      // Relationship with suppliers
-      public function suppliers()
-      {
-          return $this->belongsToMany(Supplier::class, 'supplier_vaccines');
-      }
+    
+
+      public function purchase_vaccine_items()
+    {
+        return $this->hasMany(PurchaseVaccineItems::class,'vaccine_id');
+    }
 }

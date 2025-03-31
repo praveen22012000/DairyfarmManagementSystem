@@ -238,7 +238,7 @@ class ProductionSupplyDetailsController extends Controller
 
 
 
-          $productionSupplyDetails->update([
+          $productionSupplyDetails->production_supply->update([
             'date' => $request->date,
             'time' => $request->time,
             'entered_by' => $request->entered_by,

@@ -37,10 +37,10 @@ class SupplierController extends Controller
         'email'=>'required|email',
         'address'=>'required',
 
-        'feeds' => 'nullable|array|required_without:vaccines', // Ensure feeds is an array (if provided)
-        'feeds.*' => 'exists:feeds,id', // Ensure each feed ID exists in the feeds table
-        'vaccines' => 'nullable|array|required_without:feeds', // Ensure vaccines is an array (if provided)
-        'vaccines.*' => 'exists:vaccines,id', // Ensure each vaccine ID exists in the vaccines table
+      //  'feeds' => 'nullable|array|required_without:vaccines', // Ensure feeds is an array (if provided)
+      //  'feeds.*' => 'exists:feeds,id', // Ensure each feed ID exists in the feeds table
+     //   'vaccines' => 'nullable|array|required_without:feeds', // Ensure vaccines is an array (if provided)
+      //  'vaccines.*' => 'exists:vaccines,id', // Ensure each vaccine ID exists in the vaccines table
     ]);
 
 
@@ -53,14 +53,14 @@ class SupplierController extends Controller
         'address'=>$data['address']
     ]);
 
-    $received_feeds=$request->feeds;
-    $received_vaccines=$request->vaccines;
+  //  $received_feeds=$request->feeds;
+   // $received_vaccines=$request->vaccines;
 
 
      // Ensure $received_feeds is an array (use null coalescing to default to an empty array)
-     $received_feeds = $request->feeds ?? [];
+  //   $received_feeds = $request->feeds ?? [];
 
-    foreach($received_feeds as $index => $received_feed_id)
+ /*   foreach($received_feeds as $index => $received_feed_id)
     {
         SupplierFeed::create([
 
@@ -69,12 +69,12 @@ class SupplierController extends Controller
 
         ]);
 
-    }
+    }*/
 
     // Ensure $received_vaccines is an array (use null coalescing to default to an empty array)
-    $received_vaccines = $request->vaccines ?? [];
+  //  $received_vaccines = $request->vaccines ?? [];
 
-    foreach($received_vaccines as $index => $received_vaccine_id)
+  /*  foreach($received_vaccines as $index => $received_vaccine_id)
     {
         SupplierVaccine::create([
 
@@ -83,7 +83,7 @@ class SupplierController extends Controller
 
         ]);
 
-    }
+    }*/
 
    
 
@@ -91,6 +91,15 @@ class SupplierController extends Controller
 
 
 
+    }
+
+    public function edit(Supplier $supplier)
+    {
+        $feeds=Feed::all();
+        $vaccines=Vaccine::all();
+
+        
+        return view('supplier_feed_vaccine_details.edit',['feeds'=>$feeds,'vaccines'=>$vaccines,'supplier'=>$supplier]);
     }
 }
 

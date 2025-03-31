@@ -54,7 +54,7 @@
                    class="w-full px-4 py-2 border rounded-md focus:ring focus:ring-blue-300">
                    @error('address') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
-
+<!--
         <div class="mb-4">
                 <label for="feeds" class="block text-gray-700 font-medium" >Feeds:</label>
                     <select name="feeds[]" id="feeds"  class="form-control" multiple>
@@ -74,7 +74,7 @@
                     </select>
                     @error('vaccines') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
-
+-->
         
         
         <button type="submit" class="btn btn-success mt-3">Save Record</button>

@@ -56,8 +56,8 @@
 
                         <td>
 
-                        <a href="" class="btn btn-info">View</a>
-                        <a href="" class="btn btn-primary">Edit</a>
+                        <a href="{{ route('milk_product.view',$supplier->id) }}" class="btn btn-info">View</a>
+                        <a href="{{ route('supply_feed_vaccine.edit',$supplier->id) }}" class="btn btn-primary">Edit</a>
                         <button class="btn btn-danger" onclick="">Delete</button>
                     
                         </td>
