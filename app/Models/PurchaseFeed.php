@@ -11,6 +11,11 @@ class PurchaseFeed extends Model
 
     protected $fillable=['supplier_id','purchase_date','pay_mode','user_id'];
 
+    public function purchase_feed_payment()
+    {
+        return $this->belongsTo(PurchaseFeedPayment::class,'purchase_id');
+    } 
+
     public function purchase_feed_items()
     {
         return $this->hasMany(PurchaseFeedItems::class,'purchase_id');

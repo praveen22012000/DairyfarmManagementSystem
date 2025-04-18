@@ -123,10 +123,12 @@
 
 
       // Restore stock quantity on page load
+      //Selects all <select> dropdowns that have the name production_milk_id[]. (Each row in your table has one.)
       $("select[name='production_milk_id[]']").each(function () {
-        let selectedOption = $(this).find(":selected");
-        let stockQuantity = selectedOption.data("stock_quantity");
+        let selectedOption = $(this).find(":selected");//Gets the currently selected option in that dropdown.
+        let stockQuantity = selectedOption.data("stock_quantity");//Retrieves the value of the custom attribute data-stock_quantity from the selected option.
 
+        //Finds the nearest <tr> //Finds the quantity[] input in that row, // Sets its value to the stock quantity of the selected milk item.
         $(this).closest("tr").find("input[name='quantity[]']").val(stockQuantity);
     });
 

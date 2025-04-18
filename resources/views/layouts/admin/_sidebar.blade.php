@@ -35,6 +35,14 @@
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Animals</span></a>
             </li>
+            
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('animal_calvings.list')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Animal Calvings</span></a>
+            </li>
+
 
             <li class="nav-item">
                 <a class="nav-link" href="{{route('production_milk.list')}}">
@@ -119,6 +127,32 @@
                 <a class="nav-link" href="{{route('dispose_vaccine_items.list')}}">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Dispose Vaccine Items</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('feed_consume_items.list')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Feed Consumption</span></a>
+            </li>
+
+            
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('vaccine_consume_items.list')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Vaccine Consumption</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('purchase_feed_payments.list')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Purchase Feed Payments</span></a>
+            </li>
+
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('appointment.list')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Appointment</span></a>
             </li>
 
 

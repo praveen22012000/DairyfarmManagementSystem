@@ -22,8 +22,10 @@ use App\Http\Controllers\PurchaseFeedItemsController;
 use App\Http\Controllers\DisposeFeedItemsController;
 use App\Http\Controllers\PurchaseVaccineItemsController;
 use App\Http\Controllers\DisposeVaccineItemsController;
-
-
+use App\Http\Controllers\FeedConsumeItemsController;
+use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\VaccineConsumeItemsController;
+use App\Http\Controllers\PurchaseFeedPaymentController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -322,10 +324,44 @@ Route::middleware('auth')->prefix('purchase_feed_items')->group(function () {
       
     });
 
-
    
- 
 });
+
+
+
+//this below group is used to manage purchase feed payments details
+Route::middleware('auth')->prefix('purchase_feed_items_payments')->group(function () {
+
+    Route::get('/', [PurchaseFeedPaymentController::class, 'index'])->name('purchase_feed_payments.list');
+   
+     Route::get('/create', [PurchaseFeedPaymentController::class, 'create'])->name('purchase_feed_payments.create');
+     Route::post('/store', [PurchaseFeedPaymentController::class, 'store'])->name('purchase_feed_payments.store');
+
+     Route::get('/payment-slip/{id}', [PurchaseFeedPaymentController::class, 'downloadPaymentSlip'])->name('payment.slip.download');
+
+ 
+     Route::get('/get-purchase-amount/{id}', [PurchaseFeedPaymentController::class, 'getPurchaseAmount']);
+
+     Route::group(['prefix'=>'{purchasefeedpayment}'],function(){
+        
+         Route::get('/edit', [PurchaseFeedPaymentController::class, 'edit'])->name('purchase_feed_payments.edit');
+         Route::post('/update', [PurchaseFeedPaymentController::class, 'update'])->name('purchase_feed_payments.update');
+ 
+         Route::get('/view', [PurchaseFeedPaymentController::class, 'view'])->name('purchase_feed_payments.view');
+         Route::post('/destroy', [PurchaseFeedItemsController::class, 'destroy'])->name('purchase_feed_items.destroy');
+ 
+       
+     });
+ 
+    
+ });
+
+
+
+
+
+
+
 
 //this below group is used to manage dispose feed item details
 Route::middleware('auth')->prefix('dispose_feed_items')->group(function () {
@@ -403,20 +439,20 @@ Route::middleware('auth')->prefix('dispose_vaccine_items')->group(function () {
 
 
   //this below group is used to manage feed consumption details
-Route::middleware('auth')->prefix('dispose_vaccine_items')->group(function () {
+Route::middleware('auth')->prefix('feed_consume_items_by_animals')->group(function () {
 
-   //Route::get('/', [DisposeVaccineItemsController::class, 'index'])->name('dispose_vaccine_items.list');
+Route::get('/', [FeedConsumeItemsController::class, 'index'])->name('feed_consume_items.list');
    
      Route::get('/create', [FeedConsumeItemsController::class, 'create'])->name('feed_consume_items.create');
-     Route::post('/store', [DisposeVaccineItemsController::class, 'store'])->name('dispose_vaccine_items.store');
+     Route::post('/store', [FeedConsumeItemsController::class, 'store'])->name('feed_consume_items.store');
  
-     Route::group(['prefix'=>'{disposevaccineitem}'],function(){
+     Route::group(['prefix'=>'{feedconsumeitem}'],function(){
         
-        Route::get('/edit', [DisposeVaccineItemsController::class, 'edit'])->name('dispose_vaccine_items.edit');
-        Route::post('/update', [DisposeVaccineItemsController::class, 'update'])->name('dispose_vaccine_items.update');
+        Route::get('/edit', [FeedConsumeItemsController::class, 'edit'])->name('feed_consume_items.edit');
+        Route::post('/update', [FeedConsumeItemsController::class, 'update'])->name('feed_consume_items.update');
  
-        Route::get('/view', [DisposeVaccineItemsController::class, 'view'])->name('dispose_vaccine_items.view');
-        Route::post('/destroy', [DisposeVaccineItemsController::class, 'destroy'])->name('dispose_vaccine_items.destroy');
+        Route::get('/view', [FeedConsumeItemsController::class, 'view'])->name('feed_consume_items.view');
+        Route::post('/destroy', [FeedConsumeItemsController::class, 'destroy'])->name('feed_consume_items.destroy');
  
        
      });
@@ -425,6 +461,55 @@ Route::middleware('auth')->prefix('dispose_vaccine_items')->group(function () {
     
   
  });
+
+  //this below group is used to manage vaccine consumption details
+Route::middleware('auth')->prefix('vaccine_consume_items_by_animals')->group(function () {
+
+         Route::get('/', [VaccineConsumeItemsController::class, 'index'])->name('vaccine_consume_items.list');
+       
+         Route::get('/create', [VaccineConsumeItemsController::class, 'create'])->name('vaccine_consume_items.create');
+         Route::post('/store', [VaccineConsumeItemsController::class, 'store'])->name('vaccine_consume_items.store');
+     
+         Route::group(['prefix'=>'{vaccineconsumeitem}'],function(){
+            
+            Route::get('/edit', [VaccineConsumeItemsController::class, 'edit'])->name('vaccine_consume_items.edit');
+            Route::post('/update', [VaccineConsumeItemsController::class, 'update'])->name('vaccine_consume_items.update');
+     
+            Route::get('/view', [VaccineConsumeItemsController::class, 'view'])->name('vaccine_consume_items.view');
+            Route::post('/destroy', [VaccineConsumeItemsController::class, 'destroy'])->name('vaccine_consume_items.destroy');
+     
+           
+         });
+     
+     
+        
+      
+     });
+
+
+  //this below group is used to manage veterinarians schedule details
+Route::middleware('auth')->prefix('veterinarians_schedule')->group(function () {
+
+    Route::get('/', [AppointmentController::class, 'index'])->name('appointment.list');
+       
+         Route::get('/create', [AppointmentController::class, 'create'])->name('appointment.create');
+         Route::post('/store', [AppointmentController::class, 'store'])->name('appointment.store');
+     
+         Route::group(['prefix'=>'{appointment}'],function(){
+            
+            Route::get('/edit', [AppointmentController::class, 'edit'])->name('appointment.edit');
+            Route::post('/update', [AppointmentController::class, 'update'])->name('appointment.update');
+     
+            Route::get('/view', [AppointmentController::class, 'view'])->name('appointment.view');
+            Route::post('/destroy', [AppointmentController::class, 'destroy'])->name('appointment.destroy');
+     
+           
+         });
+    
+     
+        
+      
+     });
 
 
 

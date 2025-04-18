@@ -43,6 +43,16 @@ class AnimalDetail extends Model
         return "{$years} years and {$remainingDays} days";
     }
 
+    public function vaccine_consume_items()
+    {
+        return $this->hasMany(VaccineConsumeItems::class,'animal_id');
+    }
+
+    public function feed_consume_details()
+    {
+        return $this->hasMany(FeedConsumeDetails::class,'animal_id');
+    }
+
 
     public function ProductionMilk()
     {

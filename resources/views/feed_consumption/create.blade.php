@@ -3,9 +3,9 @@
 @section('content')
 <!-- this code work properly but some issues -->
 <div class="col-md-12">
-    <h1 class="text-3xl font-bold mb-10 text-center text-gray-700">Dispose Vaccine Items</h1>
+    <h1 class="text-3xl font-bold mb-10 text-center text-gray-700">Feed Consumption Details</h1>
 
-    <form action="{{ route('dispose_vaccine_items.store') }}" method="POST" class="space-y-8">
+    <form action="{{ route('feed_consume_items.store') }}" method="POST" class="space-y-8">
         @csrf
 
         @if ($errors->any())
@@ -20,17 +20,31 @@
 
         <!-- Date and Time Section -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <div class="form-group">
+                <label for="animal_id">Animal Name</label>
+                    <select name="animal_id" id="animal_id" class="form-control" >
+                        <option value="">Select Animal</option>
+                            @foreach($animals as $animal)
+                        <option value="{{ $animal->id }}"
+                        {{ old('animal_id') == $animal->id ? 'selected' : '' }}
+                        >{{ $animal->animal_name }}</option>
+                            @endforeach
+                    </select>
+                @error('animal_id') <span class="text-danger">{{ $message }}</span> @enderror
+            </div>
+
             <div>
-                <label for="date" class="block text-lg font-medium text-gray-700 mb-2">Dispose Date</label>
-                <input type="date" name="dispose_date" id="date" class="form-control rounded" value="{{old('dispose_date')}}" >
-                @error('dispose_date') <span class="text-danger">{{ $message }}</span> @enderror
+                <label for="date" class="block text-lg font-medium text-gray-700 mb-2">Date</label>
+                <input type="date" name="date" id="date" class="form-control rounded" value="{{old('date')}}" >
+                @error('date') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
             <br>
             <div>
-                <label for="time" class="block text-lg font-medium text-gray-700 mb-2">Dispose Time</label>
-                <input type="time" name="dispose_time" id="time" class="form-control rounded" value="{{old('dispose_time')}}" >
-                @error('dispose_time') <span class="text-danger">{{ $message }}</span> @enderror
+                <label for="time" class="block text-lg font-medium text-gray-700 mb-2">Time</label>
+                <input type="time" name="time" id="time" class="form-control rounded" value="{{old('time')}}" >
+                @error('time') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
         </div>
@@ -42,53 +56,74 @@
             <table id="disposeVaccineTable" class="table">
                 <thead class="thead-dark">
                     <tr>
-                        <th class="border-b px-6 py-4 text-left">Feed Item</th>
+                        <th class="border-b px-6 py-4 text-left">Feed Name</th>
                         <th class="border-b px-6 py-4 text-left">Stock Quantity (SQ)</th>
-                        <th class="border-b px-6 py-4 text-left">Dispose Quantity</th>
-                        <th class="border-b px-6 py-4 text-left">Reason</th>
+                        <th class="border-b px-6 py-4 text-left">Consume Quantity</th>
+                        <th class="border-b px-6 py-4 text-left">notes</th>
+                        <th class="border-b px-6 py-4 text-left">Feed Item</th>
                         <th class="border-b px-6 py-4 text-left">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @php
-                        $oldPurchaseVaccineItemIds = old('purchase_vaccine_item_id', []);
-                        $oldDisposedQuantities = old('dispose_quantity', []);
-                        $oldReasonForDisposes = old('reason_for_dispose', []);
-                        $rowCount = max(count($oldPurchaseVaccineItemIds), 1);
+                        $oldFeedIds = old('feed_id', []);
+                        $oldPurchaseFeedItemIds = old('purchase_feed_item_id', []);
+                  
+                        $oldConsumQuantities = old('consume_quantity', []);
+                        $oldNotes = old('notes', []);
+                        $rowCount = max(count($oldFeedIds), 1);
                     @endphp
 
                     @for ($i = 0; $i < $rowCount; $i++)
                     <tr  class="milk-row">
-                        <td class="border-t px-6 py-4 text-left text-gray-800">
-                            <select name="purchase_vaccine_item_id[]" id="purchase_vaccine_item_id[]" class="border border-gray-400 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none">
-                            <option value="">Select the Vaccine Item</option>
-                                @foreach($purchaseVaccineItems as $purchaseVaccineItem)
-                                    <option value="{{$purchaseVaccineItem->id}}" 
-                                    {{ (isset($oldPurchaseVaccineItemIds[$i]) && $oldPurchaseVaccineItemIds[$i] == $purchaseVaccineItem->id) ? 'selected' : '' }}
 
-                                       data-stock_quantity="{{ $purchaseVaccineItem->stock_quantity }}">
-                                        {{ $purchaseVaccineItem->id.' | '.$purchaseVaccineItem->vaccine->vaccine_name.' | '.$purchaseVaccineItem->manufacture_date }}
+                    
+                        <td class="border-t px-6 py-4 text-left text-gray-800">
+                            <select name="feed_id[]" id="feed_id[]" class="feed-select border border-gray-400 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <option value="">Select the Feed</option>
+                                    @foreach($feeds as $feed)
+                                    <option value="{{$feed->id}}"
+                                            {{ (isset($oldFeedIds[$i]) && $oldFeedIds[$i] == $feed->id) ? 'selected' : '' }}
+                                            >
+                                                    {{$feed->feed_name}}
                                     </option>
-                                @endforeach 
-                            
+                                    @endforeach 
                             </select>
-                            @error("purchase_vaccine_item_id.$i") <span class="text-danger">{{ $message }}</span> @enderror
+                                @error("feed_id.$i") <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
+                        
+
                         <td class="border-t px-6 py-4 text-left text-gray-800">
-                            <input type="number" class="form-control" name="quantity[]" value="{{ isset($oldPurchaseVaccineItemIds[$i]) ? ($purchaseVaccineItems->firstWhere('id', $oldPurchaseVaccineItemIds[$i])?->stock_quantity ?? '') : '' }}" style="width: 80px;" readonly>
+                            <input type="number" class="form-control" name="quantity[]" value="" readonly>
                         </td>
 
                         <td class="border-t px-6 py-4">
-                            <input type="text" name="dispose_quantity[]" value="{{ $oldDisposedQuantities[$i] ?? '' }}" class="form-control"  style="width: 80px;">
-                            @error("dispose_quantity.$i") <span class="text-danger">{{ $message }}</span> @enderror
+                            <input type="text" name="consumed_quantity[]" value="{{ old('consumed_quantity.' . $i) }}" class="form-control"  style="width: 80px;">
+                            @error("consumed_quantity.$i") <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
-                        <td>
-                        <input type="text" name="reason_for_dispose[]" class="form-control"  style="width:300px;" value="{{$oldReasonForDisposes[$i] ?? ''}}">
-                        @error("reason_for_dispose.$i") <span class="text-danger">{{ $message }}</span> @enderror
+                        <td class="border-t px-6 py-4">
+                        <input type="text" name="notes[]" class="form-control"   style="width:150px;" value="{{ old('notes.' . $i) }}">
+                        @error("notes.$i") <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
+                        <td class="border-t px-6 py-4 text-left text-gray-800">
+                                <select name="purchase_feed_item_id[]" id="purchase_feed_item_id[]" class="purchase-item-select border border-gray-400 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none" disabled>
+                                        <option value="">Select the Purchase Feed Item</option>
+                                            @foreach($purchaseFeedItems as $item)
+                                                    <option value="{{ $item->id }}" 
+                                                        data-feed-id="{{ $item->feed_id }}"
+                                                        data-stock-quantity="{{ $item->stock_quantity }}"
+                                                            {{ (isset($oldPurchaseFeedItemIds[$i]) && $oldPurchaseFeedItemIds[$i] == $item->id) ? 'selected' : '' }}>
+                                                                    {{ $item->id.'|'.$item->feed->feed_name.'|'.$item->manufacture_date }}
+                                                    </option>
+                                            @endforeach
+                                </select>
+                                    @error("purchase_feed_item_id.$i") <span class="text-danger">{{ $message }}</span> @enderror
+                        </td>
+
+                        
                         <td class="border-t px-6 py-4">
                             <button type="button" class="btn btn-danger remove-row">Remove</button>
                         </td>
@@ -105,7 +140,7 @@
 
         <!-- Submit Button -->
         <div class="flex justify-center">
-            <button type="submit" class="btn btn-success mt-3">Save Milk Consumption Record</button>
+            <button type="submit" class="btn btn-success mt-3">Save Feed Consumption Record</button>
         </div>
     </form>
 </div>
@@ -116,147 +151,153 @@
 @section('js')
 
 <script>
+   
    $(document).ready(function () {
-
-   let today = new Date().toISOString().split("T")[0];
+    let today = new Date().toISOString().split("T")[0];
     $("#date").attr("max", today);
 
+    // Function to update stock quantity when purchase item is selected
+    function updateStockQuantity(selectElement) { //Defines a function named updateStockQuantity.//It accepts one parameter, selectElement, which represents the <select> dropdown element that was interacted with.
 
-     // Restore stock quantity on page load
-     $("select[name='purchase_vaccine_item_id[]']").each(function () {
-        let selectedOption = $(this).find(":selected");
-        let stockQuantity = selectedOption.data("stock_quantity");
-
-        $(this).closest("tr").find("input[name='quantity[]']").val(stockQuantity);
-    });
-
-    // Update stock quantity dynamically on selection change
-    $(document).on("change", "select[name='purchase_vaccine_item_id[]']", function () {
-        let selectedOption = $(this).find(":selected");
-        let stockQuantity = selectedOption.data("stock_quantity");
-
-        $(this).closest("tr").find("input[name='quantity[]']").val(stockQuantity);
-    });
-
-
-    // Function to check for validation errors in the table rows
-    function checkForErrors() {
-        let hasErrors = false;
-
-        // Loop through all rows and check for error messages
-        $("#disposeVaccineTable tbody tr").each(function () {
-            if ($(this).find(".text-danger").length > 0) {
-                hasErrors = true;
-                return false; // Exit the loop if an error is found
-            }
-        });
-
-        // Hide the "Add" button if there are errors
-        if (hasErrors) {
-            $("#addRow").hide();
-        } else {
-            updateAddButtonVisibility(); // Otherwise, update visibility based on row count
-        }
+        let selectedOption = $(selectElement).find(":selected");//.find(":selected") searches for the currently selected <option> inside the <select> dropdown
+        let stockQuantity = selectedOption.data("stock-quantity"); //Retrieves the stock quantity from the data-stock-quantity attribute of the selected <option>.
+        $(selectElement).closest("tr").find("input[name='quantity[]']").val(stockQuantity || '')//Finds the correct row (tr);//Finds the quantity input inside that row//Updates the input field with the selected stock quantity
     }
 
 
-    //This function controls whether the "Add" button (#addRow) should be shown or hidden.
-    function updateAddButtonVisibility() {
 
-        //Finds the first <tr> in #milkTable tbody (first row of the table).
-        //Retrieves the number of <option> elements inside the production_milk_id[] dropdown but subtracts 1 to exclude the default "Select the Product" option.
-        //Counts the total rows currently present in the table.
-        let totalMilkItems = $("#disposeVaccineTable tbody tr:first").find("select[name='purchase_vaccine_item_id[]'] option").length - 1; // Exclude the default option
-        let totalRows = $("#disposeVaccineTable tbody tr").length;
-
-
-        //If the number of rows equals or exceeds the number of available milk items, the "Add" button is hidden.
-        //Otherwise, the "Add" button remains visible.
-        if (totalRows >= totalMilkItems) {
-            $("#addRow").hide();
-        } else {
-            $("#addRow").show();
+    // Initialize stock quantities for existing rows on page load
+    //This code loops through all dropdowns (<select>) that have the class .purchase-item-select.
+    //If a dropdown already has a selected value, it calls the updateStockQuantity function for that dropdown
+    $(".purchase-item-select").each(function() {
+        if ($(this).val()) {
+            updateStockQuantity(this);
         }
-    }
+    });
 
+    // Update stock quantity when purchase item selection changes
+    $(document).on("change", ".purchase-item-select", function() {
+        updateStockQuantity(this);
+    });
+
+    
+
+    // Enable/disable purchase feed item dropdown based on feed selection
+    $(document).on("change", ".feed-select", function() { //Listens for a change event on any element with class "feed-select"
+        let row = $(this).closest("tr");//"Find the table row where this dropdown is located
+        let purchaseItemSelect = row.find(".purchase-item-select");//Within that row, find the second dropdown for selecting items related to the feed
+        let selectedFeedId = $(this).val();//Store the ID of the selected feed
+        
+        if (selectedFeedId) {//Checks if the user selected a valid feed
+           
+            purchaseItemSelect.prop("disabled", false);//Turn on the second dropdown so the user can use it
+            //Enables the purchase item dropdown by removing the disabled attribute.
+            
+            // Filter options to show only items for the selected feed
+            purchaseItemSelect.find("option").each(function() {//Go through each option in the purchase item dropdown
+                let optionFeedId = $(this).data("feed-id");
+                if (optionFeedId == selectedFeedId || $(this).val() === "") {//Only show items that belong to the selected feed.
+                    $(this).show();
+                } else {
+                    $(this).hide();
+                }
+            });
+            
+            // Reset the selection and clear stock quantity
+            purchaseItemSelect.val("");
+            row.find("input[name='quantity[]']").val("");
+        } else {
+            // Disable the purchase item dropdown if no feed is selected
+            purchaseItemSelect.prop("disabled", true);
+            purchaseItemSelect.val("");
+            row.find("input[name='quantity[]']").val("");
+        }
+    });
+
+    // Initialize existing rows
+    $(".feed-select").each(function() {
+        if ($(this).val()) {
+            $(this).trigger("change");
+        }
+    });
+
+
+    
+
+    // Add new row
     $("#addRow").click(function () {
-
-        //Find the Table and Clone the First Row
         let table = $("#disposeVaccineTable tbody");
         let newRow = table.find("tr:first").clone();
-
-        // Clear input values in the new row
         
-        newRow.find("input").val("");//Empties all input fields (.val("")) to prevent duplicate values.
-        newRow.find("select").prop("selectedIndex", 0);//Resets dropdowns (prop("selectedIndex", 0)) to the first (default) option
-
-        table.append(newRow);//Adds the new row to the table (append(newRow)
-
-        updateMilkItemOptions(); // Update options in all rows
-        updateAddButtonVisibility(); // Check visibility of the Add button
+        // Clear values and disable purchase item dropdown
+        newRow.find("input").val("");
+        newRow.find(".feed-select").val("");
+        newRow.find(".purchase-item-select").val("").prop("disabled", true);
+        newRow.find("select").prop("selectedIndex", 0);
+        
+        table.append(newRow);
+        updateMilkItemOptions();
+        updateAddButtonVisibility();
     });
 
-    // Remove a Row When Clicking the "Remove" Button
+    // Remove row
     $(document).on("click", ".remove-row", function () {
-        //Uses $(document).on() because .remove-row buttons are dynamically added (not present when the page loads).
-
-        //Selects the table body.
         let table = $("#disposeVaccineTable tbody");
-
-        //Checks if there is more than one row in the table.
         if (table.find("tr").length > 1) {
             $(this).closest("tr").remove();
-            updateMilkItemOptions(); // Re-update dropdowns when a row is removed
-            updateAddButtonVisibility(); // Check visibility of the Add button
+            updateMilkItemOptions();
+            updateAddButtonVisibility();
         } else {
             alert("At least one row is required.");
         }
     });
 
-  //  Ensures that each row has a unique milk item selection.
-    function updateMilkItemOptions() {
-
-        let selectedItems = [];//Creates an empty array selectedItems.
-
-       // Loops through all dropdowns named production_milk_id[] and stores selected values in selectedItems.
-        $("select[name='purchase_vaccine_item_id[]']").each(function () {
-            let selectedValue = $(this).val();
-            if (selectedValue) {
-                selectedItems.push(selectedValue);
+    // Function to check for validation errors
+    function checkForErrors() {
+        let hasErrors = false;
+        $("#disposeVaccineTable tbody tr").each(function () {
+            if ($(this).find(".text-danger").length > 0) {
+                hasErrors = true;
+                return false;
             }
         });
+        $("#addRow").toggle(!hasErrors);
+        if (!hasErrors) updateAddButtonVisibility();
+    }
 
+    function updateAddButtonVisibility() {
+        let totalMilkItems = $("#disposeVaccineTable tbody tr:first").find("select[name='feed_id[]'] option").length - 1;
+        let totalRows = $("#disposeVaccineTable tbody tr").length;
+        $("#addRow").toggle(totalRows < totalMilkItems);
+    }
+
+    function updateMilkItemOptions() {
+        let selectedItems = [];
+        $("select[name='feed_id[]']").each(function () {
+            let selectedValue = $(this).val();
+            if (selectedValue) selectedItems.push(selectedValue);
+        });
         
-
-        //It iterates over all <select> dropdowns that have the name production_milk_id[] and hides any option 
-        // --that has already been selected in another dropdown
-        $("select[name='purchase_vaccine_item_id[]']").each(function () {
+        $("select[name='feed_id[]']").each(function () {
             let currentValue = $(this).val();
             $(this).find("option").each(function () {
-                if ($(this).val() !== "" && selectedItems.includes($(this).val()) && $(this).val() !== currentValue) {
-                    $(this).hide(); // Hide already selected items
-                } else {
-                    $(this).show(); // Show unselected items
-                }
+                $(this).toggle(!($(this).val() && selectedItems.includes($(this).val()) && $(this).val() !== currentValue));
             });
         });
     }
 
-
-    // Trigger update when a milk item is selected
-    $(document).on("change", "select[name='purchase_vaccine_item_id[]']", function () {
+    // Event handlers
+    $(document).on("change", "select[name='feed_id[]']", function () {
         updateMilkItemOptions();
         updateAddButtonVisibility();
-
-      
     });
 
-    checkForErrors();
+    $(document).on("input", "#disposeVaccineTable tbody input, select", function () {
+        checkForErrors();
+    });
 
-// Check for errors whenever an input or select field changes
-$(document).on("input", "#disposeVaccineTable tbody input, #disposeFeedTable tbody select", function () {
+    // Initial setup
     checkForErrors();
-});
 });
 
 

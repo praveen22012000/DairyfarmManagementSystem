@@ -20,12 +20,10 @@ return new class extends Migration
             $table->string('notes');
 
             $table->foreignId('feed_id');
-         
             $table->foreignId('purchase_feed_item_id');
             $table->foreignId('feed_consume_detail_id');
 
             $table->foreign('feed_id')->references('id')->on('feeds')->onDelete('cascade');
-      
             $table->foreign('purchase_feed_item_id')->references('id')->on('purchase_feed_items')->onDelete('cascade');
             $table->foreign('feed_consume_detail_id')->references('id')->on('feed_consume_details')->onDelete('cascade');
              

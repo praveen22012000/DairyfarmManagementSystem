@@ -9,6 +9,8 @@ class FeedConsumeItems extends Model
 {
     use HasFactory;
 
+    protected $fillable=['consumed_quantity','notes','feed_id','purchase_feed_item_id','feed_consume_detail_id'];
+
     public function feed_consume_details()
     {
         return $this->belongsTo(FeedConsumeDetails::class,'feed_consume_detail_id');

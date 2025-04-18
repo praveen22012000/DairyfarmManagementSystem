@@ -6,10 +6,10 @@
         <div class="card">
             <div class="card-header">
                 <div class="float-left">
-                    <h2>Animals Pregnancies</h2>
+                    <h2>Veterinarian Appointments</h2>
                 </div>
                 <div class="float-right">
-                <a  class="btn btn-success btn-md btn-rounded" href="{{route('appointment.create')}}"><i class="mdi mdi-plus-circle mdi-18px"></i>Appointment</a>
+                <a  class="btn btn-success btn-md btn-rounded" href="{{route('appointment.create')}}"><i class="mdi mdi-plus-circle mdi-18px"></i>Add Appointments</a>
                 </div>
             </div>
             <div class="card-body">
@@ -21,37 +21,36 @@
             <table class="table">
                 <thead class="thead-dark">
                     <tr>
-                        <th>Pregnancy ID</th>
-                        <th>Breeding ID</th>
-                        <th>Femal Cow Name</th>
+                        <th>Appointment ID</th>
                         <th>Veterinarian</th>
-                        <th>Confimation Date</th>
-                        <th>Status</th>
+                        <th>Appointment Date</th>
+                        <th>Appointment Time</th>
+                        <th>Notes</th>
+                       
                         <th>Actions</th>
                       
                     </tr>
                 </thead>
                   
-                    @foreach($pregnancies as $pregnancie)
+                @foreach($appointments as $appointment)  
                     <tr>
-                        <td>{{$pregnancie->id}}</td>
-                        <td>{{$pregnancie->breeding_id}}</td>
-                        <td>{{$pregnancie->AnimalDetail->animal_name}}</td>
+                        <td>{{$appointment->id}}</td>
+                        <td>{{$appointment->user->name}}</td>
+                        <td>{{$appointment->appointment_date}}</td>
                       
-                        <td>{{$pregnancie->user->name}}</td>
-                        <td>{{$pregnancie->confirmation_date}}</td>
+                        <td>{{$appointment->appointment_time}}</td>
+                        <td>{{$appointment->notes}}</td>
 
-                        <td>{{$pregnancie->pregnancy_status}}</td>
-
+                    
                        
                         <td>
-                        <a href="{{route('animal_pregnancies.view',$pregnancie->id)}}" class="btn btn-info">View</a>
+                        <a href="{{ route('appointment.view',$appointment->id) }}" class="btn btn-info">View</a>
                     
-                        <a href="{{route('animal_pregnancies.edit',$pregnancie->id)}}" class="btn btn-primary">Edit</a>
-                        <button class="btn btn-danger" onclick="confirmDelete({{ $pregnancie->id }})">Delete</button>
+                        <a href="{{ route('appointment.edit',$appointment->id) }}" class="btn btn-primary">Edit</a>
+                        <button class="btn btn-danger" onclick="confirmDelete({{ $appointment->id }})">Delete</button>
                         </td>
                     </tr>
-                    @endforeach
+                @endforeach
                 <tbody>
             
                 </tbody>
@@ -78,10 +77,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-   function confirmDelete(pregnancieId) {
+   function confirmDelete(appointmentId) {
         Swal.fire({
             title: "Are you sure?",
-            text: "This will permanently delete the animal pregnancy record.",
+            text: "This will permanently delete the appointment record.",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#d33",
@@ -91,7 +90,7 @@
             if (result.isConfirmed) {
                 // Set form action dynamically based on animal ID
                 let deleteForm = document.getElementById("deleteForm");
-                deleteForm.action = `/animal_pregnancies/${pregnancieId}/destroy`;
+                deleteForm.action = `/veterinarians_schedule/${appointmentId}/destroy`;
                 deleteForm.submit();
             }
         });

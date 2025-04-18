@@ -139,6 +139,8 @@ class DisposeVaccineItemsController extends Controller
     // Calculate available stock by adding back the original disposed quantity
     $availableStock = $disposevaccineitem->purchase_vaccine_items->stock_quantity + $disposevaccineitem->dispose_quantity;
 
+
+
     if ($request->dispose_quantity > $availableStock) {
         $errors["dispose_quantity"] = "The entered quantity exceeds the available stock quantity.";
         return redirect()->back()->withErrors($errors)->withInput();

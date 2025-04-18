@@ -21,4 +21,9 @@ class PurchaseVaccineItems extends Model
     {
         return $this->belongsTo(Vaccine::class,'vaccine_id');
     }
+
+    public function vaccine_consume_items()
+    {
+        return $this->hasMany(VaccineConsumeItems::class,'vaccination_item_id');
+    }
 }

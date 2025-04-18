@@ -49,6 +49,16 @@ class User extends Authenticatable
         ];
     }
 
+    public function purchase_feed_payments()
+    {
+        return $this->hasMany(PurchaseFeedPayment::class,'payment_receiver');
+    }
+
+    public function appointment()
+    {
+        return $this->hasMany(Appointment::class,'veterinarian_id');
+    }
+
 
     public function dispose_milk_product()
     {

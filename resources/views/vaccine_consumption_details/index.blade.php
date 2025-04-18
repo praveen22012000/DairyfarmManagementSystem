@@ -6,12 +6,19 @@
         <div class="card">
             <div class="card-header">
                 <div class="float-left">
-                    <h2>Animals Pregnancies</h2>
+                    <h2> Vaccine Consumption Details </h2>
                 </div>
+
                 <div class="float-right">
-                <a  class="btn btn-success btn-md btn-rounded" href="{{route('appointment.create')}}"><i class="mdi mdi-plus-circle mdi-18px"></i>Appointment</a>
+
+                    <a class="btn btn-success btn-md btn-rounded" href="{{route('vaccine_consume_items.create')}}">
+                        <i class="mdi mdi-plus-circle mdi-18px"></i> Add a Vaccine Record
+                    </a>
+               
                 </div>
+
             </div>
+          
             <div class="card-body">
                 @if (session('success'))
                 <div class="alert alert-success">
@@ -21,37 +28,42 @@
             <table class="table">
                 <thead class="thead-dark">
                     <tr>
-                        <th>Pregnancy ID</th>
-                        <th>Breeding ID</th>
-                        <th>Femal Cow Name</th>
+                        <th>ID</th>
                         <th>Veterinarian</th>
-                        <th>Confimation Date</th>
-                        <th>Status</th>
+                        <th>Animal</th>
+                        <th>Vaccine</th>
+                        <th>Vaccination Date</th>
+                        <th>Quantity</th>
+                    
                         <th>Actions</th>
                       
                     </tr>
                 </thead>
-                  
-                    @foreach($pregnancies as $pregnancie)
+              
+                @foreach($vaccineConsumeItems as $vaccineConsumeItem)
                     <tr>
-                        <td>{{$pregnancie->id}}</td>
-                        <td>{{$pregnancie->breeding_id}}</td>
-                        <td>{{$pregnancie->AnimalDetail->animal_name}}</td>
                       
-                        <td>{{$pregnancie->user->name}}</td>
-                        <td>{{$pregnancie->confirmation_date}}</td>
 
-                        <td>{{$pregnancie->pregnancy_status}}</td>
-
+                        <td>{{ $vaccineConsumeItem->id  }}</td>
+                        <td>{{ $vaccineConsumeItem->vaccine_consume_detail->appointment->user->name }}</td>
+                        <td>{{ $vaccineConsumeItem->animal->animal_name }}</td>
+                        <td>{{ $vaccineConsumeItem->purchase_vaccine_items->vaccine->vaccine_name }}</td>
+                        <td>{{ $vaccineConsumeItem->vaccine_consume_detail->vaccination_date}}</td>
+                        <td>{{ $vaccineConsumeItem->consumed_quantity }}</td>
+                        
                        
+                 
+
                         <td>
-                        <a href="{{route('animal_pregnancies.view',$pregnancie->id)}}" class="btn btn-info">View</a>
+
+                        <a href="{{ route('vaccine_consume_items.view',$vaccineConsumeItem->id) }}" class="btn btn-info">View</a>
+                        <a href="{{ route('vaccine_consume_items.edit',$vaccineConsumeItem->id) }}" class="btn btn-primary">Edit</a>
+                        <button class="btn btn-danger" onclick="confirmDelete({{$vaccineConsumeItem->id}})">Delete</button>
                     
-                        <a href="{{route('animal_pregnancies.edit',$pregnancie->id)}}" class="btn btn-primary">Edit</a>
-                        <button class="btn btn-danger" onclick="confirmDelete({{ $pregnancie->id }})">Delete</button>
                         </td>
+                        @endforeach
                     </tr>
-                    @endforeach
+                   
                 <tbody>
             
                 </tbody>
@@ -62,26 +74,31 @@
             @method('POST')
             </form>
             
-
             <div class="pt-2">
                 <div class="float-right">
                    
-                </div>
+            </div>
             </div>
         </div>
     </div>
 </div>
+
+
 </div>
+
 @endsection
+
+
+
 
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-   function confirmDelete(pregnancieId) {
+   function confirmDelete(vaccineId) {
         Swal.fire({
             title: "Are you sure?",
-            text: "This will permanently delete the animal pregnancy record.",
+            text: "This will permanently delete the Vaccine Consumption record.",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#d33",
@@ -91,7 +108,7 @@
             if (result.isConfirmed) {
                 // Set form action dynamically based on animal ID
                 let deleteForm = document.getElementById("deleteForm");
-                deleteForm.action = `/animal_pregnancies/${pregnancieId}/destroy`;
+                deleteForm.action = `/vaccine_consume_items_by_animals/${vaccineconsumeitemId}/destroy`;
                 deleteForm.submit();
             }
         });
@@ -99,3 +116,5 @@
 </script>
 
 @endsection
+
+
