@@ -49,6 +49,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function user()
+    {
+        return $this->hasMany(RetailorOrder::class,'retailor_id');
+    }
+
     public function purchase_feed_payments()
     {
         return $this->hasMany(PurchaseFeedPayment::class,'payment_receiver');

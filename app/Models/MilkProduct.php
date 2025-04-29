@@ -15,6 +15,11 @@ class MilkProduct extends Model
 
     ];
 
+    public function retailor_order_item()
+    {
+        return $this->hasMany(RetailorOrderItems::class,'product_id');
+    }
+
     public function production_supply_details()
     {
         return $this->hasMany(ProductionSupplyDetails::class,'product_id');

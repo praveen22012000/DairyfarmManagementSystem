@@ -26,6 +26,12 @@ use App\Http\Controllers\FeedConsumeItemsController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\VaccineConsumeItemsController;
 use App\Http\Controllers\PurchaseFeedPaymentController;
+use App\Http\Controllers\RetailorOrderController;
+use App\Http\Controllers\OrderReviewController;
+use App\Http\Controllers\CancelOrderController;
+use App\Http\Controllers\VerifyPaymentController;
+
+
 
 use Illuminate\Support\Facades\Route;
 
@@ -357,8 +363,81 @@ Route::middleware('auth')->prefix('purchase_feed_items_payments')->group(functio
  });
 
 
+//this below group is used to manage retailor order details
+Route::middleware('auth')->prefix('retailor_order_items')->group(function () {
 
+    Route::get('/', [RetailorOrderController::class, 'index'])->name('retailor_order_items.list');
+   
+     Route::get('/create', [RetailorOrderController::class, 'create'])->name('retailor_order_items.create');
+     Route::post('/store', [RetailorOrderController::class, 'store'])->name('retailor_order_items.store');
 
+    // Route::get('/payment-slip/{id}', [PurchaseFeedPaymentController::class, 'downloadPaymentSlip'])->name('payment.slip.download');
+
+ 
+    // Route::get('/get-purchase-amount/{id}', [PurchaseFeedPaymentController::class, 'getPurchaseAmount']);
+
+     Route::group(['prefix'=>'{retailororder}'],function(){
+        
+         Route::get('/edit', [RetailorOrderController::class, 'edit'])->name('retailor_order_items.edit');
+         Route::post('/update', [RetailorOrderController::class, 'update'])->name('retailor_order_items.update');
+ 
+         Route::get('/view', [RetailorOrderController::class, 'view'])->name('retailor_order_items.view');
+      //   Route::post('/destroy', [PurchaseFeedItemsController::class, 'destroy'])->name('purchase_feed_items.destroy');
+ 
+       
+     });
+ 
+    
+ });
+
+//this below group is used to manage order review details
+Route::middleware('auth')->prefix('order_review_details')->group(function () {
+
+    
+    Route::get('/manager/orders/{order}/review', [OrderReviewController::class, 'review'])->name('manager.orders.review');
+   
+    Route::post('/manager/orders/{order}/approve', [OrderReviewController::class, 'approveOrder'])->name('manager.orders.approve');
+
+    Route::patch('/manager/orders/{order}/reject', [OrderReviewController::class, 'reject'])->name('manager.orders.reject');
+
+  
+     
+    
+ });
+
+ 
+ //this below group is used to manage cancel order details
+Route::middleware('auth')->prefix('cancel_order_details')->group(function () {
+
+    
+    Route::post('/orders/{order}/cancel-after-approval', [CancelOrderController::class, 'cancelOrderAfterApproved'])->name('order.cancel_after_approval');
+   
+    Route::post('orders/{order}/cancel-before-approval', [CancelOrderController::class, 'cancelOrderBeforeApproved'])->name('order.cancel_before_approval');
+
+   
+     
+    
+ });
+
+ //this below group is used to verify the payment details
+Route::middleware('auth')->prefix('verify_payment_details')->group(function () {
+
+    Route::get('/payment/{order}/verify', [VerifyPaymentController::class, 'create'])->name('upload_payment.receipt');
+
+    Route::post('/store/{order}/upload', [VerifyPaymentController::class, 'store'])->name('upload_payment.receipt.store');
+
+    Route::get('/payment/{order}/verify/edit', [VerifyPaymentController::class, 'edit'])->name('upload_payment.receipt.edit');
+
+    Route::get('/payment/{order}/verify_payment/show',[VerifyPaymentController::class,'show'])->name('verify_payment.view');
+    
+//    Route::post('/orders/{order}/cancel-after-approval', [VerifyPaymentController::class, 'cancelOrderAfterApproved'])->name('order.cancel_after_approval');
+   
+ //   Route::post('orders/{order}/cancel-before-approval', [CancelOrderController::class, 'cancelOrderBeforeApproved'])->name('order.cancel_before_approval');
+
+   
+     
+    
+ });
 
 
 

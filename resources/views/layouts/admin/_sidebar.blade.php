@@ -148,6 +148,14 @@
                     <span>Purchase Feed Payments</span></a>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('retailor_order_items.list')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Retailor Orders</span></a>
+            </li>
+
+
+          
 
             <li class="nav-item">
                 <a class="nav-link" href="{{route('appointment.list')}}">
