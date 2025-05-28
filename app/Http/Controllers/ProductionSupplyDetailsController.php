@@ -7,6 +7,8 @@ use App\Models\MilkProduct;
 
 use App\Models\ProductionSupply;
 use App\Models\ProductionSupplyDetails;
+use App\Models\ManufacturerProduct;
+use Carbon\Carbon;
 
 
 use Illuminate\Http\Request;
@@ -14,6 +16,36 @@ use Illuminate\Http\Request;
 class ProductionSupplyDetailsController extends Controller
 {
     //
+    public function monthlyReport(Request $request)
+    {
+    $year = $request->input('year');
+
+    // Get years available from production_supplies
+    $years = \DB::table('production_supplies')
+        ->selectRaw('YEAR(date) as year')
+        ->distinct()
+        ->pluck('year');
+
+    // Monthly array default to 0
+    $monthlyConsumption = array_fill_keys([
+        'January','February','March','April','May','June',
+        'July','August','September','October','November','December'
+    ], 0);
+
+    if ($year) {
+        $records = ProductionSupplyDetails::with('production_supply')
+            ->whereHas('production_supply', function ($query) use ($year) {
+                $query->whereYear('date', $year);
+            })->get();
+
+        foreach ($records as $detail) {
+            $month = Carbon::parse($detail->production_supply->date)->format('F');
+            $monthlyConsumption[$month] += $detail->consumed_quantity;
+        }
+    }
+
+    return view('supply_manufacturing_milk.monthly_report', compact('monthlyConsumption', 'year', 'years'));
+    }
 
     public function index()
     {

@@ -15,8 +15,11 @@ class SupplierController extends Controller
     //
     public function index()
     {
+
+    
         $suppliers=Supplier::all();
 
+      
         return view('supplier_feed_vaccine_details.index',['suppliers'=>$suppliers]);
     }
     public function create()
@@ -95,11 +98,32 @@ class SupplierController extends Controller
 
     public function edit(Supplier $supplier)
     {
-        $feeds=Feed::all();
-        $vaccines=Vaccine::all();
+       // $feeds=Feed::all();
+      //  $vaccines=Vaccine::all();
 
+      
         
-        return view('supplier_feed_vaccine_details.edit',['feeds'=>$feeds,'vaccines'=>$vaccines,'supplier'=>$supplier]);
+        return view('supplier_feed_vaccine_details.edit',['supplier'=>$supplier]);
+    }
+
+    public function view(Supplier $supplier)
+    {
+         return view('supplier_feed_vaccine_details.view',['supplier'=>$supplier]);  
+    }
+
+    public function update(Supplier $supplier,Request $request)
+    {
+        $data=$request->validate([
+            'name'=>'required',
+            'phone_no'=>'required|numeric',
+            'email'=>'required|email',
+            'address'=>'required'
+        ]);
+
+        $supplier->update($data);
+
+        return redirect()->route('supply_feed_vaccine.list')->with('success', 'Supplier record updated successfully!');
+        
     }
 }
 

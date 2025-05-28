@@ -8,12 +8,157 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Manufacturer;
 use App\Models\ManufacturerProduct;
+use Carbon\Carbon;
+use LaravelDaily\LaravelCharts\Classes\LaravelChart;
+use Illuminate\Support\Facades\DB;
+
 
 use Illuminate\Support\Facades\Validator;
 
 class ManufacturerProductController extends Controller
 {
     //
+    /*
+    public function report(Request $request)
+    {
+        $year = $request->input('year');
+        $month = $request->input('month');
+
+        $query = ManufacturerProduct::with('milk_product'); // eager load product relationship
+
+        if ($year && $month) 
+        {
+        $query->whereYear('manufacture_date', $year)
+              ->whereMonth('manufacture_date', $month);
+        }
+
+        $manufacturedData = $query->get();
+
+        // Calculate totals per product
+        $report = $manufacturedData->groupBy('product_id')->map(function ($group) {
+            return [
+            'product_name' => $group->first()->milk_product->product_name,
+            'total_quantity' => $group->sum('quantity'),
+            ];
+        });
+
+        return view('manufacturer_products.report', compact('report'));
+    }*/
+
+    /*the following code is work but comment it for testing chart*/
+    public function monthlyReport(Request $request)
+    {
+     $year = $request->input('year', now()->year);
+
+    $manufacturedData = ManufacturerProduct::with('milk_product')
+        ->whereYear('manufacture_date', $year)
+        ->get();
+
+    $productsByMonth = [];
+
+    foreach ($manufacturedData as $record) 
+    {
+        
+        $month = Carbon::parse($record->manufacture_date)->format('F');
+        $productName = $record->milk_product->product_name;
+
+        if (!isset($productsByMonth[$productName])) 
+        {
+            $productsByMonth[$productName] = array_fill_keys([
+                'January','February','March','April','May','June',
+                'July','August','September','October','November','December'
+            ], 0);
+        }
+
+        $productsByMonth[$productName][$month] += $record->quantity;
+    }
+
+    return view('manufacturer_products.monthly_report', compact('productsByMonth', 'year'));
+    }
+
+    
+    /*
+public function monthlyReport(Request $request)
+{
+    $year = $request->input('year', now()->year);
+    $products = ManufacturerProduct::distinct()->pluck('product_name');
+
+   
+
+    $charts = [];
+
+    foreach ($products as $product) {
+        // Get monthly totals for this product
+        $monthlyData = ManufacturerProduct::select(
+                DB::raw('MONTH(manufacture_date) as month'),
+                DB::raw('SUM(quantity) as total_quantity')
+            )
+            ->where('product_name', $product)
+            ->whereYear('manufacture_date', $year)
+            ->groupBy(DB::raw('MONTH(manufacture_date)'))
+            ->get()
+            ->pluck('total_quantity', 'month')
+            ->toArray();
+
+        // Prepare labels and data
+        $labels = [];
+        $data = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $labels[] = Carbon::create()->month($i)->format('F');
+            $data[] = $monthlyData[$i] ?? 0;
+        }
+
+        // Create chart for this product
+        $charts[] = new LaravelChart([
+            'chart_title' => $product . ' - Monthly Report ' . $year,
+            'report_type' => 'group_by_string',
+            'model' => 'App\Models\ManufacturerProduct',
+            'group_by_field' => 'manufacture_date',
+            'chart_type' => 'bar',
+            'labels' => $labels,
+            'dataset' => [
+                [
+                    'label' => 'Total Quantity',
+                    'data' => $data,
+                ],
+            ],
+            'chart_color' => 'rgba(75, 192, 192, 0.8)',
+        ]);
+    }
+
+    return view('manufacturer_products.monthly_report', compact('charts', 'year'));
+}*/
+
+
+
+
+    public function showMonthlyReport(Request $request)
+    {
+    $year = $request->input('year', now()->year); // Default to current year if not selected
+
+    $manufacturedData = ManufacturerProduct::with('milk_product')
+        ->whereYear('manufacture_date', $year)
+        ->get();
+
+    // Create a data structure: ['Yogurt' => [Jan => 10, Feb => 5...], ...]
+    $productsByMonth = [];
+
+    foreach ($manufacturedData as $record) {
+        $month = Carbon::parse($record->manufacture_date)->format('F'); // January, February etc.
+        $productName = $record->milk_product->product_name;
+
+        if (!isset($productsByMonth[$productName])) {
+            $productsByMonth[$productName] = array_fill_keys([
+                'January','February','March','April','May','June',
+                'July','August','September','October','November','December'
+            ], 0);
+        }
+
+        $productsByMonth[$productName][$month] += $record->quantity;
+    }
+
+    return view('manufacturer_products.index', compact('productsByMonth', 'year'));
+    }
 
     public function index()
     {
@@ -46,7 +191,7 @@ class ManufacturerProductController extends Controller
     {
        
         $request->validate([
-            'date' => ['required', 'date', 'before_or_equal:today'],
+            'date' => ['required', 'date'],
             'time' => 'required',
             'enter_by' => 'required',
             'product_id' => 'required|array',

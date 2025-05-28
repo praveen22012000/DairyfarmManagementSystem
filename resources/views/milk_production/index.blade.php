@@ -15,9 +15,23 @@
                         <i class="mdi mdi-plus-circle mdi-18px"></i> Add Milk Record
                     </a>
                
+                    
+
                 </div>
 
             </div>
+
+                <!-- start-->
+        <div class="card-header">
+            
+                <a class="btn btn-primary" href="{{ route('milk_records_monthly.report', ['year' => now()->year]) }}">
+                     View Monthly Chart
+                </a>   
+
+                 <a href="{{ route('milk.animal_year_chart') }}" class="btn btn-success">Animal-wise Monthly Report</a>
+        </div>
+
+        <!--end -->
             
             <div class="card-body">
                 @if (session('success'))

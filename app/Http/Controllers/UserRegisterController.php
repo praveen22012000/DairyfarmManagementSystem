@@ -5,6 +5,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\Veterinarian;
 use App\Models\Retailer;
+use App\Models\FarmLabore;
 
 use Illuminate\Http\Request;
 
@@ -61,10 +62,13 @@ class UserRegisterController extends Controller
         ->whereNotIn('id',Retailer::pluck('retailer_id')->toArray())
         ->get();
   
-
+        $farm_labores=User::where('role_id',5)//only farm labore
+        ->whereNotIn('id',FarmLabore::pluck('user_id')->toArray())
+        ->get();
+  
        
    
-        return view('users.create', ["roles"=>$roles,"veterinarians"=>$veterinarians,'retailers'=>$retailers]);
+        return view('users.create', ["roles"=>$roles,"veterinarians"=>$veterinarians,'retailers'=>$retailers,'farm_labores'=>$farm_labores]);
     }
 
     public function store(Request $request)
@@ -128,6 +132,35 @@ class UserRegisterController extends Controller
             ]);
 
             return redirect()->route('retailers.list')->with('success', 'Veterinarian record added successfully!');
+        }
+
+
+        else if($request->role_id == 5)
+        {
+           
+            $request->validate([
+
+                'user_id'=>'required|exists:users,id',
+
+                'birth_date'=>'required',
+                'hire_date'=>'required'
+                
+                    
+            ]);
+
+          
+            FarmLabore::create([
+
+                'user_id'=>$request->user_id ,
+                'hire_date'=>$request->hire_date,
+                'birth_date'=>$request->birth_date,
+               
+                 
+
+
+            ]);
+
+          //  return redirect()->route('retailers.list')->with('success', 'Veterinarian record added successfully!');
         }
     }
 

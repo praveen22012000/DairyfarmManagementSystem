@@ -87,7 +87,7 @@
         </fieldset>
 
         
-        <button type="submit" class="btn btn-success mt-3">Dispose Milk Product Record</button>
+        <button type="submit" class="btn btn-success mt-3">Dispose Milk Record</button>
     </form>
 
 </div>

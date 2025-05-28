@@ -49,7 +49,12 @@ class User extends Authenticatable
         ];
     }
 
-    public function user()
+    public function task_assignment()
+    {
+        return $this->hasMany(TaskAssignment::class,'assigned_by');
+    }
+
+    public function retailor_order()
     {
         return $this->hasMany(RetailorOrder::class,'retailor_id');
     }
@@ -74,6 +79,12 @@ class User extends Authenticatable
     public function manufacture_product()
     {
         return $this->hasMany(ManufacturerProduct::class,'user_id');
+    }
+
+
+    public function farm_labore()
+    {
+        return $this->hasOne(FarmLabore::class,'user_id');
     }
 
 

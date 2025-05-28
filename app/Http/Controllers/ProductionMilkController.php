@@ -7,17 +7,74 @@ use App\Models\AnimalDetail;
 use App\Models\ProductionMilk;
 use App\Models\User;
 use App\Models\Role;
+use Carbon\Carbon;
 
 use Illuminate\Http\Request;
 
 class ProductionMilkController extends Controller
 {
-    //
+
+    public function monthlyReport(Request $request)
+    {
+    $year = $request->input('year', now()->year);
+
+    // Fetch data grouped by month
+    $productions = ProductionMilk::whereYear('production_date', $year)->get();
+
+    $monthlyData = array_fill_keys([
+        'January','February','March','April','May','June',
+        'July','August','September','October','November','December'
+    ], 0);
+
+    foreach ($productions as $record) {
+        $month = Carbon::parse($record->production_date)->format('F');
+        $monthlyData[$month] += $record->Quantity_Liters;
+    }
+
+    return view('milk_production.monthly_report', compact('monthlyData', 'year'));
+   }
+
+   public function animalYearlyChart(Request $request)
+   {
+    $year = $request->input('year');
+    $animal_id = $request->input('animal_id');
+
+    
+ 
+
+        $female_animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');//newcode
+
+        // Fetch all female animals for the dropdown
+        $animals = AnimalDetail::whereIn('animal_type_id', $female_animal_types_id)->get();//newcode
+
+
+    $monthlyProduction = [];
+
+    if ($year && $animal_id) {
+        $productions = ProductionMilk::whereYear('production_date', $year)
+            ->where('animal_id', $animal_id)
+            ->get();
+
+        $monthlyProduction = array_fill_keys([
+            'January','February','March','April','May','June',
+            'July','August','September','October','November','December'
+        ], 0);
+
+        foreach ($productions as $record) {
+            $month = Carbon::parse($record->production_date)->format('F');
+            $monthlyProduction[$month] += $record->Quantity_Liters;
+        }
+    }
+
+    
+    return view('milk_production.animal_year_chart', compact('animals', 'monthlyProduction', 'year', 'animal_id'));
+    }
+
+   
+    
     public function index()
     {
         $production_milk_details=ProductionMilk::with('AnimalDetail')->get();
-
-       
 
         return view('milk_production.index',['production_milk_details'=>$production_milk_details]);
     }

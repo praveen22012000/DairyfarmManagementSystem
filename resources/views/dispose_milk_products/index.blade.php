@@ -19,6 +19,18 @@
                 </div>
 
             </div>
+
+            
+                <!-- start-->
+        <div class="card-header">
+            
+                <a class="btn btn-primary" href="{{ route('dispose_milk_products_monthly.report') }}">
+                     View Monthly Chart
+                </a>   
+
+               
+        </div>
+
             
             <div class="card-body">
                 @if (session('success'))

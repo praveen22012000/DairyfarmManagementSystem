@@ -25,5 +25,10 @@ class RetailorOrder extends Model
     {
         return $this->hasOne(OrderPayment::class, 'order_id');
     }
+
+    public function farm_labore()
+    {
+        return $this->belongsTo(FarmLabore::class,'delivery_person_id');
+    }
     
 }

@@ -30,7 +30,16 @@ use App\Http\Controllers\RetailorOrderController;
 use App\Http\Controllers\OrderReviewController;
 use App\Http\Controllers\CancelOrderController;
 use App\Http\Controllers\VerifyPaymentController;
-
+use App\Http\Controllers\UploadPaymentController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\AssignDeliveryPersonController;
+use App\Http\Controllers\ReAssignDeliveryPersonController;
+use App\Http\Controllers\DeliveryController;
+use App\Http\Controllers\TasksController;
+use App\Http\Controllers\TaskAssignmentController;
+use App\Http\Controllers\TaskExecutionController;
+use App\Http\Controllers\SalaryController;
+use App\Http\Controllers\MonthlySalaryPaymentController;
 
 
 use Illuminate\Support\Facades\Route;
@@ -81,7 +90,10 @@ Route::middleware('auth')->prefix('milk_production_details')->group(function () 
     Route::get('/create', [ProductionMilkController::class, 'create'])->name('production_milk.create');
     Route::post('/store', [ProductionMilkController::class, 'store'])->name('production_milk.store');
     
+     Route::get('/milkproduction_records/chart', [ProductionMilkController::class, 'monthlyReport'])->name('milk_records_monthly.report');
+     Route::get('/milk/animal-yearly-chart', [ProductionMilkController::class, 'animalYearlyChart'])->name('milk.animal_year_chart');
 
+     
     Route::group(['prefix'=>'{productionmilk}'],function(){
        
         Route::get('/edit', [ProductionMilkController::class, 'edit'])->name('production_milk.edit');
@@ -124,6 +136,8 @@ Route::middleware('auth')->prefix('milk_dispose')->group(function () {
     Route::get('/create', [DisposeMilkController::class, 'create'])->name('dispose_milk.create');
     Route::post('/store', [DisposeMilkController::class, 'store'])->name('dispose_milk.store');
     
+
+    Route::get('/dispose_milk_records/chart', [DisposeMilkController::class, 'monthlyReport'])->name('dispose_milk_records_monthly.report');
 
     Route::group(['prefix'=>'{disposeMilk}'],function(){
        
@@ -174,8 +188,9 @@ Route::middleware('auth')->prefix('details_about_the_milk_allocated_for_producti
     Route::get('/create', [ProductionSupplyDetailsController::class, 'create'])->name('milk_allocated_for_manufacturing.create');
     Route::post('/store', [ProductionSupplyDetailsController::class, 'store'])->name('milk_allocated_for_manufacturing.store');
     
+ 
+    Route::get('/milk_allocating_for_manufacture/chart', [ProductionSupplyDetailsController::class, 'monthlyReport'])->name('monthly_milk_allocation.report');
 
-  
 
     Route::group(['prefix'=>'{productionSupplyDetails}'],function(){
        
@@ -197,8 +212,12 @@ Route::middleware('auth')->prefix('milk_products_manufacture_details')->group(fu
     Route::get('/create', [ManufacturerProductController::class, 'create'])->name('manufacture_product.create');
     Route::post('/store', [ManufacturerProductController::class, 'store'])->name('manufacture_product.store');
     
+       //for generate reports
+  //  Route::get('/total_milkproducts_records/report', [ManufacturerProductController::class, 'report'])->name('total_milkproducts.report');
 
-  
+
+    // Route to display monthly chart/report
+    Route::get('/milk-products/chart', [ManufacturerProductController::class, 'monthlyReport'])->name('milk_products.report');
 
     Route::group(['prefix'=>'{manufacturerProduct}'],function(){
        
@@ -219,7 +238,7 @@ Route::middleware('auth')->prefix('dispose_milk_products')->group(function () {
     Route::get('/create', [DisposeMilkProductsController::class, 'create'])->name('dispose_milk_product.create');
     Route::post('/store', [DisposeMilkProductsController::class, 'store'])->name('dispose_milk_product.store');
     
-
+    Route::get('/dispose_milk_records/chart', [DisposeMilkProductsController::class, 'monthlyReport'])->name('dispose_milk_products_monthly.report');
   
 
     Route::group(['prefix'=>'{disposeMilkProducts}'],function(){
@@ -300,13 +319,34 @@ Route::middleware('auth')->prefix('supply_feed_vaccine_details')->group(function
     Route::group(['prefix'=>'{supplier}'],function(){
        
         Route::get('/edit', [SupplierController::class, 'edit'])->name('supply_feed_vaccine.edit');
-        Route::post('/update', [ProductionMilkController::class, 'update'])->name('production_milk.update');
+        Route::post('/update', [SupplierController::class, 'update'])->name('supply_feed_vaccine.update');
 
-        Route::get('/view', [ProductionMilkController::class, 'view'])->name('production_milk.view');
+        Route::get('/view', [SupplierController::class, 'view'])->name('supply_feed_vaccine.view');
 
       
         Route::post('/destroy', [ProductionMilkController::class, 'destroy'])->name('production_milk.destroy');
     });
+ 
+});
+
+
+//this is used to manage the general manager details
+Route::middleware('auth')->prefix('general_manager_details')->group(function () {
+  //  Route::get('/', [SupplierController::class, 'index'])->name('supply_feed_vaccine.list');
+    Route::get('/create', [GeneralManagerController::class, 'create'])->name('general_manager.create');
+  //  Route::post('/store', [SupplierController::class, 'store'])->name('supply_feed_vaccine.store');
+    
+
+  /*  Route::group(['prefix'=>'{supplier}'],function(){
+       
+        Route::get('/edit', [SupplierController::class, 'edit'])->name('supply_feed_vaccine.edit');
+        Route::post('/update', [SupplierController::class, 'update'])->name('supply_feed_vaccine.update');
+
+        Route::get('/view', [SupplierController::class, 'view'])->name('supply_feed_vaccine.view');
+
+      
+        Route::post('/destroy', [ProductionMilkController::class, 'destroy'])->name('production_milk.destroy');
+    });*/
  
 });
 
@@ -390,6 +430,150 @@ Route::middleware('auth')->prefix('retailor_order_items')->group(function () {
     
  });
 
+
+ //this below group is used to manage tasks details
+Route::middleware('auth')->prefix('tasks')->group(function () {
+
+    Route::get('/', [TasksController::class,'index'])->name('tasks.list');
+   
+     Route::get('/create', [TasksController::class, 'create'])->name('tasks.create');
+     Route::post('/store', [TasksController::class, 'store'])->name('tasks.store');
+
+    // Route::get('/payment-slip/{id}', [PurchaseFeedPaymentController::class, 'downloadPaymentSlip'])->name('payment.slip.download');
+
+ 
+    // Route::get('/get-purchase-amount/{id}', [PurchaseFeedPaymentController::class, 'getPurchaseAmount']);
+
+     Route::group(['prefix'=>'{task}'],function(){
+        
+         Route::get('/edit', [TasksController::class, 'edit'])->name('tasks.edit');
+         Route::post('/update', [TasksController::class, 'update'])->name('tasks.update');
+ 
+         Route::get('/view', [TasksController::class, 'view'])->name('tasks.view');
+      //   Route::post('/destroy', [PurchaseFeedItemsController::class, 'destroy'])->name('purchase_feed_items.destroy');
+ 
+       
+     });
+ 
+    
+ });
+
+
+ //this below group is used to manage tasks assignment details
+ Route::middleware('auth')->prefix('tasks_assignment')->group(function () {
+
+        Route::get('/', [TaskAssignmentController::class,'index'])->name('tasks_assignment.list');
+   
+        Route::get('/create', [TaskAssignmentController::class, 'create'])->name('tasks_assignment.create');
+        Route::post('/store', [TaskAssignmentController::class, 'store'])->name('tasks_assignment.store');
+
+        Route::group(['prefix'=>'{taskassignment}'],function(){
+    
+ 
+        Route::get('/view', [TaskAssignmentController::class, 'view'])->name('tasks_assignment.view');
+        Route::get('/view_reassign_form', [TaskAssignmentController::class, 'showReassignForm'])->name('task-assignments.reassign-form');
+        Route::put('/reassign', [TaskAssignmentController::class, 'reassign'])->name('task-assignments.reassign');
+ 
+       
+     });
+ 
+    
+ });
+
+
+
+
+
+//this below group is used to manage tasks execution details//task execution does not have table
+Route::middleware('auth')->prefix('tasks_execution')->group(function () {
+
+    Route::get('/', [TaskExecutionController::class,'myTasks'])->name('tasks_execution.list');
+
+    Route::post('/tasks/{id}/start', [TaskExecutionController::class, 'startTask'])->name('task_execution.start');
+    Route::post('/tasks/{id}/submit', [TaskExecutionController::class, 'submitForApproval'])->name('task_execution.complete');
+    Route::post('/tasks/{id}/approve', [TaskExecutionController::class, 'approveTask'])->name('task_execution.approve');
+  
+    Route::put('/task-assignments/{id}/reassign', [TaskExecutionController::class, 'reassign'])->name('task-assignments.reassign');
+
+
+    Route::post('/task/{id}/reject', [TaskExecutionController::class, 'reject'])->name('task_execution.reject');
+
+  
+  //  Route::get('/create', [TaskAssignmentController::class, 'create'])->name('tasks_assignment.create');
+  //  Route::post('/store', [TaskAssignmentController::class, 'store'])->name('tasks_assignment.store');
+
+   // Route::get('/payment-slip/{id}', [PurchaseFeedPaymentController::class, 'downloadPaymentSlip'])->name('payment.slip.download');
+
+
+   // Route::get('/get-purchase-amount/{id}', [PurchaseFeedPaymentController::class, 'getPurchaseAmount']);
+
+    //Route::group(['prefix'=>'{taskassignment}'],function(){
+       
+    //    Route::get('/edit', [TasksController::class, 'edit'])->name('tasks.edit');
+   //     Route::post('/update', [TasksController::class, 'update'])->name('tasks.update');
+
+    //   Route::get('/view', [TaskAssignmentController::class, 'view'])->name('tasks_assignment.view');
+     //   Route::post('/destroy', [PurchaseFeedItemsController::class, 'destroy'])->name('purchase_feed_items.destroy');
+
+      
+   // });
+
+   
+});
+
+
+//this below group is used to manage salry for each role
+ Route::middleware('auth')->prefix('salary')->group(function () {
+
+        Route::get('/', [SalaryController::class,'index'])->name('salary.list');
+   
+        Route::get('/create', [SalaryController::class, 'create'])->name('salary.create');
+        Route::post('/store', [SalaryController::class, 'store'])->name('salary.store');
+
+        Route::group(['prefix'=>'{salary}'],function(){
+    
+            Route::get('/edit', [SalaryController::class, 'edit'])->name('salary.edit');
+            Route::post('/update', [SalaryController::class, 'update'])->name('salary.update');
+ 
+            Route::get('/view', [SalaryController::class, 'view'])->name('salary.view');
+      //   Route::post('/destroy', [PurchaseFeedItemsController::class, 'destroy'])->name('purchase_feed_items.destroy');
+ 
+       
+     });
+ 
+    
+ });
+
+
+//this below group is used to manage monthly salary payment for each role
+ Route::middleware('auth')->prefix('monthly_salary')->group(function () {
+
+     //   Route::get('/', [SalaryController::class,'index'])->name('salary.list');
+   
+        Route::get('/create', [MonthlySalaryPaymentController::class, 'create'])->name('monthly_salary_payment.create');
+        Route::get('/get-eligible-employees', [MonthlySalaryPaymentController::class, 'getEligibleEmployees']);
+
+        
+     //   Route::post('/store', [SalaryController::class, 'store'])->name('salary_payment.store');
+
+     //   Route::group(['prefix'=>'{salary}'],function(){
+    
+        //    Route::get('/edit', [SalaryController::class, 'edit'])->name('salary.edit');
+         //   Route::post('/update', [SalaryController::class, 'update'])->name('salary.update');
+ 
+        //    Route::get('/view', [SalaryController::class, 'view'])->name('salary.view');
+      //   Route::post('/destroy', [PurchaseFeedItemsController::class, 'destroy'])->name('purchase_feed_items.destroy');
+ 
+       
+     //});
+ 
+    
+ });
+
+
+
+
+
 //this below group is used to manage order review details
 Route::middleware('auth')->prefix('order_review_details')->group(function () {
 
@@ -419,16 +603,81 @@ Route::middleware('auth')->prefix('cancel_order_details')->group(function () {
     
  });
 
+//this below group is used to invoice for order details
+Route::middleware('auth')->prefix('invoice_for_order_details')->group(function () {
+
+    
+    Route::get('/retailor_orders/{order}/invoice', [InvoiceController::class, 'generateInvoice'])->name('retailor_order.invoice');
+      
+    
+ });
+
+
+
+ //this below group is used to upload payment details
+Route::middleware('auth')->prefix('upload_payment_details')->group(function () {
+
+    Route::get('retailor/upload_payment/{order}/create', [UploadPaymentController::class, 'create'])->name('upload_payment.receipt.create');
+
+    Route::post('retailor/upload_payment/{order}/store', [UploadPaymentController::class, 'store'])->name('upload_payment.receipt.store');
+
+    Route::get('retailor/upload_payment/{order}/edit', [UploadPaymentController::class, 'edit'])->name('upload_payment.receipt.edit');
+    
+    
+     
+    
+ });
+
+//this below group is used to assign delivery person details
+Route::middleware('auth')->prefix('assign_delivery_person')->group(function () {
+
+    Route::get('assign/{order}/create', [AssignDeliveryPersonController::class, 'showDeliveryPersonForm'])->name('assign_delivery_person.create');
+
+    Route::post('assign/{order}/store', [AssignDeliveryPersonController::class, 'assignDeliveryPerson'])->name('assign_delivery_person.store');
+
+   // Route::get('retailor/upload_payment/{order}/edit', [UploadPaymentController::class, 'edit'])->name('upload_payment.receipt.edit');
+    
+
+ });
+
+
+//this below group is used to re-assign delivery person details
+Route::middleware('auth')->prefix('re-assign_delivery_person')->group(function () {
+
+    Route::get('re-assign/{order}/create', [ReAssignDeliveryPersonController::class, 'showReAssignDeliveryPersonForm'])->name('re_assign_delivery_person.create');
+
+    Route::post('re-assign/{order}/store', [ReAssignDeliveryPersonController::class, 'ReAssignDeliveryPerson'])->name('re_assign_delivery_person.store');
+
+ });
+
+
+
+
+//this below group is used to marked for the delivery products are ready  for out of the farm
+Route::middleware('auth')->prefix('products_out_for_the_farm_to_delivery')->group(function () {
+
+    Route::post('/orders/{id}/start-delivery', [DeliveryController::class, 'startDelivery'])->name('orders.startDelivery');
+
+ });
+
+ //this below group is used to when delivery person successfully deliver the products and click the delivered button
+Route::middleware('auth')->prefix('successful_deliver_the_prodcuts')->group(function () {
+
+    Route::post('/orders/{id}/successful_delivery', [DeliveryController::class, 'markAsDelivered'])->name('orders.successful_delivery');
+
+ });
+
+
+
  //this below group is used to verify the payment details
 Route::middleware('auth')->prefix('verify_payment_details')->group(function () {
 
-    Route::get('/payment/{order}/verify', [VerifyPaymentController::class, 'create'])->name('upload_payment.receipt');
+ 
+    Route::get('/verify_payment/{order}/show',[VerifyPaymentController::class,'show'])->name('verify_payment.view');
 
-    Route::post('/store/{order}/upload', [VerifyPaymentController::class, 'store'])->name('upload_payment.receipt.store');
+    Route::post('/verify_payment/{order}/accept', [VerifyPaymentController::class, 'verifyPaymentAccept'])->name('verify_payment.receipt.accept');
 
-    Route::get('/payment/{order}/verify/edit', [VerifyPaymentController::class, 'edit'])->name('upload_payment.receipt.edit');
-
-    Route::get('/payment/{order}/verify_payment/show',[VerifyPaymentController::class,'show'])->name('verify_payment.view');
+    Route::post('/verify_payment/{order}/reject', [VerifyPaymentController::class, 'verifyPaymentReject'])->name('verify_payment.receipt.reject');
     
 //    Route::post('/orders/{order}/cancel-after-approval', [VerifyPaymentController::class, 'cancelOrderAfterApproved'])->name('order.cancel_after_approval');
    
@@ -436,7 +685,6 @@ Route::middleware('auth')->prefix('verify_payment_details')->group(function () {
 
    
      
-    
  });
 
 

@@ -83,7 +83,7 @@
 
                                 | 
                          
-                                <a href="{{ route('upload_payment.receipt', $retailor_order->id) }}">Upload Payment</a>
+                                <a href="{{ route('upload_payment.receipt.create', $retailor_order->id) }}">Upload Payment</a>
                         @endif
 
                         @if($retailor_order->status == 'Approved' && $retailor_order->payment_status == 'Under Review')
@@ -102,8 +102,32 @@
                             
                         @endif
 
+                        @if($retailor_order->payment_status == 'Paid' && $retailor_order->status == 'Ready for Delivery')
+                            <a href="{{ route('assign_delivery_person.create',$retailor_order->id)  }}" >Assign Delivery Person</a>
+                        @endif
+
+                        @if($retailor_order->status == 'Assigned')
+                            <a href="{{ route('re_assign_delivery_person.create', $retailor_order->id) }}" class="btn btn-warning">Re-Assign Delivery Person</a>
+                        @endif
+
+
+                        @if($retailor_order->status == 'Assigned')
+                            <form action="{{ route('orders.startDelivery', $retailor_order->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-primary">Start Delivery</button>
+                            </form>
+                        @endif
+
+
+                        @if($retailor_order->status == 'Out for Delivery')
+                            <form action="{{ route('orders.successful_delivery', $retailor_order->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-success">Delivered</button>
+                            </form>
+                        @endif
+
                         @if($retailor_order->payment_status == 'Paid')
-                            <a href="">View Invoice</a>
+                            <a href="{{ route('retailor_order.invoice',$retailor_order->id) }}">View Invoice</a>
                         @endif
                             <a href="{{ route('retailor_order_items.view',$retailor_order->id) }}">View</a>
 

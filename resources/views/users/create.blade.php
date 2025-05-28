@@ -90,7 +90,7 @@
         </div>
 
 
-      
+        <!-- retailor fields-->
         <div id="retailer_fields" class="d-none" >
 
 
@@ -134,6 +134,100 @@
             
         </div>
 
+
+<!-- Farm labore fields -->
+        <div id="farmlabore_fields" class="d-none" >
+
+            <div class="form-group">
+                        <label for="user_id">Farm Labore</label><br>
+                            <select name="user_id" id="user_id"  class="form-control">
+
+                                <option value="">Select Farm Labore</option>
+                                @foreach($farm_labores as $farm_labore)
+                                <option value="{{ $farm_labore->id }}">{{ $farm_labore->name }}</option>
+                                @endforeach
+                            
+                            </select>
+                @error('user_id') <span class="text-danger">{{ $message }}</span> @enderror
+            </div>
+
+            <div class="form-group">
+                <label for="birth_date">Date of Birth</label>
+                <input type="date" name="birth_date" class="form-control rounded" id="birth_date" >
+                @error('birth_date') <span class="text-danger">{{ $message }}</span> @enderror
+            </div>
+                
+            <div class="form-group">
+                <label for="hire_date">Hire Date</label>
+                <input type="date" name="hire_date" class="form-control rounded" id="hire_date" >
+                @error('hire_date') <span class="text-danger">{{ $message }}</span> @enderror
+            </div>
+           
+            
+        </div>
+
+
+         <div id="general_manager_fields" class="d-none" >
+
+            <div class="form-group">
+                        <label for="user_id">Farm Labore</label><br>
+                            <select name="user_id" id="user_id"  class="form-control">
+
+                                <option value="">Select Farm Labore</option>
+                                @foreach($farm_labores as $farm_labore)
+                                <option value="{{ $farm_labore->id }}">{{ $farm_labore->name }}</option>
+                                @endforeach
+                            
+                            </select>
+                @error('user_id') <span class="text-danger">{{ $message }}</span> @enderror
+            </div>
+
+            <div class="form-group">
+                <label for="birth_date">Date of Birth</label>
+                <input type="date" name="birth_date" class="form-control rounded" id="birth_date" >
+                @error('birth_date') <span class="text-danger">{{ $message }}</span> @enderror
+            </div>
+                
+            <div class="form-group">
+                <label for="hire_date">Hire Date</label>
+                <input type="date" name="hire_date" class="form-control rounded" id="hire_date" >
+                @error('hire_date') <span class="text-danger">{{ $message }}</span> @enderror
+            </div>
+           
+            
+        </div>
+
+        <div id="farmlabore_fields" class="d-none" >
+
+            <div class="form-group">
+                        <label for="user_id">Farm Labore</label><br>
+                            <select name="user_id" id="user_id"  class="form-control">
+
+                                <option value="">Select Farm Labore</option>
+                                @foreach($farm_labores as $farm_labore)
+                                <option value="{{ $farm_labore->id }}">{{ $farm_labore->name }}</option>
+                                @endforeach
+                            
+                            </select>
+                @error('user_id') <span class="text-danger">{{ $message }}</span> @enderror
+            </div>
+
+            <div class="form-group">
+                <label for="birth_date">Date of Birth</label>
+                <input type="date" name="birth_date" class="form-control rounded" id="birth_date" >
+                @error('birth_date') <span class="text-danger">{{ $message }}</span> @enderror
+            </div>
+                
+            <div class="form-group">
+                <label for="hire_date">Hire Date</label>
+                <input type="date" name="hire_date" class="form-control rounded" id="hire_date" >
+                @error('hire_date') <span class="text-danger">{{ $message }}</span> @enderror
+            </div>
+           
+            
+        </div>
+
+
     
         <button type="submit" class="btn btn-primary">Register</button>
 
@@ -167,18 +261,26 @@ $(document).ready(function () {
 
 
         // Show relevant fields based on the selected role
-        if (roleId == 3) { // Assuming '1' is Retailer
+        if (roleId == 3) { // Assuming '3' is Retailer
 
             $('#retailer_fields').removeClass('d-none');
             $('#doctor_fields').addClass('d-none');
-          
+            $('#farmlabore_fields').addClass('d-none');
         } 
 
         else if(roleId==2){ // Assuming '2' is Doctor
             $('#doctor_fields').removeClass('d-none');
             $('#retailer_fields').addClass('d-none');
-         
+            $('#farmlabore_fields').addClass('d-none');
           
+        }
+
+        else if(roleId==5)
+        {
+            $('#farmlabore_fields').removeClass('d-none');
+            $('#doctor_fields').addClass('d-none');
+            $('#retailer_fields').addClass('d-none');
+           
         }
         // Add more conditions for other roles as needed
     }

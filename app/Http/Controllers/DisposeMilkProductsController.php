@@ -7,10 +7,54 @@ use App\Models\DisposeMilkProducts;
 use App\Models\ManufacturerProduct;
 use App\Models\Role;
 use App\Models\User;
-
+use Carbon\Carbon;
 
 class DisposeMilkProductsController extends Controller
 {
+
+
+  public function monthlyReport(Request $request)
+  {
+    //this get the year input from the form
+    $year = $request->input('year');
+
+    // Prepare empty data
+    // This creates an associative array with month names as keys and 0 as the initial value for each.
+    $monthlyData = array_fill_keys([
+        'January','February','March','April','May','June',
+        'July','August','September','October','November','December'
+    ], 0);
+
+    // Get distinct years for dropdown
+    // This retrieves all distinct years from the date column in the dispose_milk table
+    $years = DisposeMilkProducts::selectRaw('YEAR(date) as year')
+        ->distinct() //Removes duplicate years.
+        ->orderBy('year', 'desc') //Orders years in descending order (latest year first).
+        ->pluck('year');//Returns only the year values as a simple array, like [2024, 2023, 2022].
+
+
+    if ($year) //This checks if the user has selected a year
+    {
+        $records = DisposeMilkProducts::whereYear('date', $year)->get();//Retrieve Records for the Selected Year
+
+        //Loop Through Records and Sum Monthly Totals
+        foreach ($records as $record) 
+        {
+            //This line is used to extract the month name (like January, February, etc.) from a date stored in $record->date
+            $month = Carbon::parse($record->date)->format('F');
+
+            //Add the disposed milk quantity to the respective month in the $monthlyData array.
+            $monthlyData[$month] += $record->dispose_quantity;
+        }
+    }
+
+    return view('dispose_milk_products.monthly_report', compact('monthlyData', 'year', 'years'));
+    }
+
+
+
+
+
     //
     public function index()
     {

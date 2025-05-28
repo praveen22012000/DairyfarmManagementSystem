@@ -61,7 +61,7 @@
                     </div>
                 </div>
 
-                <!-- Student Card -->
+                <!-- Supplier Card -->
                 <div class="col-md-4 col-sm-12 mb-4">
                     <div class="card shadow h-100">
                         <div class="card-body text-center">
@@ -75,6 +75,38 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- General Manager Card -->
+                <div class="col-md-4 col-sm-12 mb-4">
+                    <div class="card shadow h-100">
+                        <div class="card-body text-center">
+                            <div class="rounded-circle mx-auto" style="width: 100px; height: 100px; background-color: #f8f9fa;">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpCwLhhcN3ZHoPpop_C26TcefHSQkW_-TUKAP77wpUCXYR8iegKqu2t66JF1ErH5_wXg0&usqp=CAU" alt="Student" class="img-fluid rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <!-- get student count dynamically -->
+                            <h5 class="card-title mt-3"></h5>
+                            <!-- link student show blade  -->
+                            <p class="card-text"> <a href="#"> General Manager </a></p>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- General Manager Card -->
+                <div class="col-md-4 col-sm-12 mb-4">
+                    <div class="card shadow h-100">
+                        <div class="card-body text-center">
+                            <div class="rounded-circle mx-auto" style="width: 100px; height: 100px; background-color: #f8f9fa;">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpCwLhhcN3ZHoPpop_C26TcefHSQkW_-TUKAP77wpUCXYR8iegKqu2t66JF1ErH5_wXg0&usqp=CAU" alt="Student" class="img-fluid rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <!-- get student count dynamically -->
+                            <h5 class="card-title mt-3"></h5>
+                            <!-- link student show blade  -->
+                            <p class="card-text"> <a href="#"> Sales Manager </a></p>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
 
         </div>

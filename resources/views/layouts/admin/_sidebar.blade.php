@@ -97,7 +97,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{route('supply_feed_vaccine.list')}}">
                     <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Supply Feed Vaccine Details</span></a>
+                    <span>Supplier Details</span></a>
             </li>
 
 
@@ -163,8 +163,35 @@
                     <span>Appointment</span></a>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('tasks.list')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Tasks</span></a>
+            </li>
 
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('tasks_assignment.list')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Tasks Assignment</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('tasks_execution.list')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Tasks Execution</span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('salary.list')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Salary</span></a>
+            </li>
            
+             <li class="nav-item">
+                <a class="nav-link" href="{{route('monthly_salary_payment.create')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Monthly Salary</span></a>
+            </li>
 
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('users.list') }}">

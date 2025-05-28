@@ -10,7 +10,7 @@
 
     <br>
 
-    <form  method="POST" enctype="multipart/form-data" action="">
+    <form  method="POST" enctype="multipart/form-data" action="{{ route('supply_feed_vaccine.update',$supplier->id) }}">
 
     @csrf
     
@@ -25,7 +25,7 @@
 @endif
 
 
-    <h1>Supplier Registration Form</h1>     
+    <h1>Supplier Registration Form edit</h1>     
         
     <div class="mb-4">
             <label class="block text-gray-700 font-medium" for="name">Supplier Name</label>
@@ -55,33 +55,10 @@
                    @error('address') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
 
-        <div class="mb-4">
-                <label for="feeds" class="block text-gray-700 font-medium" >Feeds:</label>
-                    <select name="feeds[]" id="feeds"  class="form-control" multiple>
-                        @foreach($feeds as $feed)
-                            <option value="{{ $feed->id }}"
-                            {{ in_array($feed->id, old('feeds', $supplier->feeds->pluck('id')->toArray())) ? 'selected' : '' }}
-                            >{{ $feed->feed_name }}</option>
-                        @endforeach
-                    </select>
-                    @error('feeds[]') <span class="text-danger">{{ $message }}</span> @enderror
-        </div>
-
-        <div class="mb-4">
-                <label for="vaccines" >Vaccines:</label>
-                    <select name="vaccines[]" id="vaccines" class="form-control" multiple>
-                        @foreach($vaccines as $vaccine)
-                            <option value="{{ $vaccine->id }}"
-                            {{ in_array($vaccine->id, old('vaccines', $supplier->vaccines->pluck('id')->toArray())) ? 'selected' : '' }}    
-                            >{{ $vaccine->vaccine_name }}</option>
-                        @endforeach
-                    </select>
-                    @error('vaccines') <span class="text-danger">{{ $message }}</span> @enderror
-        </div>
 
         
         
-        <button type="submit" class="btn btn-success mt-3">Save Record</button>
+        <button type="submit" class="btn btn-success mt-3">Update</button>
     </form>
 
 </div>

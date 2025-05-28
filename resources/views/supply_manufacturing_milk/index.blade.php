@@ -18,7 +18,19 @@
                 </div>
 
             </div>
+
+             <!-- start-->
+        <div class="card-header">
             
+                <a class="btn btn-primary" href="{{ route('monthly_milk_allocation.report', ['year' => now()->year]) }}">
+                     View Monthly Chart
+                </a>   
+        </div>
+
+        <!--end -->
+
+      
+        <!--END -->
             <div class="card-body">
                 @if (session('success'))
                 <div class="alert alert-success">

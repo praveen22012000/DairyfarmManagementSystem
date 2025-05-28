@@ -13,4 +13,9 @@ class Role extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function salary()
+    {
+        return $this->hasOne(Salary::class,'role_id');
+    }
 }

@@ -5,7 +5,7 @@
 <div class="col-md-12">
 
        
-            <h1>Retailor Payment Form</h1>     
+            <h1>Retailor Payment Form </h1>     
 
     <br>
 

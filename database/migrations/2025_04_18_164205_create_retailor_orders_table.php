@@ -20,14 +20,22 @@ return new class extends Migration
             $table->date('ordered_date');
 
             $table->string('delivery_address');
-            $table->enum('status', ['Pending', 'Approved','Rejected','canceled', 'Paid', 'Ready for Delivery', 'Delivered', 'Completed'])->default('Pending');
-            $table->enum('payment_status', ['Unpaid','Under Review', 'Paid'])->default('Unpaid');
+            $table->enum('status', ['Pending', 'Approved','Rejected','canceled', 'Paid', 'Ready for Delivery','Assigned','Out for Delivery', 'Delivered', 'Completed'])->default('Pending');
+            $table->enum('payment_status', ['Unpaid','Under Review', 'Paid','Rejected'])->default('Unpaid');
 
             $table->boolean('is_delivered')->default(false);
             $table->boolean('refund_requested')->default(false);
+
+            // In a migration file
+            $table->time('delivered_at')->nullable();
+
+
+            $table->integer('payment_attempts')->default(0);
+
+            $table->foreignId('delivery_person_id')->nullable();
         
             $table->foreign('retailor_id')->references('id')->on('users')->onDelete('cascade');
-           
+            $table->foreign('delivery_person_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->timestamps();
         });

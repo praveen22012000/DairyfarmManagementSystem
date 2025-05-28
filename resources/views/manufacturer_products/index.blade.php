@@ -18,6 +18,22 @@
                 </div>
 
             </div>
+
+
+         
+      
+
+        <!-- start-->
+        <div class="card-header">
+            
+                <a class="btn btn-primary" href="{{ route('milk_products.report', ['year' => now()->year]) }}">
+                     View Monthly Chart
+                </a>   
+        </div>
+
+        <!--end -->
+
+
             
             <div class="card-body">
                 @if (session('success'))

@@ -33,8 +33,7 @@
                         <th>Phone Number </th>
                         <th>Email</th>
                         <th>Address</th>
-                        <th>Feed</th>
-                        <th>Vaccine</th>
+                     
                         <th>Actions</th>
                        
                       
@@ -50,13 +49,12 @@
                         <td>{{$supplier->phone_no}}</td>
                         <td>{{$supplier->email}}</td>
                         <td>{{$supplier->address}}</td>
-                        <td>{{$supplier->feeds->pluck('feed_name')->implode(', ') }}</td>
-                        <td>{{$supplier->vaccines->pluck('vaccine_name')->implode(', ') }}</td>
+                 
                  
 
                         <td>
 
-                        <a href="{{ route('milk_product.view',$supplier->id) }}" class="btn btn-info">View</a>
+                        <a href="{{ route('supply_feed_vaccine.view',$supplier->id) }}" class="btn btn-info">View</a>
                         <a href="{{ route('supply_feed_vaccine.edit',$supplier->id) }}" class="btn btn-primary">Edit</a>
                         <button class="btn btn-danger" onclick="">Delete</button>
                     
