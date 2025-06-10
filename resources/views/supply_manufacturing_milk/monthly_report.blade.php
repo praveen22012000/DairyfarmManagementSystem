@@ -12,7 +12,9 @@
         <select name="year" id="year" class="form-control mr-2">
             <option value="">-- Choose Year --</option>
             @foreach ($years as $yr)
-                <option value="{{ $yr }}" {{ $year == $yr ? 'selected' : '' }}>{{ $yr }}</option>
+                @for ($i = now()->year; $i >= 2023; $i--)
+                <option value="{{ $i }}" {{ $year == $i ? 'selected' : '' }}>{{ $i }}</option>
+                @endfor
             @endforeach
         </select>
         <button type="submit" class="btn btn-primary">View</button>

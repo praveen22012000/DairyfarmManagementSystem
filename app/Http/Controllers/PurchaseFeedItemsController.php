@@ -9,9 +9,101 @@ use App\Models\Feed;
 use App\Models\PurchaseFeed;
 use App\Models\PurchaseFeedItems;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class PurchaseFeedItemsController extends Controller
 {
+
+    public function monthlyFeedPurchaseReport(Request $request)
+    {
+    // Default to current year
+    $year = $request->input('year', now()->year);
+
+    // Get all available years for dropdown
+    $years = DB::table('purchase_feeds')
+        ->selectRaw('YEAR(purchase_date) as year')
+        ->groupBy('year')
+        ->orderByDesc('year')
+        ->pluck('year');
+
+    // Get all feed names
+    $feeds = Feed::pluck('feed_name');
+
+    // Initialize monthly data
+    $tableData = [];
+
+    foreach (range(1, 12) as $month) {
+        $row = ['month' => date('F', mktime(0, 0, 0, $month, 1))];
+
+        foreach ($feeds as $feedName) {
+            $row[$feedName] = PurchaseFeedItems::whereHas('purchase_feed', function ($query) use ($year, $month) {
+                $query->whereYear('purchase_date', $year)
+                      ->whereMonth('purchase_date', $month);
+            })->whereHas('feed', function ($query) use ($feedName) {
+                $query->where('feed_name', $feedName);
+            })->sum('purchase_quantity');
+        }
+
+        $tableData[] = $row;
+    }
+
+    // Calculate yearly totals per feed
+    $totalPerFeed = [];
+    foreach ($feeds as $feedName) {
+        $totalPerFeed[$feedName] = PurchaseFeedItems::whereHas('purchase_feed', function ($query) use ($year) {
+            $query->whereYear('purchase_date', $year);
+        })->whereHas('feed', function ($query) use ($feedName) {
+            $query->where('feed_name', $feedName);
+        })->sum('purchase_quantity');
+    }
+
+    // Pass data to the view
+    return view('purchase_feed_items_by_suppliers.monthly_feed_purchases', compact('tableData', 'feeds', 'year', 'years', 'totalPerFeed'));
+    }
+
+    public function monthlyFeedPurchaseCostReport(Request $request)
+    {
+    $year = $request->input('year', now()->year);
+
+    // Get years for dropdown
+    $years = DB::table('purchase_feeds')
+        ->selectRaw('YEAR(purchase_date) as year')
+        ->groupBy('year')
+        ->orderByDesc('year')
+        ->pluck('year');
+
+    // Initialize arrays
+    $monthlyCost = [];
+    $tableData = [];
+
+    foreach (range(1, 12) as $month) {
+        $totalSpent = PurchaseFeedItems::whereHas('purchase_feed', function ($query) use ($year, $month) {
+            $query->whereYear('purchase_date', $year)
+                  ->whereMonth('purchase_date', $month);
+        })->selectRaw('SUM(unit_price * purchase_quantity) as total')
+          ->value('total') ?? 0;
+
+        $monthName = date('F', mktime(0, 0, 0, $month, 1));
+        $monthlyCost[] = $totalSpent;
+        $tableData[] = [
+            'month' => $monthName,
+            'amount_spent' => $totalSpent,
+        ];
+    }
+
+  
+
+    return view('purchase_feed_items_by_suppliers.monthly_feed_spending_for_each_product', compact('tableData', 'monthlyCost', 'year', 'years'));
+    }
+
+
+
+
+
+
+
+
     //
     public function index()
     {

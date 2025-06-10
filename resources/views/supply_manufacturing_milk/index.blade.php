@@ -25,6 +25,14 @@
                 <a class="btn btn-primary" href="{{ route('monthly_milk_allocation.report', ['year' => now()->year]) }}">
                      View Monthly Chart
                 </a>   
+
+                <a class="btn btn-primary" href="{{ route('milk.consumption.product.monthly', ['year' => now()->year]) }}">
+                     View Monthly Product Chart
+                </a> 
+
+                <a class="btn btn-primary" href="{{ route('reports.animal_milk_usage_per_month', ['year' => now()->year]) }}">
+                     View Monthly report for milk usage of the animals
+                </a> 
         </div>
 
         <!--end -->

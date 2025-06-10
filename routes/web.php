@@ -190,6 +190,9 @@ Route::middleware('auth')->prefix('details_about_the_milk_allocated_for_producti
     
  
     Route::get('/milk_allocating_for_manufacture/chart', [ProductionSupplyDetailsController::class, 'monthlyReport'])->name('monthly_milk_allocation.report');
+    Route::get('/milk-consumption/product-monthly', [ProductionSupplyDetailsController::class, 'productMonthlyConsumption'])->name('milk.consumption.product.monthly');
+    Route::get('/reports/animal-milk-usage', [ProductionSupplyDetailsController::class, 'animalMilkUsageReport'])->name('reports.animal_milk_usage_per_month');
+
 
 
     Route::group(['prefix'=>'{productionSupplyDetails}'],function(){
@@ -358,6 +361,12 @@ Route::middleware('auth')->prefix('purchase_feed_items')->group(function () {
   
     Route::get('/create', [PurchaseFeedItemsController::class, 'create'])->name('purchase_feed_items.create');
     Route::post('/store', [PurchaseFeedItemsController::class, 'store'])->name('purchase_feed_items.store');
+
+
+    Route::get('/report/monthly-feed-purchases', [PurchaseFeedItemsController::class, 'monthlyFeedPurchaseReport'])->name('report.monthly_feed_purchase');
+    Route::get('/reports/monthly-feed-spending', [PurchaseFeedItemsController::class, 'monthlyFeedPurchaseCostReport'])->name('reports.feed_spending_for_each_product');
+
+
 
     Route::group(['prefix'=>'{purchasefeeditem}'],function(){
        
@@ -698,6 +707,9 @@ Route::middleware('auth')->prefix('dispose_feed_items')->group(function () {
      Route::get('/create', [DisposeFeedItemsController::class, 'create'])->name('dispose_feed_items.create');
      Route::post('/store', [DisposeFeedItemsController::class, 'store'])->name('dispose_feed_items.store');
  
+    Route::get('/reports/feed-disposal', [DisposeFeedItemsController::class, 'monthlyFeedDisposalReport'])->name('feed.disposal.report');
+
+
      Route::group(['prefix'=>'{disposefeeditem}'],function(){
         
          Route::get('/edit', [DisposeFeedItemsController::class, 'edit'])->name('dispose_feed_items.edit');

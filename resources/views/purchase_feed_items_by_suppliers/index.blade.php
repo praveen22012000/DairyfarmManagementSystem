@@ -18,6 +18,20 @@
                 </div>
 
             </div>
+
+                     <!-- start-->
+        <div class="card-header">
+            
+                <a class="btn btn-primary" href="{{ route('report.monthly_feed_purchase') }}">
+                     View Monthly Chart
+                </a>   
+                
+                
+                <a class="btn btn-primary" href="{{ route('reports.feed_spending_for_each_product') }}">
+                     View Monthly Product Price Chart
+                </a>  
+                  
+        </div>
             
             <div class="card-body">
                 @if (session('success'))

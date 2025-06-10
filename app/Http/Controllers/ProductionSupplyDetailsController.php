@@ -9,6 +9,7 @@ use App\Models\ProductionSupply;
 use App\Models\ProductionSupplyDetails;
 use App\Models\ManufacturerProduct;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 
 use Illuminate\Http\Request;
@@ -18,34 +19,162 @@ class ProductionSupplyDetailsController extends Controller
     //
     public function monthlyReport(Request $request)
     {
+
+     //Retrieves the year value submitted from the frontend (   
     $year = $request->input('year');
 
     // Get years available from production_supplies
-    $years = \DB::table('production_supplies')
-        ->selectRaw('YEAR(date) as year')
-        ->distinct()
-        ->pluck('year');
+    $years = \DB::table('production_supplies')//directly accesses the production_supplies table using Laravel's query builder.
+        ->selectRaw('YEAR(date) as year')//Extracts the year part from the date column and names it as year
+        ->distinct()//Ensures that only unique years are returned.
+        ->pluck('year');//Extracts only the values of the year column into a simple array.
+
+        //You get something like [2022, 2023, 2024] — all years where there is supply data.
+
 
     // Monthly array default to 0
-    $monthlyConsumption = array_fill_keys([
+    $monthlyConsumption = array_fill_keys([ //This creates an associative array with month names as keys and 0 as the default value
         'January','February','March','April','May','June',
         'July','August','September','October','November','December'
     ], 0);
 
-    if ($year) {
-        $records = ProductionSupplyDetails::with('production_supply')
-            ->whereHas('production_supply', function ($query) use ($year) {
-                $query->whereYear('date', $year);
+    if ($year) //This checks if the $year variable is not null
+    {
+        //"Only get the ProductionSupplyDetails if their related production_supply has a date in the given year."
+        $records = ProductionSupplyDetails::with('production_supply')// Load data from the production_supply relationship (eager loading).
+            ->whereHas('production_supply', function ($query) use ($year)//  Filters the details only where the related production_supply entry has the date in the selected year. 
+            {
+            $query->whereYear('date', $year);
             })->get();
 
-        foreach ($records as $detail) {
-            $month = Carbon::parse($detail->production_supply->date)->format('F');
+
+        foreach ($records as $detail) //Loops over each detail record.
+        {
+            $month = Carbon::parse($detail->production_supply->date)->format('F');// Converts the date into a Carbon object Converts the date into full month name
             $monthlyConsumption[$month] += $detail->consumed_quantity;
-        }
     }
 
     return view('supply_manufacturing_milk.monthly_report', compact('monthlyConsumption', 'year', 'years'));
     }
+
+
+}
+
+//this function generate the report for monthly milk consumption of the each product
+  public function productMonthlyConsumption(Request $request)
+  {
+    // Get the selected year or use the current year
+    $year = $request->input('year', now()->year);
+
+    // Get distinct years from production_supplies
+    $years = DB::table('production_supplies')//This queries the production_supplies table.
+        ->selectRaw('YEAR(date) as year')// Extracts just the year from the date field
+        ->distinct()//Ensures only unique years are returned.
+        ->pluck('year');//Pulls out the year values into a simple array like [2022, 2023, 2024].
+
+    // Get monthly consumption per product
+    $data = ProductionSupplyDetails::with(['production_supply', 'milk_product'])//Uses Eager Loading to load related production_supply (for date info) and milk_product (for product name).
+        ->whereHas('production_supply', function ($query) use ($year) //whereYear('date', $year) ensures that only supplies from the selected year (e.g., 2024) are used.
+        {
+            $query->whereYear('date', $year);
+        })
+        ->get()//Executes the query and gets all matching records from the database.
+
+        //This line groups all the ProductionSupplyDetails records by the month in which they were produced.
+        ->groupBy(function ($item) {//Each $item here is an instance of the ProductionSupplyDetails model
+
+            //This line takes a date from the production_supply record and returns the full month name like "January", "February"
+            return Carbon::parse($item->production_supply->date)->format('F');
+
+        })
+        //This line is part of a Laravel Collection method chain. It is calling the map() method, which is used to transform each item in a collection.
+        ->map(function ($groupedByMonth) {//n the first loop, $groupedByMonth will hold all the records for January.
+            return $groupedByMonth->groupBy(function ($item) {//Inside the current month’s records, we want to group the data again, this time by product.
+                return $item->milk_product->product_name ?? 'Unknown';//Here we access the related milk_product and get its product_name.
+            })->map(function ($items) {
+
+                //This gives us the total quantity consumed for that product in that month.
+                return $items->sum('consumed_quantity');//For each product's group of records, we add up the values of consumed_quantity.
+
+            });
+        });
+
+    // Format months and products
+    $months = [
+        'January','February','March','April','May','June',
+        'July','August','September','October','November','December'
+    ];
+
+    $products = DB::table('milk_products')->pluck('product_name')->toArray();
+
+    // Prepare table and chart data
+    $tableData = [];//ou create an empty array called $tableData.
+    foreach ($months as $month) {//You loop over all 12 months (which were likely defined earlier as an array):
+        $row = ['month' => $month];//You start a new row for the current month.//You start a new row for the current month.
+        foreach ($products as $product) {// loop through all product names
+            $row[$product] = $data[$month][$product] ?? 0;//Now you fill in the quantity for that product in the current month.
+        }
+        $tableData[] = $row;
+    }
+
+    return view('supply_manufacturing_milk.product_monthly_consumption', compact('tableData', 'products', 'year', 'years'));
+    }
+
+
+    public function animalMilkUsageReport(Request $request)
+    {
+        //This reads the selected year from the request 
+    $year = $request->input('year', now()->year);
+
+    // Get distinct animal names involved in production
+    $animals = ProductionSupplyDetails::join('production_milks', 'production_milks.id', '=', 'production_supply_details.production_milk_id')
+        ->join('animal_details', 'animal_details.id', '=', 'production_milks.animal_id')
+        ->join('production_supplies', 'production_supplies.id', '=', 'production_supply_details.production_supply_id')
+        ->whereYear('production_supplies.date', $year)
+        ->select('animal_details.animal_name')
+        ->distinct()
+        ->pluck('animal_name');
+
+    // Get total milk consumption grouped by animal and month
+    $milkData = ProductionSupplyDetails::join('production_milks', 'production_milks.id', '=', 'production_supply_details.production_milk_id')
+        ->join('animal_details', 'animal_details.id', '=', 'production_milks.animal_id')
+        ->join('production_supplies', 'production_supplies.id', '=', 'production_supply_details.production_supply_id')
+        ->whereYear('production_supplies.date', $year)
+        ->select(
+            'animal_details.animal_name',
+            DB::raw('MONTH(production_supplies.date) as month'),
+            DB::raw('SUM(production_supply_details.consumed_quantity) as total_milk')
+        )
+        ->groupBy('animal_details.animal_name', DB::raw('MONTH(production_supplies.date)'))
+        ->get();
+
+    // Prepare table data with row-wise and column-wise totals
+    $tableData = [];
+    $totalPerMonth = array_fill(1, 12, 0); // month => total
+
+    foreach ($animals as $animal) {
+        $row = ['animal_name' => $animal];
+        $rowTotal = 0;
+
+        foreach (range(1, 12) as $month) {
+            $data = $milkData->where('animal_name', $animal)->where('month', $month)->first();
+            $quantity = $data ? $data->total_milk : 0;
+
+            $row['month_' . $month] = $quantity;
+            $rowTotal += $quantity;
+            $totalPerMonth[$month] += $quantity;
+        }
+
+        $row['total'] = $rowTotal;
+        $tableData[] = $row;
+    }
+
+    return view('supply_manufacturing_milk.animal_milk_usage', compact('tableData', 'year', 'totalPerMonth'));
+    }
+
+
+
+
 
     public function index()
     {

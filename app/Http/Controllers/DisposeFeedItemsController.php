@@ -7,10 +7,60 @@ use App\Models\PurchaseFeedItems;
 use App\Models\DisposeFeedDetaills;
 use App\Models\DisposeFeedItems;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DisposeFeedItemsController extends Controller
 {
     //
+   public function monthlyFeedDisposalReport(Request $request)
+{
+ 
+    $year = $request->input('year', now()->year);
+
+    // Get total disposed quantity per feed item per month
+    $monthlyDisposals = DisposeFeedItems::join('dispose_feed_detaills', 'dispose_feed_detaills.id', '=', 'dispose_feed_items.dispose_feed_detail_id')
+        ->join('purchase_feed_items', 'purchase_feed_items.id', '=', 'dispose_feed_items.purchase_feed_item_id')
+        ->join('feeds', 'feeds.id', '=', 'purchase_feed_items.feed_id')
+        ->whereYear('dispose_feed_detaills.dispose_date', $year)
+        ->select(
+            'feeds.feed_name',
+            DB::raw('MONTH(dispose_feed_detaills.dispose_date) as month'),
+            DB::raw('SUM(dispose_feed_items.dispose_quantity) as total_disposed')
+        )
+        ->groupBy('feeds.feed_name', DB::raw('MONTH(dispose_feed_detaills.dispose_date)'))
+        ->orderBy('feeds.feed_name')
+        ->orderBy('month')
+        ->get();
+
+    // Get distinct feed names
+    $feeds = $monthlyDisposals->pluck('feed_name')->unique();
+
+    // Prepare table data
+    $tableData = [];
+    $monthlyTotals = array_fill(1, 12, 0);
+
+    foreach ($feeds as $feedName) {
+        $row = ['feed_name' => $feedName];
+        $rowTotal = 0;
+
+        foreach (range(1, 12) as $month) {
+            // Corrected this line - filter the collection instead of trying to query
+            $disposedQty = $monthlyDisposals
+                ->where('feed_name', $feedName)
+                ->where('month', $month)
+                ->sum('total_disposed');
+
+            $row['month_' . $month] = $disposedQty;
+            $monthlyTotals[$month] += $disposedQty;
+            $rowTotal += $disposedQty;
+        }
+
+        $row['total'] = $rowTotal;
+        $tableData[] = $row;
+    }
+
+    return view('dispose_feed_items.monthly_dispose_report', compact('tableData', 'monthlyTotals', 'year'));
+}
 
     public function index()
     {
