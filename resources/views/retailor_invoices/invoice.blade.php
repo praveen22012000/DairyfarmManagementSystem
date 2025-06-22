@@ -3,13 +3,13 @@
 <p>Invoice #{{ $order->id }}</p>
 <p>Date: {{ $order->created_at->format('Y-m-d') }}</p>
 
-<p>Customer: {{ $order->customer_name }}</p>
+<p>Customer: {{ $order->user->name }}</p>
 <p>Address: {{ $order->customer_address }}</p>
 
 <table border="1" cellpadding="5">
   <thead>
     <tr>
-      <th>Item</th><th>Quantity</th><th>Price</th>
+      <th>Item</th><th>Quantity</th><th>Price</th><th>Subtotal</th>
     </tr>
   </thead>
   <tbody>
@@ -18,9 +18,10 @@
         <td>{{ $item->milk_product->product_name }}</td>
         <td>{{ $item->ordered_quantity }}</td>
         <td>Rs.{{ $item->unit_price }}</td>
+        <td>{{ $item->ordered_quantity * $item->unit_price  }}</td>
       </tr>
     @endforeach
   </tbody>
 </table>
 
-<p><strong>Total:</strong> Rs.{{ $order->total_amount }}</p>
+<p><strong>Total:</strong> Rs.{{ $order->total_payable_amount }}</p>

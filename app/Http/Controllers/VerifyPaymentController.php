@@ -14,6 +14,7 @@ class VerifyPaymentController extends Controller
     {
         $retailor_order = RetailorOrder::with(['order_payment'])->findOrFail($orderID);
 
+       
         return view('verify_payment.create',['retailor_order'=>$retailor_order]);
 
     }

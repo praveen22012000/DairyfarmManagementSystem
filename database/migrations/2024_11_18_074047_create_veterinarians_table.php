@@ -15,11 +15,10 @@ return new class extends Migration
             $table->id();
 
             $table->string('specialization');
-            $table->date('hire_date');
-            $table->date('birth_date');
+            $table->date('doctor_hire_date');
+          
             $table->string('license_number');
-            $table->string('gender');
-            $table->string('salary');
+          
           
             $table->foreignId('veterinarian_id');
 

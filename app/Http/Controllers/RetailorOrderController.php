@@ -79,10 +79,30 @@ class RetailorOrderController extends Controller
                 $orderItem->save();
         
                 $totalAmount += $product->unit_price * $orderedQuantity;
+                
+            }
+
+            if($totalAmount > 10000)
+            {
+                 $discount=$totalAmount * 0.3;
+                $payable_amount=$totalAmount-$discount;
+            }
+            else if($totalAmount > 5000)
+            {
+                $discount=$totalAmount * 0.2;
+                $payable_amount=$totalAmount-$discount;
+            }
+            else
+            {
+                 $discount=$totalAmount * 0;
+                $payable_amount=$totalAmount-$discount;
             }
         
             // Update the order with calculated total amount
             $order->total_amount = $totalAmount;
+            $order->discount_amount= $discount;
+            $order->total_payable_amount= $payable_amount;
+            
             $order->save();
         
             // Commit transaction if everything is successful

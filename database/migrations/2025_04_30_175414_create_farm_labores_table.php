@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('farm_labores', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('user_id');
+            $table->foreignId('farm_labore_id');
 
-            $table->date('birth_date');
-            $table->date('hire_date');
+           
+            $table->date('farm_labore_hire_date');
             $table->enum('status',['Available','Busy'])->default('Available');
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('farm_labore_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->timestamps();
         });

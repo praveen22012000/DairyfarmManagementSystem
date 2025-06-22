@@ -68,10 +68,10 @@
                             <div class="rounded-circle mx-auto" style="width: 100px; height: 100px; background-color: #f8f9fa;">
                                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpCwLhhcN3ZHoPpop_C26TcefHSQkW_-TUKAP77wpUCXYR8iegKqu2t66JF1ErH5_wXg0&usqp=CAU" alt="Student" class="img-fluid rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
-                            <!-- get student count dynamically -->
-                            <h5 class="card-title mt-3"></h5>
-                            <!-- link student show blade  -->
-                            <p class="card-text"> <a href="#"> supplier </a></p>
+                            <!-- get farm labores count dynamically -->
+                            <h5 class="card-title mt-3">{{$numberOfFarmLabores}}</h5>
+                            <!-- link farm labore  show blade  -->
+                            <p class="card-text"> <a href="{{ route('farm_labores.list') }}"> Farm Labore </a></p>
                         </div>
                     </div>
                 </div>
@@ -83,10 +83,10 @@
                             <div class="rounded-circle mx-auto" style="width: 100px; height: 100px; background-color: #f8f9fa;">
                                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpCwLhhcN3ZHoPpop_C26TcefHSQkW_-TUKAP77wpUCXYR8iegKqu2t66JF1ErH5_wXg0&usqp=CAU" alt="Student" class="img-fluid rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
-                            <!-- get student count dynamically -->
-                            <h5 class="card-title mt-3"></h5>
-                            <!-- link student show blade  -->
-                            <p class="card-text"> <a href="#"> General Manager </a></p>
+                            <!-- get general manager count dynamically -->
+                            <h5 class="card-title mt-3">{{$numberOfGeneralManagers}}</h5>
+                            <!-- link general manager show blade  -->
+                            <p class="card-text"> <a href="{{ route('general_manager.list') }}"> General Manager </a></p>
                         </div>
                     </div>
                 </div>
@@ -98,10 +98,10 @@
                             <div class="rounded-circle mx-auto" style="width: 100px; height: 100px; background-color: #f8f9fa;">
                                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpCwLhhcN3ZHoPpop_C26TcefHSQkW_-TUKAP77wpUCXYR8iegKqu2t66JF1ErH5_wXg0&usqp=CAU" alt="Student" class="img-fluid rounded-circle" style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
-                            <!-- get student count dynamically -->
-                            <h5 class="card-title mt-3"></h5>
-                            <!-- link student show blade  -->
-                            <p class="card-text"> <a href="#"> Sales Manager </a></p>
+                            <!-- get sales manager count dynamically -->
+                            <h5 class="card-title mt-3">{{$numberOfSalesManagers}}</h5>
+                            <!-- link sales manager show blade  -->
+                            <p class="card-text"> <a href="{{ route('sales_manager.list') }}"> Sales Manager </a></p>
                         </div>
                     </div>
                 </div>

@@ -49,6 +49,16 @@ class User extends Authenticatable
         ];
     }
 
+     public function sales_manager()
+    {
+         return $this->hasMany(GeneralManager::class,'sales_manager_id');
+    }
+
+    public function general_manager()
+    {
+         return $this->hasMany(GeneralManager::class,'general_manager_id');
+    }
+
     public function task_assignment()
     {
         return $this->hasMany(TaskAssignment::class,'assigned_by');
@@ -63,6 +73,13 @@ class User extends Authenticatable
     {
         return $this->hasMany(PurchaseFeedPayment::class,'payment_receiver');
     }
+
+
+    public function purchase_vaccine_payments()
+    {
+        return $this->hasMany(PurchaseVaccinePayments::class,'payment_receiver');
+    }
+
 
     public function appointment()
     {
@@ -84,7 +101,7 @@ class User extends Authenticatable
 
     public function farm_labore()
     {
-        return $this->hasOne(FarmLabore::class,'user_id');
+        return $this->hasOne(FarmLabore::class,'farm_labore_id');
     }
 
 

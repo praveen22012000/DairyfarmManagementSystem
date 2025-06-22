@@ -49,7 +49,7 @@
                        
                         <td>{{$retailor_order->total_amount}}</td>
                         <td>{{$retailor_order->user->name}}</td>
-                        <td>{{$retailor_order->status }}</td>
+                        <td >{{$retailor_order->status }}</td>
                         <td>{{$retailor_order->payment_status}}</td>
                        
                  
@@ -79,10 +79,6 @@
                             @csrf
                                 <button type="button" class="btn btn-danger" onclick="confirmCancel({{ $retailor_order->id }}, 'after')">Cancel After Approved</button>
                         </form>
-
-
-                                | 
-                         
                                 <a href="{{ route('upload_payment.receipt.create', $retailor_order->id) }}">Upload Payment</a>
                         @endif
 
@@ -92,15 +88,24 @@
 
                                 <a href="{{ route('upload_payment.receipt.edit', $retailor_order->id) }}" >Edit Payment</a>
 
+
+                            
+                        @endif
+
+
+                         @if($retailor_order->status == 'Approved' && $retailor_order->payment_status == 'Under Review' && $retailor_order->payment_attempts > 1)
+
+                               
                                 {{-- Retailor: Cancel Payment --}}
-                            <form action="" method="POST" style="display:inline;">
+                            <form action="{{ route('cancel_payment_receipt',$retailor_order->id) }}" method="POST" style="display:inline;">
                                     @csrf
-                                @method('DELETE')
+                                @method('POST')
                                 <button type="submit" class="btn btn-danger">Cancel Payment</button>
                             </form>
 
                             
                         @endif
+                    
 
                         @if($retailor_order->payment_status == 'Paid' && $retailor_order->status == 'Ready for Delivery')
                             <a href="{{ route('assign_delivery_person.create',$retailor_order->id)  }}" >Assign Delivery Person</a>
@@ -129,6 +134,7 @@
                         @if($retailor_order->payment_status == 'Paid')
                             <a href="{{ route('retailor_order.invoice',$retailor_order->id) }}">View Invoice</a>
                         @endif
+
                             <a href="{{ route('retailor_order_items.view',$retailor_order->id) }}">View</a>
 
                     

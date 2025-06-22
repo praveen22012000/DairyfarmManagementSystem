@@ -11,7 +11,7 @@
         <!-- Role Selection -->
         <div class="form-group">
             <label for="role_id">Role:</label>
-            <select id="role_id" name="role_id" class="form-control">
+            <select id="role_id" name="role_id" disabled class="form-control">
                 <option value="">-- Select Role --</option>
                 @foreach($roles as $role)
                 <option value="{{ $role->id }}" {{ $veterinarian->user->role_id == $role->id ? 'selected' : '' }}>
@@ -22,49 +22,7 @@
             @error('role_id') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
 
-        <!-- Veterinarian Fields -->
-        <div id="doctor_fields" class="{{ $veterinarian->role_id == 2 ? '' : 'd-none' }}">
-            <div class="form-group">
-                <label for="specialization">Specialization:</label>
-                <input type="text" id="specialization" name="specialization" class="form-control" 
-                       value="{{ $veterinarian->specialization }}">
-                       @error('specialization') <span class="text-danger">{{ $message }}</span> @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="hire_date">Hire Date:</label>
-                <input type="date" id="hire_date" name="hire_date" class="form-control" 
-                       value="{{ $veterinarian->hire_date }}">
-                       @error('hire_date') <span class="text-danger">{{ $message }}</span> @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="birth_date">Date of Birth:</label>
-                <input type="date" name="birth_date" class="form-control rounded" id="birth_date" 
-                       value="{{ $veterinarian->birth_date }}">
-                       @error('birth_date') <span class="text-danger">{{ $message }}</span> @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="license_number">License Number:</label>
-                <input type="text" id="license_number" name="license_number" class="form-control" 
-                       value="{{ $veterinarian->license_number }}">
-                       @error('license_number') <span class="text-danger">{{ $message }}</span> @enderror
-            </div>
-
-            <div class="form-group">
-                <label for="gender">Gender:</label><br>
-                <input type="radio" id="male" name="gender" value="Male" 
-                       {{ $veterinarian->gender == 'Male' ? 'checked' : '' }}> <label for="male">Male</label><br>
-                <input type="radio" id="female" name="gender" value="Female" 
-                       {{ $veterinarian->gender == 'Female' ? 'checked' : '' }}> <label for="female">Female</label><br>
-                <input type="radio" id="others" name="gender" value="Others" 
-                       {{ $veterinarian->gender == 'Others' ? 'checked' : '' }}> <label for="others">Others</label>
-                       @error('gender') <span class="text-danger">{{ $message }}</span> @enderror
-            </div>
-          
-
-            <div class="form-group">
+         <div class="form-group">
 
                 <label for="veterinarian_id">Veterinarian</label><br>
                             <select name="veterinarian_id" id="veterinarian_id"  class="form-control">
@@ -80,13 +38,35 @@
             </div>
             
 
+        <!-- Veterinarian Fields -->
+        <div id="doctor_fields" class="{{ $veterinarian->role_id == 2 ? '' : 'd-none' }}">
             <div class="form-group">
-                <label for="salary">Salary (Rs.):</label>
-                <input type="text" name="salary" class="form-control rounded" id="salary" 
-                       value="{{ $veterinarian->salary }}">
-
-                       @error('salary') <span class="text-danger">{{ $message }}</span> @enderror
+                <label for="specialization">Specialization:</label>
+                <input type="text" id="specialization" name="specialization" class="form-control" 
+                       value="{{ $veterinarian->specialization }}">
+                       @error('specialization') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
+
+            <div class="form-group">
+                <label for="doctor_hire_date">Hire Date:</label>
+                <input type="date" id="doctor_hire_date" name="doctor_hire_date" class="form-control" 
+                       value="{{ $veterinarian->doctor_hire_date }}">
+                       @error('doctor_hire_date') <span class="text-danger">{{ $message }}</span> @enderror
+            </div>
+
+          
+            <div class="form-group">
+                <label for="license_number">License Number:</label>
+                <input type="text" id="license_number" name="license_number" class="form-control" 
+                       value="{{ $veterinarian->license_number }}">
+                       @error('license_number') <span class="text-danger">{{ $message }}</span> @enderror
+            </div>
+
+         
+
+           
+
+           
         </div>
 
         <button type="submit" class="btn btn-success mt-3">Update</button>

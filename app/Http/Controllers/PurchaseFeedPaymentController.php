@@ -16,6 +16,8 @@ class PurchaseFeedPaymentController extends Controller
     //this function used to calculate the total purchase payment for the particular purchase_id
     public function getPurchaseAmount($id)
     {
+
+       
     // Calculate total of all purchase_feed_items for this purchase
     $totalAmount = PurchaseFeedItems::where('purchase_id', $id)
                     ->selectRaw('SUM(unit_price * purchase_quantity) as total')

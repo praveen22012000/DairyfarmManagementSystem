@@ -13,18 +13,17 @@ class Veterinarian extends Model
 
     protected $fillable = [
         'specialization',
-        'hire_date',
-        'birth_date',
+        'doctor_hire_date',
+      
         'license_number',
-        'gender',
-        'salary',
+        
       'veterinarian_id'
        
     ];
 
     public function getExperienceAttribute()
     {
-        $hireDate = Carbon::parse($this->hire_date);
+        $hireDate = Carbon::parse($this->doctor_hire_date);
         $now = Carbon::now();
 
         // Calculate the total difference in days
@@ -39,17 +38,17 @@ class Veterinarian extends Model
 
     public function getAgeAttribute()
     {
-        $birthDate= Carbon::parse($this->birth_date);
+        $birthDate= Carbon::parse($this->doctor_birth_date);// This line gets the animal's or person's birth date from the model.
 
-        $now= Carbon::now();
+        $now= Carbon::now();//This gets the current date and time using Carbon.
 
 
-        $totalDays=$birthDate->diffInDays($now);
+        $totalDays=$birthDate->diffInDays($now);//This calculates the total number of days between the birth date and today.
 
-        $years=intdiv($totalDays,365);
-        $remainingDays=$totalDays%365;
+        $years=intdiv($totalDays,365);// This divides the total days by 365 to get the number of whole years.
+        $remainingDays=$totalDays%365;// This calculates the remaining days after subtracting full years.
 
-        return "{$years} years and {$remainingDays} days";
+        return "{$years} years and {$remainingDays} days";// This returns a string like 2 years and 18 days as the final age value.
     }
 
     public function user()

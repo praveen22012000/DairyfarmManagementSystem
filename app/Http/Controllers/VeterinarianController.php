@@ -24,20 +24,21 @@ class VeterinarianController extends Controller
     public function update(Request $request,Veterinarian $veterinarian)
     {
 
-        
+
         $data=$request->validate([
             'specialization'=>'required|string',
-            'hire_date'=>'required|date',
-            'birth_date'=>'required|date',
+            'doctor_hire_date'=>'required|date',
+          
             'license_number'=>"required|unique:veterinarians,license_number,$veterinarian->id",
-            'gender'=>'required',
-            'salary'=>'required',
+       
           
             'veterinarian_id' => 'required|exists:users,id',
 
 
         ]);
 
+      
+          
         
         $veterinarian->update($data);
 

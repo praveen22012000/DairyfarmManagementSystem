@@ -6,7 +6,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="float-left">
-                    <h2>Retailers</h2>
+                    <h2>Farm Labores</h2>
                 </div>
 
                 <div class="float-right">
@@ -24,12 +24,14 @@
             <table class="table">
                 <thead class="thead-dark">
                     <tr>
+
                         <th> ID</th>
                         <th>Name</th>
                         <th>Phone number</th>
                         <th>Address</th>
-                        <th>Store_name</th>
-                  
+                        <th>Experience</th>
+                      
+
                         <th>Actions</th>
                        
                       
@@ -37,19 +39,19 @@
                 </thead>
                  
                     <tr>
-                        @foreach($retailers as $retailer)
+                        @foreach($farm_labores as $farm_labore)
 
-                        <td>{{$retailer->id}}</td>
-                        <td>{{$retailer->user->name}}</td>
-                        <td>{{$retailer->user->phone_number}}</td>
-                        <td>{{$retailer->user->address}}</td>
-                        <td>{{$retailer->store_name}}</td>
-                    
+                        <td>{{$farm_labore->id}}</td>
+                        <td>{{$farm_labore->user->name}}</td>
+                        <td>{{$farm_labore->user->phone_number}}</td>
+                        <td>{{$farm_labore->user->address}}</td>
+                        <td>{{$farm_labore->experience}}</td>
+                      
                         <td>
 
-                        <a href="{{route('retailers.view',$retailer->id)}}" class="btn btn-info">View</a>
-                        <a href="{{route('retailers.edit',$retailer->id)}}" class="btn btn-primary">Edit</a>
-                        <button class="btn btn-danger" onclick="confirmDelete({{ $retailer->id }})">Delete</button>
+                        <a href="{{ route('farm_labore.view',$farm_labore->id) }}" class="btn btn-info">View</a>
+                        <a href="{{ route('farm_labore.edit',$farm_labore->id) }}" class="btn btn-primary">Edit</a>
+                        <button class="btn btn-danger" onclick="">Delete</button>
 
                         </td>
                     </tr>

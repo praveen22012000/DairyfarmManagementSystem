@@ -30,12 +30,13 @@
             </div>
 
             <!-- Nav Item - Pages Collapse Menu -->
+          
             <li class="nav-item">
                 <a class="nav-link" href="{{route('animal.list')}}">
                     <i class="fas fa-fw fa-chart-area"></i>
                     <span>Animals</span></a>
             </li>
-            
+          
 
             <li class="nav-item">
                 <a class="nav-link" href="{{route('animal_calvings.list')}}">
@@ -148,6 +149,12 @@
                     <span>Purchase Feed Payments</span></a>
             </li>
 
+              <li class="nav-item">
+                <a class="nav-link" href="{{route('purchase_vaccine_payments.create')}}">
+                    <i class="fas fa-fw fa-chart-area"></i>
+                    <span>Purchase Vaccine Payments</span></a>
+            </li>
+
             <li class="nav-item">
                 <a class="nav-link" href="{{route('retailor_order_items.list')}}">
                     <i class="fas fa-fw fa-chart-area"></i>
@@ -213,6 +220,8 @@
                         <a class="collapse-item" href="{{route('animal_pregnancies.list')}}">Pregnancies</a>
                         <a class="collapse-item" href="utilities-animation.html">Animations</a>
                         <a class="collapse-item" href="utilities-other.html">Other</a>
+                          <a class="collapse-item" href="utilities-animation.html">Animations</a>
+                        <a class="collapse-item" href="utilities-other.html">Other</a>
                     </div>
                 </div>
             </li>
@@ -221,12 +230,12 @@
             
             <!-- Nav Item - Utilities Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
-                    aria-expanded="true" aria-controls="collapseUtilities">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities1"
+                    aria-expanded="true" aria-controls="collapseUtilities1">
                     <i class="fas fa-fw fa-wrench"></i>
                     <span>Utilities</span>
                 </a>
-                <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+                <div id="collapseUtilities1" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Custom Utilities:</h6>

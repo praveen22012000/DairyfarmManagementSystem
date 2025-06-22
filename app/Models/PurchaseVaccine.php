@@ -11,6 +11,11 @@ class PurchaseVaccine extends Model
 
     protected $fillable=['supplier_id','purchase_date','pay_mode','user_id'];
 
+    public function purchase_vaccine_payment()
+    {
+        return $this->hasOne(PurchaseVaccinePayments::class,'purchase_id');
+    }
+
     public function purchase_vaccine_items()
     {
         return $this->hasMany(PurchaseVaccineItems::class,'purchase_id');

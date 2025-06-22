@@ -4,34 +4,77 @@
        
 <div class="col-md-12">
 
-{{ $retailor_order }}
+  @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
        
             <h1>Retailor Payment Form</h1>     
 
     <br>
 
-    <form method="POST" action="" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('upload_payment.receipt.update',$retailor_order->id) }}" enctype="multipart/form-data">
         @csrf
 
         
-
-        <label class="w-auto px-2">Transaction ID:</label>
-        <input type="text" name="transaction_id" value="{{ $retailor_order->order_payment->transaction_id }}" class="form-control rounded" > <br>
 
         <label class="w-auto px-2">Payment Date:</label>
         <input type="date" name="payment_date" value="{{ $retailor_order->order_payment->payment_date }}"  class="form-control rounded" > <br>
 
         <label class="w-auto px-2">Amount Paid:</label>
-        <input type="number" step="0.01" name="amount_paid" readonly value="{{ $retailor_order->total_amount }}" class="form-control rounded"><br>
+        <input type="number" step="0.01" name="amount_paid" readonly value="{{ $retailor_order->total_payable_amount }}" class="form-control rounded"><br>
 
         <label class="w-auto px-2">Payment Receipt (Image or PDF):</label>
         <input type="file" name="payment_receipt" accept="image/*,application/pdf" class="form-control rounded">
 
-        <br>
-    <button type="submit" class="btn btn-success mt-3">Upload Payment</button>
+        <button type="submit" class="btn btn-primary">Update Payment</button>
     </form>
 
+     <br>
     
+    
+
+    <form action="" id="cancelPaymentForm" method="POST" style="display:inline;">
+                    @csrf
+              
+                    <button type="button" onclick="confirmCancel({{ $retailor_order->id }})" class="btn btn-danger">Delete Payment</button>
+    </form>
 </div>
 
+@endsection
+
+
+@section('js')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+
+
+ function confirmCancel(retailorId) {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "This will permanently delete the order payment record.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Set form action dynamically based on animal ID
+                let cancelPaymentForm = document.getElementById("cancelPaymentForm");
+                cancelPaymentForm.action = `upload_payment_details/retailor/cancel_payment_receipt/${retailorId}/cancel`;
+                cancelPaymentForm.submit();
+            }
+        });
+    }
+
+</script>
 @endsection

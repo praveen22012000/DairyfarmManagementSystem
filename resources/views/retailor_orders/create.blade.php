@@ -34,6 +34,19 @@
                 <input type="text" name="total_amount" id="total_amount"  class="form-control rounded" readonly value="">
                 @error('total_amount') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
+
+            
+              <div>
+                <label for="discount_amount" class="block text-lg font-medium text-gray-700 mb-2">Discount Amount</label>
+                <input type="text" name="discount_amount" id="discount_amount"  class="form-control rounded" readonly value="">
+                @error('discount_amount') <span class="text-danger">{{ $message }}</span> @enderror
+            </div>
+
+              <div>
+                <label for="total_payable_amount" class="block text-lg font-medium text-gray-700 mb-2">Total Payable Amount</label>
+                <input type="text" name="total_payable_amount" id="total_payable_amount"  class="form-control rounded" readonly value="">
+                @error('total_payable_amount') <span class="text-danger">{{ $message }}</span> @enderror
+            </div>
         </div>
 
         <br>
@@ -126,20 +139,20 @@
 
 
      // Restore stock quantity on page load
-    $("select[name='product_id[]']").each(function () {
-        let selectedOption = $(this).find(":selected");
-        let unitPrice = selectedOption.data("unit_price");
-        let stockQuantity = selectedOption.data("stock_quantity");
+    $("select[name='product_id[]']").each(function () {//This line selects all <select> dropdowns that have the name="product_id[]"
+        let selectedOption = $(this).find(":selected");//$(this) refers to the current <select> element in the loop.//.find(":selected") finds the currently selected <option> in that dropdown.
+        let unitPrice = selectedOption.data("unit_price");//This reads the data-unit_price attribute from the selected <option>.
+        let stockQuantity = selectedOption.data("stock_quantity");//Similar to the previous line, this gets the data-stock_quantity attribute from the selected <option>.
 
-        $(this).closest("tr").find("input[name='unit_price[]']").val(unitPrice);
-        $(this).closest("tr").find("input[name='quantity[]']").val(stockQuantity);
+        $(this).closest("tr").find("input[name='unit_price[]']").val(unitPrice);//
+        $(this).closest("tr").find("input[name='quantity[]']").val(stockQuantity);// "Find the <tr> (row) that contains this <select> dropdown, then look inside that row for the quantity input and set its value to the selected product’s stock quantity."
     });
 
     // Update stock quantity and unit price dynamically on selection change
     $(document).on("change", "select[name='product_id[]']", function () {
-        let selectedOption = $(this).find(":selected");
-        let unitPrice = selectedOption.data("unit_price");
-        let stockQuantity = selectedOption.data("stock_quantity");
+        let selectedOption = $(this).find(":selected");//$(this) refers to the current <select> element in the loop.//.find(":selected") finds the currently selected <option> in that dropdown.
+        let unitPrice = selectedOption.data("unit_price");////This reads the data-unit_price attribute from the selected <option>.
+        let stockQuantity = selectedOption.data("stock_quantity");//Similar to the previous line, this gets the data-stock_quantity attribute from the selected <option>.
 
         $(this).closest("tr").find("input[name='unit_price[]']").val(unitPrice);
         $(this).closest("tr").find("input[name='quantity[]']").val(stockQuantity);
@@ -148,11 +161,11 @@
     // Calculate subtotal for a single row
     function updateRowSubtotal(row) 
     {
-        const qty = parseFloat(row.find('input[name="ordered_quantity[]"]').val()) || 0;
-        const price = parseFloat(row.find('input[name="unit_price[]"]').val()) || 0;
-        const subtotal = qty * price;
+        const qty = parseFloat(row.find('input[name="ordered_quantity[]"]').val()) || 0;//it gets the value from the "ordered_quantity" input field
+        const price = parseFloat(row.find('input[name="unit_price[]"]').val()) || 0;//it gets the value from the "unit price" input field
+        const subtotal = qty * price;//calculate the subtotal
     
-        row.find('input[name="subtotal[]"]').val(subtotal.toFixed(2));
+        row.find('input[name="subtotal[]"]').val(subtotal.toFixed(2));// this stores the subtotal value in the subtotal input field
         return subtotal;
     }
 
@@ -169,14 +182,56 @@
         $('#total_amount').val(grandTotal.toFixed(2)); // For form submission
     }
 
+    function totalPayableAmount() 
+    {
+        
+    let grandTotal = 0;
+    let discount = 0;
+    let payable = 0;
+
+    $('.milk-row').each(function () {
+        grandTotal += updateRowSubtotal($(this));
+    });
+
+    if(grandTotal > 10000)
+    {
+       // grandTotal=grandTotal-grandTotal*0.5;
+       discount=grandTotal*0.3;
+        payable=grandTotal-discount;
+    }
+
+    else if(grandTotal > 5000)
+    {
+        discount=grandTotal*0.2;
+          payable=grandTotal-discount;
+    }
+
+    else 
+    {
+          discount=grandTotal*0;
+        payable=grandTotal-discount;
+    }
+
+    $('#discount_amount').val(discount.toFixed(2));
+    $('#total_payable_amount').val(payable.toFixed(2));
+    $('#total_amount').val(grandTotal.toFixed(2));
+}
+
+
+    
+   
 // Trigger calculations on input changes
 $(document).on('input', 'input[name="ordered_quantity[]"], input[name="unit_price[]"]', function() {
     updateAllTotals();
+   totalPayableAmount();
+ 
 });
 
 // Initialize on page load
 $(document).ready(function() {
     updateAllTotals();
+    totalPayableAmount();
+ 
 });
 
 

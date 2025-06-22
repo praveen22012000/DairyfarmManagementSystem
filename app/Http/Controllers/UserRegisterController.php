@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Models\Veterinarian;
 use App\Models\Retailer;
 use App\Models\FarmLabore;
+use App\Models\GeneralManager;
+use App\Models\SalesManager;
 
 use Illuminate\Http\Request;
 
@@ -24,7 +26,20 @@ class UserRegisterController extends Controller
 
         $numberOfRetailers= $retailers->count();
 
-        return view('users.index',['numberOfVeterinarians'=>$numberOfVeterinarians,'numberOfRetailers'=>$numberOfRetailers]);
+        $farm_labores=FarmLabore::all();
+
+        $numberOfFarmLabores = $farm_labores->count();
+
+        $general_managers=GeneralManager::all();
+
+        $numberOfGeneralManagers = $general_managers->count();
+
+        $sales_managers=SalesManager::all();
+
+        $numberOfSalesManagers= $sales_managers->count();
+
+
+        return view('users.index',['numberOfVeterinarians'=>$numberOfVeterinarians,'numberOfRetailers'=>$numberOfRetailers,'numberOfFarmLabores'=>$numberOfFarmLabores,'general_managers'=>$general_managers,'numberOfGeneralManagers'=>$numberOfGeneralManagers,'numberOfSalesManagers'=>$numberOfSalesManagers]);
 
        
     }
@@ -48,6 +63,27 @@ class UserRegisterController extends Controller
         
     }
 
+    public function farm_labores_index()
+    {
+        $farm_labores= FarmLabore::with('user')->get();
+        
+        return view('farm_labores.index',['farm_labores'=>$farm_labores]);
+    }
+
+    public function general_manager_index()
+    {
+        $general_managers= GeneralManager::with('user')->get();
+
+        return view('general_manager.index',['general_managers'=>$general_managers]);
+    }
+
+    public function sales_manager_index()
+    {
+        $sales_managers= SalesManager::with('user')->get();
+
+        return view('sales_manager.index',['sales_managers'=>$sales_managers]);
+    }
+
     public function create()
     {
         $roles = Role::all(); // Fetch all roles
@@ -63,27 +99,34 @@ class UserRegisterController extends Controller
         ->get();
   
         $farm_labores=User::where('role_id',5)//only farm labore
-        ->whereNotIn('id',FarmLabore::pluck('user_id')->toArray())
+        ->whereNotIn('id',FarmLabore::pluck('farm_labore_id')->toArray())
         ->get();
   
-       
+       $general_managers=User::where('role_id',6)
+       ->whereNotIn('id',GeneralManager::pluck('general_manager_id')->toArray())
+       ->get();
    
-        return view('users.create', ["roles"=>$roles,"veterinarians"=>$veterinarians,'retailers'=>$retailers,'farm_labores'=>$farm_labores]);
+
+         $sales_managers=User::where('role_id',7)
+       ->whereNotIn('id',SalesManager::pluck('sales_manager_id')->toArray())
+       ->get();
+   
+
+        return view('users.create', ["roles"=>$roles,"veterinarians"=>$veterinarians,'retailers'=>$retailers,'farm_labores'=>$farm_labores,'general_managers'=>$general_managers,'sales_managers'=>$sales_managers]);
     }
 
     public function store(Request $request)
     {
         if($request->role_id == 2)
         {
-          
+        
 
             $request->validate([
                 'specialization'=>'required|string',
-                'hire_date'=>'required|date',
-                'birth_date'=>'required|date',
+                'doctor_hire_date'=>'required|date',
+              
                 'license_number'=>'required|unique:veterinarians,license_number',
-                'gender'=>'required',
-                'salary'=>'required',
+              
               
                 'veterinarian_id' => 'required|exists:users,id'
 
@@ -93,11 +136,10 @@ class UserRegisterController extends Controller
             Veterinarian::create([
 
                 'specialization'=>$request->specialization,
-                'hire_date'=>$request->hire_date,
-                'birth_date'=>$request->birth_date,
+                'doctor_hire_date'=>$request->doctor_hire_date,
+               
                 'license_number'=>$request->license_number,
-                'gender'=>$request->gender,
-                'salary'=>$request->salary,
+                
                     
                 'veterinarian_id'=>$request->veterinarian_id
 
@@ -131,7 +173,7 @@ class UserRegisterController extends Controller
 
             ]);
 
-            return redirect()->route('retailers.list')->with('success', 'Veterinarian record added successfully!');
+            return redirect()->route('retailers.list')->with('success', 'Retailor record added successfully!');
         }
 
 
@@ -140,28 +182,81 @@ class UserRegisterController extends Controller
            
             $request->validate([
 
-                'user_id'=>'required|exists:users,id',
-
-                'birth_date'=>'required',
-                'hire_date'=>'required'
+                'farm_labore_id'=>'required',
                 
-                    
+                'farm_labore_hire_date'=>'required'         
             ]);
 
           
             FarmLabore::create([
 
-                'user_id'=>$request->user_id ,
-                'hire_date'=>$request->hire_date,
-                'birth_date'=>$request->birth_date,
+                'farm_labore_id'=>$request->farm_labore_id ,
+                
+                'farm_labore_hire_date'=>$request->farm_labore_hire_date,
                
                  
 
 
             ]);
 
-          //  return redirect()->route('retailers.list')->with('success', 'Veterinarian record added successfully!');
+            return redirect()->route('farm_labores.list')->with('success', 'FarmLabore record added successfully!');
         }
+
+        else if($request->role_id==6)
+        {
+           
+            $request->validate
+            ([
+                'general_manager_id'=>'required|exists:users,id',
+                'qualification'=>'required',
+             
+                'general_manager_hire_date'=>'required|date',
+              
+            ]);
+
+           
+            
+      
+
+          
+
+             //  Now create the record with extracted values
+            GeneralManager::create([
+                'general_manager_id' => $request->general_manager_id,
+                'general_manager_hire_date'=> $request->general_manager_hire_date,
+                'qualification' => $request->qualification,
+              
+            ]);
+               return redirect()->route('general_manager.list')->with('success', 'general manager record added successfully!');
+        }
+
+
+        else if($request->role_id==7)
+        {
+            $request->validate
+            ([
+                'sales_manager_id'=>'required|exists:users,id',
+                'sales_manager_qualification'=>'required',
+             
+                'sales_manager_hire_date'=>'required|date',
+              
+            ]);
+
+           
+           
+            
+        
+        
+             //  Now create the record with extracted values
+            SalesManager::create([
+                'sales_manager_id' => $request->sales_manager_id,
+                'sales_manager_hire_date'=> $request->sales_manager_hire_date,
+                'sales_manager_qualification' => $request->sales_manager_qualification,
+               
+            ]);
+               return redirect()->route('sales_manager.list')->with('success', 'sales manager record added successfully!');
+        }
+       
     }
 
     

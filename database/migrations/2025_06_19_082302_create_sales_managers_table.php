@@ -11,19 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('general_managers', function (Blueprint $table) {
+        Schema::create('sales_managers', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('general_manager_id');
+            $table->foreignId('sales_manager_id');
 
-            $table->string('qualification');
+            $table->string('sales_manager_qualification');
+    
+            $table->date('sales_manager_hire_date');
           
-            $table->date('general_manager_hire_date');
-          
+       
 
-            $table->foreign('general_manager_id')->references('id')->on('users')->onDelete('cascade');
-
-
+            $table->foreign('sales_manager_id')->references('id')->on('users')->onDelete('cascade');
+            
             $table->timestamps();
         });
     }
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('general_managers');
+        Schema::dropIfExists('sales_managers');
     }
 };

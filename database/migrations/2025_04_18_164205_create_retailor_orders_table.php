@@ -15,7 +15,10 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('retailor_id'); // foreign key to users table
+            
             $table->decimal('total_amount', 10, 2)->default(0);
+            $table->decimal('discount_amount', 10 , 2)->default(0);
+            $table->decimal('total_payable_amount' ,10 , 2)->default(0);
 
             $table->date('ordered_date');
 

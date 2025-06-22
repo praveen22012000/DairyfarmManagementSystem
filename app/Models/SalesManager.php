@@ -6,37 +6,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
-class GeneralManager extends Model
+class SalesManager extends Model
 {
     use HasFactory;
 
-    protected $fillable=['general_manager_id','qualification','general_manager_hire_date'];
+    protected $fillable=['sales_manager_id','sales_manager_qualification','sales_manager_hire_date'];
 
-    public function user()
+     public function user()
     {
-        return $this->belongsTo(User::class,'general_manager_id');
+        return $this->belongsTo(User::class,'sales_manager_id');
     }
 
-    //this functions is used to get the age using birthdate.but this not required now because i am going to store the nic in users table.and also store the age and gender in that 
-     public function getAgeAttribute()
-    {
-        $birthDate= Carbon::parse($this->general_manager_birth_date);// This line gets the animal's or person's birth date from the model.
-
-        $now= Carbon::now();//This gets the current date and time using Carbon.
-
-
-        $totalDays=$birthDate->diffInDays($now);//This calculates the total number of days between the birth date and today.
-
-        $years=intdiv($totalDays,365);// This divides the total days by 365 to get the number of whole years.
-        $remainingDays=$totalDays%365;// This calculates the remaining days after subtracting full years.
-
-        return "{$years} years and {$remainingDays} days";// This returns a string like 2 years and 18 days as the final age value.
-    }
-
-//this function is used to get the experience from the hire date
+    //this function is used to get the experience from the hire date
     public function getExperienceAttribute()
     {
-        $hireDate = Carbon::parse($this->general_manager_hire_date);
+        $hireDate = Carbon::parse($this->sales_manager_hire_date);
         $now = Carbon::now();
 
         // Calculate the total difference in days
@@ -52,7 +36,7 @@ class GeneralManager extends Model
 
 
 
-//this used to vaidate the nic and get the birthdate and gender. i am not use this function now because i am going to store the nic in users table and store the gender and birthdate also there
+    ////this used to vaidate the nic and get the birthdate and gender. i am not use this function now because i am going to store the nic in users table and store the gender and birthdate also there
     public static function extractNICInfo($nic)
     {
     $nic = strtoupper($nic);//Converts the NIC to uppercase letters.So if someone enters v or x in lowercase, it becomes V or X.

@@ -40,6 +40,10 @@ use App\Http\Controllers\TaskAssignmentController;
 use App\Http\Controllers\TaskExecutionController;
 use App\Http\Controllers\SalaryController;
 use App\Http\Controllers\MonthlySalaryPaymentController;
+use App\Http\Controllers\FarmLaboreController;
+use App\Http\Controllers\GeneralManagerController;
+use App\Http\Controllers\SalesManagerController;
+use App\Http\Controllers\PurchaseVaccinePaymentsController;
 
 
 use Illuminate\Support\Facades\Route;
@@ -412,6 +416,55 @@ Route::middleware('auth')->prefix('purchase_feed_items_payments')->group(functio
  });
 
 
+//this below group is used to manage purchase vaccine details
+Route::middleware('auth')->prefix('purchase_vaccine_items_payments')->group(function () {
+
+  //  Route::get('/', [PurchaseFeedPaymentController::class, 'index'])->name('purchase_feed_payments.list');
+   
+     Route::get('/create', [PurchaseVaccinePaymentsController::class, 'create'])->name('purchase_vaccine_payments.create');
+
+    Route::post('/store', [PurchaseVaccinePaymentsController::class, 'store'])->name('purchase_vaccine_payments.store');
+
+   //  Route::get('/payment-slip/{id}', [PurchaseFeedPaymentController::class, 'downloadPaymentSlip'])->name('payment.slip.download');
+
+ 
+    Route::get('/get-purchase-amount/{id}', [PurchaseVaccinePaymentsController::class, 'getPurchaseAmountVaccine']);
+
+  /*   Route::group(['prefix'=>'{purchasefeedpayment}'],function(){
+        
+         Route::get('/edit', [PurchaseFeedPaymentController::class, 'edit'])->name('purchase_feed_payments.edit');
+         Route::post('/update', [PurchaseFeedPaymentController::class, 'update'])->name('purchase_feed_payments.update');
+ 
+         Route::get('/view', [PurchaseFeedPaymentController::class, 'view'])->name('purchase_feed_payments.view');
+         Route::post('/destroy', [PurchaseFeedItemsController::class, 'destroy'])->name('purchase_feed_items.destroy');
+ 
+       
+     });*/
+ 
+    
+ });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //this below group is used to manage retailor order details
 Route::middleware('auth')->prefix('retailor_order_items')->group(function () {
 
@@ -632,9 +685,11 @@ Route::middleware('auth')->prefix('upload_payment_details')->group(function () {
 
     Route::get('retailor/upload_payment/{order}/edit', [UploadPaymentController::class, 'edit'])->name('upload_payment.receipt.edit');
     
-    
+    Route::post('retailor/upload_payment/{order}/update', [UploadPaymentController::class, 'update'])->name('upload_payment.receipt.update');
      
-    
+    Route::get('/receipt/view', [UploadPaymentController::class, 'view'])->name('receipts.view');
+
+     Route::post('retailor/cancel_payment_receipt/{order}/cancel', [UploadPaymentController::class, 'cancelPayment'])->name('cancel_payment_receipt');
  });
 
 //this below group is used to assign delivery person details
@@ -644,6 +699,7 @@ Route::middleware('auth')->prefix('assign_delivery_person')->group(function () {
 
     Route::post('assign/{order}/store', [AssignDeliveryPersonController::class, 'assignDeliveryPerson'])->name('assign_delivery_person.store');
 
+    
    // Route::get('retailor/upload_payment/{order}/edit', [UploadPaymentController::class, 'edit'])->name('upload_payment.receipt.edit');
     
 
@@ -938,7 +994,6 @@ Route::middleware('auth')->prefix('users')->group(function () {
     Route::get('/create', [UserRegisterController::class, 'create'])->name('users.create');
     Route::post('/store', [UserRegisterController::class, 'store'])->name('users.store');
 
-    
 
     
     //this is for the veterinarian group
@@ -981,15 +1036,75 @@ Route::middleware('auth')->prefix('users')->group(function () {
 
         });
 
-        
+    });
 
-      
+
+
+    //this is for the farmlabore group 
+    Route::group(['prefix'=>'sales_manager_list'],function(){
+
+        Route::get('/', [UserRegisterController::class, 'sales_manager_index'])->name('sales_manager.list');
+
+       Route::group(['prefix'=>'{salesmanager}'],function(){
+
+            Route::get('/view', [SalesManagerController::class, 'view'])->name('sales_manager.view');
+
+            Route::get('/edit', [SalesManagerController::class, 'edit'])->name('sales_manager.edit');
+            Route::post('/update', [SalesManagerController::class, 'update'])->name('sales_manager.update');
+
+        
+            Route::post('/destroy', [SalesManagerController::class, 'destroy'])->name('retailers.destroy');
+
+        });
+
+    });
+
+
+      //this is for the general manager
+    Route::group(['prefix'=>'general_manager_list'],function(){
+
+        Route::get('/', [UserRegisterController::class, 'general_manager_index'])->name('general_manager.list');
+
+        Route::group(['prefix'=>'{generalmanager}'],function(){
+
+            Route::get('/view', [GeneralManagerController::class, 'view'])->name('general_manager.view');
+
+            Route::get('/edit', [GeneralManagerController::class, 'edit'])->name('general_manager.edit');
+
+            Route::post('/update', [GeneralManagerController::class, 'update'])->name('general_manager.update');
+
+        
+         //   Route::post('/destroy', [RetailerController::class, 'destroy'])->name('retailers.destroy');
+
+        });
+
+    });
+
+
+     //this is for the farmlabore group 
+    Route::group(['prefix'=>'labores_list'],function(){
+
+        Route::get('/', [UserRegisterController::class, 'farm_labores_index'])->name('farm_labores.list');
+
+        Route::group(['prefix'=>'{farmlabore}'],function(){
+
+            Route::get('/view', [FarmLaboreController::class, 'view'])->name('farm_labore.view');
+
+            Route::get('/edit', [FarmLaboreController::class, 'edit'])->name('farm_labore.edit');
+        Route::post('/update', [FarmLaboreController::class, 'update'])->name('farm_labore.update');
+
+        
+       /*     Route::post('/destroy', [RetailerController::class, 'destroy'])->name('retailers.destroy');*/
+
+        });
+
     });
 
 
 
 
-});
+
+    });
 
 
 
