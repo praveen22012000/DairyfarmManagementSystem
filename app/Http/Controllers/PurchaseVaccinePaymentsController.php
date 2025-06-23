@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\PurchaseVaccinePayments;
 use App\Models\PurchaseVaccine;
+use Illuminate\Support\Facades\Auth;
 
 class PurchaseVaccinePaymentsController extends Controller
 {
@@ -23,9 +24,13 @@ class PurchaseVaccinePaymentsController extends Controller
     }
 
 
-      public function create()
+    public function create()
     {
-      
+        if (!in_array(Auth::user()->role_id, [1, 7])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $paid_purchase_Vaccine_Ids=PurchaseVaccinePayments::pluck('purchase_id');
 
       
@@ -40,6 +45,12 @@ class PurchaseVaccinePaymentsController extends Controller
 
      public function store(Request $request)
     {
+
+         if (!in_array(Auth::user()->role_id, [1, 7])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+        
         $validated = $request->validate([
             'purchase_vaccine_id' => 'required|exists:purchase_vaccines,id',
             'payment_amount' => 'required|numeric|min:0.01',

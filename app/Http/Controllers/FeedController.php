@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Feed;
+use Illuminate\Support\Facades\Auth;
 
 class FeedController extends Controller
 {
@@ -12,6 +13,11 @@ class FeedController extends Controller
 
     public function index()
     {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $feedDetails=Feed::all();
 
         return view('feed_details.index',['feedDetails'=>$feedDetails]);
@@ -19,11 +25,19 @@ class FeedController extends Controller
 
     public function create()
     {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         return view('feed_details.create');
     }
 
     public function store(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $request->validate([
             'feed_name'=>'required',
             'manufacturer'=>'required',
@@ -45,16 +59,29 @@ class FeedController extends Controller
 
     public function view(Feed $feed)
     {
+         if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         return view('feed_details.view',['feed'=>$feed]);
     }
 
     public function edit(Feed $feed)
     {
+         if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         return view('feed_details.edit',['feed'=>$feed]);
     }
 
     public function update(Request $request,Feed $feed)
     {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $data=$request->validate([
             'feed_name'=>'required',
             'manufacturer'=>'required',
@@ -71,6 +98,10 @@ class FeedController extends Controller
 
     public function destroy(Feed $feed)
     {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $feed->delete();
 
         return redirect()->route('feed_vaccine.list');

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Appointment;
+use Illuminate\Support\Facades\Auth;
 
 class AppointmentController extends Controller
 {
@@ -14,6 +15,11 @@ class AppointmentController extends Controller
 
     public function index()
     {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $appointments=Appointment::with(['user'])->get();
 
         return view('appointments.index',['appointments'=>$appointments]);
@@ -21,6 +27,11 @@ class AppointmentController extends Controller
 
     public function create()
     {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $veterinarian_id=Role::whereIn('role_name',['veterinarian'])->pluck('id');
 
         $veterinarians=User::whereIn('role_id',$veterinarian_id)->get();
@@ -30,6 +41,11 @@ class AppointmentController extends Controller
 
     public function store(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $request->validate([
             'veterinarian_id'=>'required|exists:users,id',
             'appointment_date'=>'required',
@@ -50,6 +66,11 @@ class AppointmentController extends Controller
 
     public function edit(Request $request,Appointment $appointment)
     {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $veterinarian_id=Role::whereIn('role_name',['veterinarian'])->pluck('id');
 
         $veterinarians=User::whereIn('role_id',$veterinarian_id)->get();
@@ -60,6 +81,10 @@ class AppointmentController extends Controller
 
     public function update(Request $request,Appointment $appointment)
     {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $data=$request->validate([
             'veterinarian_id'=>'required|exists:users,id',
             'appointment_date'=>'required',
@@ -75,6 +100,10 @@ class AppointmentController extends Controller
 
     public function view(Request $request,Appointment $appointment)
     {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $veterinarian_id=Role::whereIn('role_name',['veterinarian'])->pluck('id');
 
         $veterinarians=User::whereIn('role_id',$veterinarian_id)->get();
@@ -85,6 +114,10 @@ class AppointmentController extends Controller
 
     public function destroy(Appointment $appointment)
     {
+         if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $appointment->delete();
 
         return redirect()->route('appointment.list');

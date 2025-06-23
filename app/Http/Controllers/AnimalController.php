@@ -9,6 +9,7 @@ use App\Models\AnimalDetail;
 
 use App\Models\AnimalType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AnimalController extends Controller
 {
@@ -16,6 +17,11 @@ class AnimalController extends Controller
 
     public function index(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $q=$request->input('q');
 
         if($q)
@@ -46,6 +52,11 @@ class AnimalController extends Controller
 
     public function filterByType(Request $request)
     {
+         if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $animalTypeId = $request->input('animal_type_id');
 
         $animals = AnimalDetail::where('animal_type_id', $animalTypeId)
@@ -74,7 +85,11 @@ class AnimalController extends Controller
 
     public function create()//this method is used to display animal registration form 
     {
-        
+         if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
 
 
         $animal_types=AnimalType::all();
@@ -102,6 +117,11 @@ class AnimalController extends Controller
 
     public function store(Request $request)
     {
+         if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
 
         $request->validate([
            
@@ -152,6 +172,11 @@ class AnimalController extends Controller
 
     public function edit(AnimalDetail $animaldetail)
     {
+         if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
       
          //this line get the AnimalType details along with AnimalDetail using the AnimalType relationship(define on the AnimalDetailModel)
          $animals=AnimalDetail::with('AnimalType')->get();
@@ -182,6 +207,11 @@ class AnimalController extends Controller
 
     public function view(AnimalDetail $animaldetail)
     {
+         if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
       
          //this line get the AnimalType details along with AnimalDetail using the AnimalType relationship(define on the AnimalDetailModel)
          $animals=AnimalDetail::with('AnimalType')->get();
@@ -215,6 +245,11 @@ class AnimalController extends Controller
 
     public function update(Request $request,AnimalDetail $animaldetail)
     {
+         if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
 
         $data=$request->validate([
             'animal_type_id'=>'required',
@@ -270,6 +305,11 @@ class AnimalController extends Controller
 
     public function destroy(AnimalDetail $animaldetail)
     {
+         if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $animaldetail->delete();
         return redirect()->route('animal.list');
     }

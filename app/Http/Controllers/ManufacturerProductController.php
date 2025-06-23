@@ -11,7 +11,7 @@ use App\Models\ManufacturerProduct;
 use Carbon\Carbon;
 use LaravelDaily\LaravelCharts\Classes\LaravelChart;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Validator;
 
@@ -162,6 +162,12 @@ public function monthlyReport(Request $request)
 
     public function index()
     {
+        
+        if (!in_array(Auth::user()->role_id, [1, 5, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+        
         $manufacturerProducts=ManufacturerProduct::with(['user','milk_product'])->get();
 
 
@@ -173,6 +179,10 @@ public function monthlyReport(Request $request)
     public function create()
     {
 
+        if (!in_array(Auth::user()->role_id, [1, 5, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $milkProducts=MilkProduct::all();
 
 
@@ -189,6 +199,10 @@ public function monthlyReport(Request $request)
 
     public function store(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1, 5, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
        
         $request->validate([
             'date' => ['required', 'date'],
@@ -248,7 +262,10 @@ public function monthlyReport(Request $request)
 
     public function edit(ManufacturerProduct $manufacturerProduct)
     {
-    
+         if (!in_array(Auth::user()->role_id, [1, 5, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
 
         $milkProducts=MilkProduct::all();
 
@@ -265,6 +282,10 @@ public function monthlyReport(Request $request)
 
     public function update(Request $request,ManufacturerProduct $manufacturerProduct)
     {
+        if (!in_array(Auth::user()->role_id, [1, 5, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         
         $data=$request->validate([
             'date' => ['required', 'date', 'before_or_equal:today'],
@@ -320,7 +341,10 @@ public function monthlyReport(Request $request)
 
     public function view(ManufacturerProduct $manufacturerProduct)
     {
-    
+         if (!in_array(Auth::user()->role_id, [1, 5, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
 
         $milkProducts=MilkProduct::all();
 
@@ -337,6 +361,10 @@ public function monthlyReport(Request $request)
 
     public function destroy(ManufacturerProduct $manufacturerProduct)
     {
+         if (!in_array(Auth::user()->role_id, [1, 5, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $manufacturerProduct->delete();
 
         return redirect()->route('manufacture_product.index');

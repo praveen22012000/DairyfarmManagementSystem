@@ -15,6 +15,11 @@ class UploadPaymentController extends Controller
      //create form for upload payment receipt by retailor
      public function create($orderID)
      {
+        if (!in_array(Auth::user()->role_id, [1, 3])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
          $retailor_order=RetailorOrder::findOrfail($orderID);
  
          return view('upload_payment_receipt.create',['retailor_order'=>$retailor_order]);
@@ -24,6 +29,10 @@ class UploadPaymentController extends Controller
      //store the data of the upload payment receipt by retailor
      public function store(Request $request, $id)
      {
+       if (!in_array(Auth::user()->role_id, [1, 3])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
          $transactionId = $this->generateTransactionId();
 
           // 1. Validate the incoming data
@@ -80,6 +89,7 @@ class UploadPaymentController extends Controller
     //this method is used to downloade the receipt that is  opened in the newtab
     public function view(Request $request)
     {
+      
         // This line gets the path parameter from the URL query string(it get path )
         // and "path" in the URL gets the value from the blade view
         //usually "path" is occurs after the url "?" symbol
@@ -100,7 +110,10 @@ class UploadPaymentController extends Controller
  //this function is used to show the edit() the payment receipt
      public function edit($orderID)
      {
-        
+         if (!in_array(Auth::user()->role_id, [1, 3])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
            $retailor_order = RetailorOrder::with(['order_payment'])->findOrFail($orderID);
  
            return view('upload_payment_receipt.edit',['retailor_order'=>$retailor_order]);
@@ -109,7 +122,10 @@ class UploadPaymentController extends Controller
 //this function is used to delete the order payment record and the payment receipt  that have already uploaded
      public function cancelPayment($id)
      {
-
+         if (!in_array(Auth::user()->role_id, [1, 3])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
       
         $retailor_order= RetailorOrder::with(['order_payment'])->findOrFail($id);
 
@@ -119,14 +135,17 @@ class UploadPaymentController extends Controller
         $retailor_order->save();
 
           $retailor_order->order_payment->delete();
-        return redirect()->route('retailor_order_items.list')->with('success', 'Payment details updated succeesfully. Waiting for manager verification.');
+        return redirect()->route('retailor_order_items.list')->with('success', 'Payment details deleted successfully.');
 
      }
 
      //
      public function update($orderID,Request $request)
      {
-
+         if (!in_array(Auth::user()->role_id, [1, 3])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
       
         $transactionId = $this->generateTransactionId();
 

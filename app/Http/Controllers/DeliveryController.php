@@ -15,6 +15,11 @@ class DeliveryController extends Controller
     //
     public function startDelivery($id)
     {
+        if (Auth::user()->role_id !== 1 &&  !(Auth::user()->role_id === 3 && $order->user->id === Auth::id())) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $order = RetailorOrder::findOrFail($id);
 
         // Optional: check if user is the assigned delivery person
@@ -30,6 +35,10 @@ class DeliveryController extends Controller
 
     public function markAsDelivered($orderId)
     {
+        if (Auth::user()->role_id !== 1 &&  !(Auth::user()->role_id === 3 && $order->user->id === Auth::id())) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         // 1. Find the order
         $order = RetailorOrder::findOrFail($orderId);
 

@@ -19,7 +19,7 @@ class TaskExecutionController extends Controller
         {
         abort(403, 'You are not authorized as a farm labore.');
         }
-
+        
             // Get task assignments for this labore
             $assigned_tasks = $farmLabore->task_assignment()->with('task')->get();
 

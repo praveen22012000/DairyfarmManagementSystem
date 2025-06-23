@@ -15,6 +15,11 @@ class TaskAssignmentController extends Controller
     //
     public function index()
     {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $assigned_tasks= TaskAssignment::with(['task','user','farm_labore'])->get();
 
         return view('task_assignment.index',['assigned_tasks'=>$assigned_tasks]);
@@ -23,6 +28,10 @@ class TaskAssignmentController extends Controller
 
     public function create()
     {
+         if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $tasks=Tasks::with(['task_assignment'])->get();
 
         $farm_labores=FarmLabore::where('status','Available')->with(['user'])->get();
@@ -32,6 +41,10 @@ class TaskAssignmentController extends Controller
 
     public function store(Request $request)
     {
+         if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $request->validate([
             'task_id'=>'required|exists:tasks,id',
             'assigned_to'=>'required|exists:farm_labores,id',
@@ -58,6 +71,11 @@ class TaskAssignmentController extends Controller
 
     public function view(TaskAssignment $taskassignment)
     {
+         if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $tasks=Tasks::with(['task_assignment'])->get();
 
         $farm_labores=FarmLabore::with(['user'])->get();
@@ -67,7 +85,10 @@ class TaskAssignmentController extends Controller
 
     public function showReassignForm(TaskAssignment $taskassignment)
     {
-
+         if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
      
        // Get the currently assigned labore (even if busy)
         $currentLabore = FarmLabore::with('user')->find($taskassignment->assigned_to);
@@ -94,7 +115,10 @@ class TaskAssignmentController extends Controller
     
     public function reassign(Request $request,TaskAssignment $taskassignment)
     {
-        dd("1");
+         if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
 
         $request->validate([
         'assigned_to' => 'required|exists:farm_labores,id',

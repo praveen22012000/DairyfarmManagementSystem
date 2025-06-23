@@ -8,6 +8,7 @@ use App\Models\MilkProduct;
 use App\Models\RetailorOrder;
 use App\Models\RetailorOrderItems;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class RetailorOrderController extends Controller
 {
@@ -15,14 +16,41 @@ class RetailorOrderController extends Controller
 
     public function index()
     {
-        $retailor_orders=RetailorOrder::with(['retailor_order_item'])->get();
+          $user = Auth::user();
 
-        return view('retailor_orders.index',['retailor_orders'=>$retailor_orders]);
+    // Admin or Manager: can view all orders
+    if ($user->role_id == 1 || $user->role_id == 7) {
+        $retailor_orders = RetailorOrder::with(['user', 'farm_labore'])->latest()->get();
+    }
+    // Retailor: only their own orders
+    elseif ($user->role_id == 3) {
+        $retailor_orders = RetailorOrder::with(['user', 'farm_labore'])
+                                ->where('retailor_id', $user->id)
+                                ->latest()
+                                ->get();
+    }
+    // Farm Labore: only orders assigned to them
+    elseif ($user->role_id == 5) {
+        $retailor_orders = RetailorOrder::with(['user', 'farm_labore'])
+                                ->where('delivery_person_id', $user->farm_labore->id)
+                                ->latest()
+                                ->get();
+    }
+    else {
+      abort(403, 'Unauthorized action.');
+    }
+
+    return view('retailor_orders.index',['retailor_orders'=>$retailor_orders]);
 
     }
     
     public function create()
     {
+        if (!in_array(Auth::user()->role_id, [1,3])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $milk_products=MilkProduct::with('retailor_order_item')->get();
 
         return view('retailor_orders.create',['milk_products'=>$milk_products]);
@@ -30,6 +58,11 @@ class RetailorOrderController extends Controller
 
     public function store(Request $request)
     {
+
+        if (!in_array(Auth::user()->role_id, [1,3])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $request->validate([
 
             'delivery_address'=>'required',
@@ -113,6 +146,10 @@ class RetailorOrderController extends Controller
 
     public function view(RetailorOrder $retailororder)
     {
+        if (!in_array(Auth::user()->role_id, [1,3])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $milk_products=MilkProduct::with('retailor_order_item')->get();
 
         return view('retailor_orders.view',['milk_products'=>$milk_products,'retailororder'=>$retailororder, 'order_items' => $retailororder->retailor_order_item]);
@@ -120,6 +157,10 @@ class RetailorOrderController extends Controller
 
     public function edit(RetailorOrder $retailororder)
     {
+        if (!in_array(Auth::user()->role_id, [1,3])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $milk_products=MilkProduct::with('retailor_order_item')->get();
 
         return view('retailor_orders.edit',['milk_products'=>$milk_products,'retailororder'=>$retailororder, 'order_items' => $retailororder->retailor_order_item]);
@@ -127,6 +168,10 @@ class RetailorOrderController extends Controller
 
     public function update(RetailorOrder $retailororder,Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1,3])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $request->validate([
 
             'delivery_address'=>'required',

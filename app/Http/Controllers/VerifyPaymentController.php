@@ -12,6 +12,10 @@ class VerifyPaymentController extends Controller
   
     public function show($orderID)
     {
+        if (!in_array(Auth::user()->role_id, [1, 7])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $retailor_order = RetailorOrder::with(['order_payment'])->findOrFail($orderID);
 
        
@@ -21,6 +25,11 @@ class VerifyPaymentController extends Controller
 
     public function verifyPaymentAccept($orderId)
     {
+         if (!in_array(Auth::user()->role_id, [1, 7])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $order = RetailorOrder::findOrFail($orderId);
 
         $order->payment_status = 'Paid';
@@ -33,6 +42,10 @@ class VerifyPaymentController extends Controller
 
     public function verifyPaymentReject(Request $request, $orderId)
     {
+        if (!in_array(Auth::user()->role_id, [1, 7])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $order = RetailorOrder::findOrFail($orderId);
 
         $order->payment_status = 'Rejected';

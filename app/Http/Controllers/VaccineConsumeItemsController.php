@@ -10,6 +10,7 @@ use App\Models\PurchaseVaccineItems;
 use App\Models\Appointment;
 use App\Models\VaccineConsumeDetails;
 use App\Models\VaccineConsumeItems;
+use Illuminate\Support\Facades\Auth;
 
 class VaccineConsumeItemsController extends Controller
 {
@@ -17,6 +18,11 @@ class VaccineConsumeItemsController extends Controller
 
     public function index()
     {
+        
+        if (!in_array(Auth::user()->role_id, [1, 6, 2])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
         $vaccineConsumeItems=VaccineConsumeItems::with(['vaccine_consume_detail','animal','vaccinations'])->get();
 
         return view('vaccine_consumption_details.index',['vaccineConsumeItems'=>$vaccineConsumeItems]);
@@ -24,6 +30,11 @@ class VaccineConsumeItemsController extends Controller
 
     public function create()
     {
+        
+        if (!in_array(Auth::user()->role_id, [1, 6, 2])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
 
     $animals = AnimalDetail::all();
     $vaccinations = Vaccine::all();
@@ -58,6 +69,12 @@ class VaccineConsumeItemsController extends Controller
 
     public function store(Request $request)
     {
+        
+        if (!in_array(Auth::user()->role_id, [1, 6, 2])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $request->validate([
             'vaccination_date'=>'required',
             'appointment_id'=>'required|exists:appointments,id',
@@ -145,6 +162,12 @@ class VaccineConsumeItemsController extends Controller
 
     public function view(VaccineConsumeItems $vaccineconsumeitem)
     {
+        
+        if (!in_array(Auth::user()->role_id, [1, 6, 2])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $animals = AnimalDetail::all();
         $vaccinations = Vaccine::all();
         $vaccination_items = PurchaseVaccineItems::with(['purchase_vaccine','vaccine','vaccine_consume_items'])->get();
@@ -171,6 +194,12 @@ class VaccineConsumeItemsController extends Controller
 
     public function edit(VaccineConsumeItems $vaccineconsumeitem)
     {
+        
+        if (!in_array(Auth::user()->role_id, [1, 6, 2])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $animals = AnimalDetail::all();
         $vaccinations = Vaccine::all();
         $vaccination_items = PurchaseVaccineItems::with(['purchase_vaccine','vaccine','vaccine_consume_items'])->get();
@@ -197,6 +226,11 @@ class VaccineConsumeItemsController extends Controller
 
     public function update(VaccineConsumeItems $vaccineconsumeitem,Request $request)
     {
+        
+        if (!in_array(Auth::user()->role_id, [1, 6, 2])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
 
         $data=$request->validate([
             'vaccination_date'=>'required',
@@ -239,6 +273,12 @@ class VaccineConsumeItemsController extends Controller
 
     public function destroy(VaccineConsumeItems $vaccineconsumeitem)
     {
+        
+        if (!in_array(Auth::user()->role_id, [1, 6, 2])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+        
         $vaccineconsumeitem->delete();
 
         return redirect()->route('vaccine_consume_items.list');

@@ -16,6 +16,11 @@ class FeedConsumeItemsController extends Controller
     //
     public function index()
     {
+         if (!in_array(Auth::user()->role_id, [1,6,5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $feedConsumeItems=FeedConsumeItems::with(['feed_consume_details','feed','purchase_feed_items'])->get();
 
         return view('feed_consumption.index',['feedConsumeItems'=>$feedConsumeItems]);
@@ -23,6 +28,11 @@ class FeedConsumeItemsController extends Controller
 
     public function create()
     {
+         if (!in_array(Auth::user()->role_id, [1,6,5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $animals=AnimalDetail::all();
 
         $feeds=Feed::all();
@@ -34,7 +44,10 @@ class FeedConsumeItemsController extends Controller
 
     public function store(Request $request)
     {
-       
+        if (!in_array(Auth::user()->role_id, [1,6,5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
 
         $request->validate([
 
@@ -122,7 +135,10 @@ class FeedConsumeItemsController extends Controller
 
     public function view(FeedConsumeItems $feedconsumeitem)
     {
-
+         if (!in_array(Auth::user()->role_id, [1,6,5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $animals=AnimalDetail::all();
 
         $feeds=Feed::all();
@@ -136,6 +152,11 @@ class FeedConsumeItemsController extends Controller
 
     public function edit(FeedConsumeItems $feedconsumeitem)
     {
+         if (!in_array(Auth::user()->role_id, [1,6,5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $animals=AnimalDetail::all();
 
         $feeds=Feed::all();
@@ -148,6 +169,11 @@ class FeedConsumeItemsController extends Controller
 
     public function update(Request $request,FeedConsumeItems $feedconsumeitem)
     {
+         if (!in_array(Auth::user()->role_id, [1,6,5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $data=$request->validate([
             'animal_id'=>'required|exists:animal_details,id',
             'date'=>'required',
@@ -197,6 +223,11 @@ class FeedConsumeItemsController extends Controller
 
     public function destroy(FeedConsumeItems $feedconsumeitem)
     {
+         if (!in_array(Auth::user()->role_id, [1,6,5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+        
         $feedconsumeitem->delete();
 
         return redirect()->route('feed_consume_items.list');

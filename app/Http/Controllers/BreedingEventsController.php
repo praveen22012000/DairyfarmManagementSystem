@@ -14,6 +14,11 @@ class BreedingEventsController extends Controller
     //
     public function index()
     {
+        if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $breedings=BreedingEvents::with(['user','malecow','femalecow'])->get();
 
         return view('animal_breeding.index',['breedings'=>$breedings]);
@@ -22,6 +27,11 @@ class BreedingEventsController extends Controller
 
     public function create()
     {
+        if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
 
 
         $female_animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');
@@ -48,7 +58,12 @@ class BreedingEventsController extends Controller
 
     public function store(Request $request)
     {
-       
+
+        if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $request->validate([
             'female_cow_id'=>'required|exists:animal_details,id',
             'male_cow_id'=>'required|exists:animal_details,id',
@@ -75,6 +90,11 @@ class BreedingEventsController extends Controller
 
     public function edit(Request $request,BreedingEvents $animalbreeding)
     {
+         if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $female_animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');
 
         $female_Animals = AnimalDetail::whereIn('animal_type_id', $female_animal_types_id)
@@ -104,6 +124,11 @@ class BreedingEventsController extends Controller
 
     public function view(Request $request,BreedingEvents $animalbreeding)
     {
+        if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $female_animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');
 
         $female_Animals = AnimalDetail::whereIn('animal_type_id', $female_animal_types_id)
@@ -131,6 +156,10 @@ class BreedingEventsController extends Controller
 
     public function update(Request $request,BreedingEvents $animalbreeding)
     {
+        if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
 
         $data=$request->validate([
 
@@ -151,6 +180,12 @@ class BreedingEventsController extends Controller
 
     public function destroy(BreedingEvents $animalbreeding)
     {
+         if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
+
         $animalbreeding->delete();
 
         return redirect()->route('animal_breedings.list');

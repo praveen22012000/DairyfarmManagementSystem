@@ -107,6 +107,11 @@ class PurchaseFeedItemsController extends Controller
     //
     public function index()
     {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $purchaseFeedItems=PurchaseFeedItems::with(['purchase_feed','feed'])->get();
 
         return view('purchase_feed_items_by_suppliers.index',['purchaseFeedItems'=>$purchaseFeedItems]);
@@ -114,6 +119,10 @@ class PurchaseFeedItemsController extends Controller
 
     public function create()
     {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
         $suppliers=Supplier::all();
 
         $feeds=Feed::all();
@@ -125,6 +134,11 @@ class PurchaseFeedItemsController extends Controller
 
     public function store(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $request->validate([
 
             'supplier_id'=>'required|exists:suppliers,id',
@@ -183,6 +197,11 @@ class PurchaseFeedItemsController extends Controller
 
     public function edit(PurchaseFeedItems $purchasefeeditem)
     {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $suppliers=Supplier::all();
 
         $feeds=Feed::all();
@@ -194,6 +213,11 @@ class PurchaseFeedItemsController extends Controller
 
     public function update(Request $request,PurchaseFeedItems $purchasefeeditem)
     {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $data=$request->validate([
 
             'supplier_id'=>'required|exists:suppliers,id',
@@ -244,6 +268,11 @@ class PurchaseFeedItemsController extends Controller
 
     public function view(PurchaseFeedItems $purchasefeeditem)
     {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $suppliers=Supplier::all();
 
         $feeds=Feed::all();
@@ -254,6 +283,11 @@ class PurchaseFeedItemsController extends Controller
 
     public function destroy(PurchaseFeedItems $purchasefeeditem)
     {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+        
         $purchasefeeditem->delete();
         return redirect()->route('purchase_feed_items.list');
     }

@@ -13,6 +13,11 @@ class VeterinarianController extends Controller
 
     public function edit(Veterinarian $veterinarian)
     {
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
 
         $roles = Role::all(); // Fetch all roles
 
@@ -23,7 +28,10 @@ class VeterinarianController extends Controller
 
     public function update(Request $request,Veterinarian $veterinarian)
     {
-
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
 
         $data=$request->validate([
             'specialization'=>'required|string',
@@ -47,6 +55,10 @@ class VeterinarianController extends Controller
 
     public function view(Veterinarian $veterinarian)
     {
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $roles = Role::all(); // Fetch all roles
 
         $veterinarians=Veterinarian::with('user')->get();
@@ -56,6 +68,11 @@ class VeterinarianController extends Controller
 
     public function destroy(Veterinarian $veterinarian)
     {
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+        
         $veterinarian->delete();
         
         return redirect()->route('veterinarians.list');

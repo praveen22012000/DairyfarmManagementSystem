@@ -10,7 +10,7 @@ use App\Models\ProductionSupplyDetails;
 use App\Models\ManufacturerProduct;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 
@@ -178,6 +178,12 @@ class ProductionSupplyDetailsController extends Controller
 
     public function index()
     {
+        
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $productionSupply=ProductionSupply::all();
 
         $productionSupplyDetails=ProductionSupplyDetails::with(['production_milk','milk_product'])->get();
@@ -189,6 +195,11 @@ class ProductionSupplyDetailsController extends Controller
 
     public function create()
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+        
          // Fetch records where stock_quantity > 0
          $ProductionsMilk = ProductionMilk::where('stock_quantity', '>', 0)->get();
 
@@ -202,6 +213,11 @@ class ProductionSupplyDetailsController extends Controller
 
     public function store(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+        
     $request->validate([
         'date' => 'required|date',
         'time' => 'required',
@@ -339,6 +355,10 @@ class ProductionSupplyDetailsController extends Controller
 
     public function view(ProductionSupplyDetails $productionSupplyDetails)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         
 
          $milkProducts=MilkProduct::all();
@@ -354,6 +374,11 @@ class ProductionSupplyDetailsController extends Controller
 
     public function edit(ProductionSupplyDetails $productionSupplyDetails)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+        
         $milkProducts=MilkProduct::all();
 
         $ProductionsMilk = ProductionMilk::where('stock_quantity', '>', 0)->get();
@@ -367,6 +392,11 @@ class ProductionSupplyDetailsController extends Controller
 
     public function update(ProductionSupplyDetails $productionSupplyDetails,Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+        
 
         $request->validate([
             'date' => 'required|date',
@@ -424,6 +454,11 @@ class ProductionSupplyDetailsController extends Controller
 
     public function destroy(ProductionSupplyDetails $productionSupplyDetails)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+        
         $productionSupplyDetails->delete();
 
         return redirect()->route('milk_allocated_for_manufacturing.index');

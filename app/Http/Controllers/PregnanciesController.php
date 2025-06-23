@@ -17,6 +17,11 @@ class PregnanciesController extends Controller
 
     public function index()
     {
+        if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $pregnancies=Pregnancies::with(['AnimalDetail','user'])->get();
 
         return view('animal_pregnancies.index',['pregnancies'=>$pregnancies]);
@@ -24,6 +29,11 @@ class PregnanciesController extends Controller
 
     public function create()
     {
+        if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+        
         $female_animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');
 
         $female_Animals = AnimalDetail::whereIn('animal_type_id', $female_animal_types_id)
@@ -41,6 +51,11 @@ class PregnanciesController extends Controller
 
     public function store(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $request->validate([
             'breeding_id'=>'required|exists:breeding_events,id|unique:pregnancies,breeding_id',
             'female_cow_id'=>'required|exists:animal_details,id',
@@ -69,6 +84,11 @@ class PregnanciesController extends Controller
 
     public function edit(Pregnancies $pregnancie)
     {
+        if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $female_animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');
 
         $female_Animals = AnimalDetail::whereIn('animal_type_id', $female_animal_types_id)
@@ -89,6 +109,11 @@ class PregnanciesController extends Controller
 
     public function update(Pregnancies $pregnancie,Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $data=$request->validate([
 
             'breeding_id'=>"required|exists:breeding_events,id|unique:pregnancies,breeding_id,$pregnancie->id",
@@ -108,6 +133,10 @@ class PregnanciesController extends Controller
 
     public function view(Pregnancies $pregnancie)
     {
+        if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
 
         $female_animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');
 
@@ -129,6 +158,10 @@ class PregnanciesController extends Controller
 
     public function destroy(Pregnancies $pregnancie)
     {
+        if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
         $pregnancie->delete();
 
         return redirect()->route('animal_pregnancies.list');

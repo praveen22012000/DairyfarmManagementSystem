@@ -13,7 +13,11 @@ class AssignDeliveryPersonController extends Controller
     //
     public function showDeliveryPersonForm($id)
     {
-        
+         if (!in_array(Auth::user()->role_id, [1, 7])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $retailor_order = RetailorOrder::findOrFail($id);
         $deliveryPersons = FarmLabore::where('status', 'Available')
                                       ->get();
@@ -24,6 +28,11 @@ class AssignDeliveryPersonController extends Controller
 
     public function assignDeliveryPerson(Request $request,$id)
     {
+
+         if (!in_array(Auth::user()->role_id, [1, 7])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $request->validate([
             'delivery_person_id' => 'required|exists:farm_labores,id',
         ]);

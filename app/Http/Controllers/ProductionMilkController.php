@@ -8,6 +8,7 @@ use App\Models\ProductionMilk;
 use App\Models\User;
 use App\Models\Role;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 
@@ -74,6 +75,11 @@ class ProductionMilkController extends Controller
     
     public function index()
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $production_milk_details=ProductionMilk::with('AnimalDetail')->get();
 
         return view('milk_production.index',['production_milk_details'=>$production_milk_details]);
@@ -81,7 +87,11 @@ class ProductionMilkController extends Controller
      
     public function create()
     {
-       
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $female_animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');//newcode
 
         $female_Animals = AnimalDetail::whereIn('animal_type_id', $female_animal_types_id)->get();//newcode
@@ -100,7 +110,10 @@ class ProductionMilkController extends Controller
 
     public function store(Request $request)
     {
-
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
        
         $request->validate([
 
@@ -157,6 +170,10 @@ class ProductionMilkController extends Controller
 
     public function view(ProductionMilk $productionmilk)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
         $female_animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');//newcode
 
         $female_Animals = AnimalDetail::whereIn('animal_type_id', $female_animal_types_id)->get();//newcode
@@ -172,6 +189,11 @@ class ProductionMilkController extends Controller
 
     public function edit(ProductionMilk $productionmilk)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+        
         $female_animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');//newcode
 
         $female_Animals = AnimalDetail::whereIn('animal_type_id', $female_animal_types_id)->get();//newcode
@@ -187,6 +209,10 @@ class ProductionMilkController extends Controller
 
     public function update(Request $request,ProductionMilk $productionmilk)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
         $data=$request->validate([
 
             
@@ -236,6 +262,11 @@ class ProductionMilkController extends Controller
     
     public function destroy(ProductionMilk $productionmilk)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $productionmilk->delete();
 
         return redirect()->route('production_milk.list');

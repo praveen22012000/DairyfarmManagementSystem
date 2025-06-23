@@ -5,13 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\FarmLabore;
 use App\Models\Role;
+use Illuminate\Support\Facades\Auth;
 
 class FarmLaboreController extends Controller
 {
     //
-      public function view(FarmLabore $farmlabore)
+    public function view(FarmLabore $farmlabore)
     {
-        
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $roles = Role::all(); // Fetch all roles
 
         $farmlabores=FarmLabore::with('user')->get();
@@ -23,6 +27,10 @@ class FarmLaboreController extends Controller
 
     public function edit(FarmLabore $farmlabore)
     {
+         if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
        $roles = Role::all(); // Fetch all roles
 
         $farmlabores=FarmLabore::with('user')->get();
@@ -34,6 +42,10 @@ class FarmLaboreController extends Controller
 
     public function update(Request $request,FarmLabore $farmlabore)
     {
+         if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $data=$request->validate([
             'farm_labore_id'=>'required|exists:users,id',
             'farm_labore_hire_date'=>'required|date'

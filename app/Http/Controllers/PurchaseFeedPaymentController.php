@@ -8,6 +8,7 @@ use App\Models\PurchaseFeedPayment;
 use App\Models\PurchaseFeed;
 use App\Models\PurchaseFeedItems;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class PurchaseFeedPaymentController extends Controller
 {
@@ -47,6 +48,10 @@ class PurchaseFeedPaymentController extends Controller
 
     public function index()
     {
+         if (!in_array(Auth::user()->role_id, [1, 7])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $purchase_feed_payments= PurchaseFeedPayment::with('purchase_feed')->get();
 
         return view('purchase_feed_payments.index',['purchase_feed_payments'=>$purchase_feed_payments]);
@@ -55,6 +60,11 @@ class PurchaseFeedPaymentController extends Controller
 
     public function create()
     {
+         if (!in_array(Auth::user()->role_id, [1, 7])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $paid_purchase_feed_Ids=PurchaseFeedPayment::pluck('purchase_id');
 
         $unpaid_purchase_feed_Query=PurchaseFeed::whereNotIn('id',$paid_purchase_feed_Ids);
@@ -66,6 +76,11 @@ class PurchaseFeedPaymentController extends Controller
 
     public function store(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1, 7])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $validated = $request->validate([
             'purchase_id' => 'required|exists:purchase_feeds,id',
             'payment_amount' => 'required|numeric|min:0.01',
@@ -103,6 +118,11 @@ class PurchaseFeedPaymentController extends Controller
 
     public function edit(Request $request,PurchaseFeedPayment $purchasefeedpayment)
     {
+        if (!in_array(Auth::user()->role_id, [1, 7])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $paid_purchase_feed_Ids=PurchaseFeedPayment::pluck('purchase_id');
 
         $paid_purchase_feed_Query=PurchaseFeed::whereIn('id',$paid_purchase_feed_Ids);
@@ -117,6 +137,11 @@ class PurchaseFeedPaymentController extends Controller
 
     public function update(Request $request,PurchaseFeedPayment $purchasefeedpayment)
     {
+        if (!in_array(Auth::user()->role_id, [1, 7])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $data=$request->validate([
             'purchase_id' => 'required|exists:purchase_feeds,id',
             'payment_amount' => 'required|numeric|min:0.01',
@@ -133,6 +158,11 @@ class PurchaseFeedPaymentController extends Controller
 
     public function view(Request $request,PurchaseFeedPayment $purchasefeedpayment)
     {
+        if (!in_array(Auth::user()->role_id, [1, 7])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $paid_purchase_feed_Ids=PurchaseFeedPayment::pluck('purchase_id');
 
         $paid_purchase_feed_Query=PurchaseFeed::whereIn('id',$paid_purchase_feed_Ids);

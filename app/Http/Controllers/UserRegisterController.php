@@ -8,7 +8,7 @@ use App\Models\Retailer;
 use App\Models\FarmLabore;
 use App\Models\GeneralManager;
 use App\Models\SalesManager;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class UserRegisterController extends Controller
@@ -17,7 +17,11 @@ class UserRegisterController extends Controller
 
     public function index()
     {
-        
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $veterinarians=Veterinarian::all();
 
         $numberOfVeterinarians = $veterinarians->count();
@@ -46,6 +50,11 @@ class UserRegisterController extends Controller
 
     public function veterinarian_index()
     {
+         if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
 
         $veterinarians=Veterinarian::with('user')->get();
   
@@ -57,6 +66,11 @@ class UserRegisterController extends Controller
 
     public function retailer_index()
     {
+          if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $retailers=Retailer::with('user')->get();
 
         return view('retailers.index',['retailers'=>$retailers]);
@@ -65,6 +79,11 @@ class UserRegisterController extends Controller
 
     public function farm_labores_index()
     {
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $farm_labores= FarmLabore::with('user')->get();
         
         return view('farm_labores.index',['farm_labores'=>$farm_labores]);
@@ -72,6 +91,11 @@ class UserRegisterController extends Controller
 
     public function general_manager_index()
     {
+          if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $general_managers= GeneralManager::with('user')->get();
 
         return view('general_manager.index',['general_managers'=>$general_managers]);
@@ -79,6 +103,12 @@ class UserRegisterController extends Controller
 
     public function sales_manager_index()
     {
+          if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
+
         $sales_managers= SalesManager::with('user')->get();
 
         return view('sales_manager.index',['sales_managers'=>$sales_managers]);
@@ -86,6 +116,11 @@ class UserRegisterController extends Controller
 
     public function create()
     {
+          if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $roles = Role::all(); // Fetch all roles
 
        // Get users with the veterinarian role who are not in the veterinarians table
@@ -117,6 +152,11 @@ class UserRegisterController extends Controller
 
     public function store(Request $request)
     {
+          if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         if($request->role_id == 2)
         {
         
@@ -150,7 +190,11 @@ class UserRegisterController extends Controller
 
         else if($request->role_id == 3)
         {
-           
+             if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
             $request->validate([
 
                 'retailer_id'=>'required',
@@ -179,6 +223,11 @@ class UserRegisterController extends Controller
 
         else if($request->role_id == 5)
         {
+              if (!in_array(Auth::user()->role_id, [1])) 
+              {
+                    abort(403, 'Unauthorized action.');
+              }
+
            
             $request->validate([
 
@@ -204,6 +253,10 @@ class UserRegisterController extends Controller
 
         else if($request->role_id==6)
         {
+             if (!in_array(Auth::user()->role_id, [1])) 
+              {
+                    abort(403, 'Unauthorized action.');
+              }
            
             $request->validate
             ([
@@ -233,6 +286,11 @@ class UserRegisterController extends Controller
 
         else if($request->role_id==7)
         {
+             if (!in_array(Auth::user()->role_id, [1])) 
+              {
+                    abort(403, 'Unauthorized action.');
+              }
+              
             $request->validate
             ([
                 'sales_manager_id'=>'required|exists:users,id',

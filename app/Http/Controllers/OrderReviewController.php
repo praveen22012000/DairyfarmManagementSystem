@@ -7,7 +7,7 @@ use App\Models\MilkProduct;
 use App\Models\ManufacturerProduct;
 use App\Models\OrderAllocation;
 use App\Models\RetailorOrderItems;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class OrderReviewController extends Controller
@@ -47,9 +47,12 @@ class OrderReviewController extends Controller
     }
 
 
-     public function review($orderId)
+    public function review($orderId)
     {
-        
+        if (!in_array(Auth::user()->role_id, [1, 7])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
  
         //findOrFail is a shortcut method that directly queries by the primary key, which is usually id
         //Returns a single model instance
@@ -72,6 +75,12 @@ class OrderReviewController extends Controller
 
     public function approveOrder($orderId)
     {
+        if (!in_array(Auth::user()->role_id, [1, 7])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
+
         $order = RetailorOrder::with('user', 'retailor_order_item')->findOrFail($orderId);
 
         // First, validate all items have sufficient stock
@@ -127,6 +136,11 @@ class OrderReviewController extends Controller
      //  Reject the order
      public function reject($orderId)
      {
+        if (!in_array(Auth::user()->role_id, [1, 7])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
          $order = RetailorOrder::findOrFail($orderId);
          $order->status = 'Rejected';
          $order->save();

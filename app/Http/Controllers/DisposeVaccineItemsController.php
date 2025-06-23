@@ -16,6 +16,13 @@ class DisposeVaccineItemsController extends Controller
 
     public function index()
     {
+    
+        if (!in_array(Auth::user()->role_id, [1, 6, 2])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
+
       $disposeVaccineItems=DisposeVaccineItems::with(['dispose_vaccine_details','purchase_vaccine_items'])->get();
 
       return view('dispose_vaccine_items.index',['disposeVaccineItems'=>$disposeVaccineItems]);
@@ -23,6 +30,11 @@ class DisposeVaccineItemsController extends Controller
 
     public function create()
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 2])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $purchaseVaccineItems=PurchaseVaccineItems::where('stock_quantity','>',0)->get();
 
       
@@ -31,6 +43,11 @@ class DisposeVaccineItemsController extends Controller
 
     public function store(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 2])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $request->validate([
 
             'dispose_date'=>'required',
@@ -108,6 +125,10 @@ class DisposeVaccineItemsController extends Controller
 
     public function view(DisposeVaccineItems $disposevaccineitem)
     {
+         if (!in_array(Auth::user()->role_id, [1, 6, 2])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
         $purchaseVaccineItems=PurchaseVaccineItems::where('stock_quantity','>=',0)->get();
 
       
@@ -118,6 +139,10 @@ class DisposeVaccineItemsController extends Controller
 
     public function edit(DisposeVaccineItems $disposevaccineitem)
     {
+         if (!in_array(Auth::user()->role_id, [1, 6, 2])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
 
         $purchaseVaccineItems=PurchaseVaccineItems::where('stock_quantity','>=',0)->get();
 
@@ -128,6 +153,10 @@ class DisposeVaccineItemsController extends Controller
 
     public function update(Request $request, DisposeVaccineItems $disposevaccineitem)
     {
+         if (!in_array(Auth::user()->role_id, [1, 6, 2])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
     $data = $request->validate([
         'dispose_date' => 'required',
         'dispose_time' => 'required',
@@ -170,6 +199,10 @@ class DisposeVaccineItemsController extends Controller
 
     public function destroy(DisposeVaccineItems $disposevaccineitem)
     {
+         if (!in_array(Auth::user()->role_id, [1, 6, 2])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
         $disposevaccineitem->delete();
         return redirect()->route('dispose_vaccine_items.list');
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Vaccine;
+use Illuminate\Support\Facades\Auth;
 
 class VaccineController extends Controller
 {
@@ -11,6 +12,11 @@ class VaccineController extends Controller
 
     public function index()
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 2])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $vaccines=Vaccine::all();
 
         return view('vaccine_details.index',['vaccines'=>$vaccines]);
@@ -18,11 +24,21 @@ class VaccineController extends Controller
 
     public function create()
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 2])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         return view('vaccine_details.create');
     }
 
     public function store(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 2])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $request->validate([
             'vaccine_name'=>'required',
             'manufacturer'=>'required',
@@ -44,11 +60,21 @@ class VaccineController extends Controller
 
     public function edit(Vaccine $vaccine)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 2])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         return view('vaccine_details.edit',['vaccine'=>$vaccine]);
     }
 
     public function update(Request $request,Vaccine $vaccine)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 2])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $data=$request->validate([
             'vaccine_name'=>'required',
             'manufacturer'=>'required',
@@ -66,6 +92,11 @@ class VaccineController extends Controller
 
     public function destroy(Vaccine $vaccine)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 2])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $vaccine->delete();
 
         return redirect()->route('vaccine.list');

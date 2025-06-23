@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\ProductionMilk;
 use App\Models\DisposeMilk;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth; 
 
 class DisposeMilkController extends Controller
 {
@@ -54,6 +55,11 @@ class DisposeMilkController extends Controller
 
     public function index()
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $disposeMilks=DisposeMilk::with(['user','production_milk'])->get();
 
 
@@ -62,6 +68,11 @@ class DisposeMilkController extends Controller
 
     public function create()
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $ProductionsMilks = ProductionMilk::where('stock_quantity', '>', 0)->get();
 
         $farm_labore_id=Role::where('role_name','FarmLabore')->pluck('id');
@@ -80,6 +91,11 @@ class DisposeMilkController extends Controller
     public function store(Request $request)
     {
 
+
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
        
             // Validate request data
             $request->validate([
@@ -127,6 +143,11 @@ class DisposeMilkController extends Controller
 
     public function view(DisposeMilk $disposeMilk)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $ProductionsMilks = ProductionMilk::where('stock_quantity', '>', 0)->get();
 
         $farm_labore_id=Role::where('role_name','FarmLabore')->pluck('id');
@@ -139,7 +160,11 @@ class DisposeMilkController extends Controller
 
     public function edit(DisposeMilk $disposeMilk)
     {
-        
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $ProductionsMilks = ProductionMilk::where('stock_quantity', '>', 0)->get();
 
         $farm_labore_id=Role::where('role_name','FarmLabore')->pluck('id');
@@ -152,7 +177,11 @@ class DisposeMilkController extends Controller
 
     public function update(Request $request,DisposeMilk $disposeMilk)
     {
- 
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $data=$request->validate([
 
             'production_milk_id'=>"required|exists:production_milks,id",
@@ -177,6 +206,11 @@ class DisposeMilkController extends Controller
 
     public function destroy(DisposeMilk $disposeMilk)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $disposeMilk->delete();
 
         return redirect()->route('dispose_milk.list');

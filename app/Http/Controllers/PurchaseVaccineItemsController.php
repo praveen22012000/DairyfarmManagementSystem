@@ -16,6 +16,11 @@ class PurchaseVaccineItemsController extends Controller
     //
     public function index()
     {
+        if (!in_array(Auth::user()->role_id, [1, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $purchaseVaccineItems=PurchaseVaccineItems::with(['purchase_vaccine','vaccine'])->get();
 
         return view('purchase_vaccine_items_by_suppliers.index',['purchaseVaccineItems'=>$purchaseVaccineItems]);
@@ -23,6 +28,11 @@ class PurchaseVaccineItemsController extends Controller
 
     public function create()
     {
+        if (!in_array(Auth::user()->role_id, [1, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $suppliers=Supplier::all();
 
         $vaccines=Vaccine::all();
@@ -33,6 +43,11 @@ class PurchaseVaccineItemsController extends Controller
 
     public function store(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $request->validate([
 
             'supplier_id'=>'required|exists:suppliers,id',
@@ -91,6 +106,11 @@ class PurchaseVaccineItemsController extends Controller
 
     public function edit(PurchaseVaccineItems $purchasevaccineitem)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $suppliers=Supplier::all();
 
         $vaccines=Vaccine::all();
@@ -103,6 +123,11 @@ class PurchaseVaccineItemsController extends Controller
 
     public function update(Request $request,PurchaseVaccineItems $purchasevaccineitem)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $data=$request->validate([
 
             'supplier_id'=>'required|exists:suppliers,id',
@@ -153,6 +178,11 @@ class PurchaseVaccineItemsController extends Controller
 
     public function view(PurchaseVaccineItems $purchasevaccineitem)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+        
         $suppliers=Supplier::all();
 
         $vaccines=Vaccine::all();
@@ -164,6 +194,11 @@ class PurchaseVaccineItemsController extends Controller
 
     public function destroy(PurchaseVaccineItems $purchasevaccineitem)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $purchasevaccineitem->delete();
         return redirect()->route('purchase_vaccine_items.list');
     }

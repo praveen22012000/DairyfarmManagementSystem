@@ -9,13 +9,17 @@ use App\Models\Vaccine;
 use App\Models\Supplier;
 use App\Models\SupplierFeed;
 use App\Models\SupplierVaccine;
+use Illuminate\Support\Facades\Auth;
 
 class SupplierController extends Controller
 {
     //
     public function index()
     {
-
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
     
         $suppliers=Supplier::all();
 
@@ -24,6 +28,10 @@ class SupplierController extends Controller
     }
     public function create()
     {
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $feeds=Feed::all();
         $vaccines=Vaccine::all();
 
@@ -33,6 +41,10 @@ class SupplierController extends Controller
 
     public function store(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
           // Validate the request data
     $data = $request->validate([
         'name' => 'required|string|max:255',
@@ -98,6 +110,10 @@ class SupplierController extends Controller
 
     public function edit(Supplier $supplier)
     {
+          if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
        // $feeds=Feed::all();
       //  $vaccines=Vaccine::all();
 
@@ -108,11 +124,19 @@ class SupplierController extends Controller
 
     public function view(Supplier $supplier)
     {
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
          return view('supplier_feed_vaccine_details.view',['supplier'=>$supplier]);  
     }
 
     public function update(Supplier $supplier,Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $data=$request->validate([
             'name'=>'required',
             'phone_no'=>'required|numeric',

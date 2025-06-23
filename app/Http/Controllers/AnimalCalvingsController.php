@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\AnimalCalvings;
 use App\Models\AnimalDetail;
 use App\Models\Pregnancies;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 
@@ -17,6 +18,11 @@ class AnimalCalvingsController extends Controller
     //
     public function index()
     {
+        if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $animal_calvings_details=AnimalCalvings::with(['parentCow','calf'])->get();
 
        
@@ -28,6 +34,11 @@ class AnimalCalvingsController extends Controller
 
     public function create()
     {
+         if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $Child_animals = AnimalDetail::whereNotNull('sire_id')
                                 ->whereNotNull('dam_id')
                                 ->whereNotIn('id', AnimalCalvings::pluck('calf_id')->toArray())
@@ -45,6 +56,11 @@ class AnimalCalvingsController extends Controller
 
     public function store(Request $request)
     {
+         if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $request->validate([
             'calf_id'=>'required|unique:animal_calvings,calf_id|exists:animal_details,id',
           
@@ -75,6 +91,10 @@ class AnimalCalvingsController extends Controller
     public function edit(AnimalCalvings $animalcalvings)
     {
       
+        if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
 
        // $Child_animals=AnimalCalvings::all();
 
@@ -94,7 +114,10 @@ class AnimalCalvingsController extends Controller
     public function update(Request $request,AnimalCalvings $animalcalvings)
     {
     
-       
+        if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
 
         $data=$request->validate([
             'calf_id'=>"required|unique:animal_calvings,calf_id,$animalcalvings->id",
@@ -123,6 +146,10 @@ class AnimalCalvingsController extends Controller
 
     public function delete(AnimalCalvings $animalcalvings)
     {
+         if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
          //this is used to get the type of the animals Heifer,and BullCalf from the animal_type table in db.pluck() method return only the animal_type_id of the animals Heifer and BullCalf
          $calf_animal_types_id= AnimalType::whereIn('animal_type',['Heifer','BullCalf'])->pluck('id');
 
@@ -135,6 +162,10 @@ class AnimalCalvingsController extends Controller
 
     public function destroy(AnimalCalvings $animalcalvings)
     {
+         if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $animalcalvings->delete();
 
         return redirect()->route('animal_calvings.list');
@@ -142,7 +173,10 @@ class AnimalCalvingsController extends Controller
 
     public function view(AnimalCalvings $animalcalvings)
     {
-
+         if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
 
         $Calf_animals = AnimalCalvings::distinct('calf_id')->with('calf')->get();
 
@@ -161,6 +195,10 @@ class AnimalCalvingsController extends Controller
 
     public function getCalfDetails($calfId)
     {
+        if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         // Fetch the calf's details along with the parent cow (dam)
         $calf = AnimalDetail::with('asCalf')->find($calfId);
 

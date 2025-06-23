@@ -64,6 +64,11 @@ class DisposeFeedItemsController extends Controller
 
     public function index()
     {
+        if (!in_array(Auth::user()->role_id, [1,6,5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
       $disposeFeedItems=DisposeFeedItems::with(['dispose_feed_details','purchase_feed_items'])->get();
 
       return view('dispose_feed_items.index',['disposeFeedItems'=>$disposeFeedItems]);
@@ -72,6 +77,11 @@ class DisposeFeedItemsController extends Controller
 
     public function create()
     {
+        if (!in_array(Auth::user()->role_id, [1,6,5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $purchaseFeedItems=PurchaseFeedItems::where('stock_quantity','>',0)->get();
 
       
@@ -80,6 +90,11 @@ class DisposeFeedItemsController extends Controller
 
     public function store(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1,6,5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $request->validate([
 
             'dispose_date'=>'required',
@@ -157,6 +172,11 @@ class DisposeFeedItemsController extends Controller
 
     public function view(DisposeFeedItems $disposefeeditem)
     {
+        if (!in_array(Auth::user()->role_id, [1,6,5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $purchaseFeedItems=PurchaseFeedItems::where('stock_quantity','>=',0)->get();
 
       
@@ -166,6 +186,10 @@ class DisposeFeedItemsController extends Controller
 
     public function edit(DisposeFeedItems $disposefeeditem)
     {
+        if (!in_array(Auth::user()->role_id, [1,6,5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
 
         $purchaseFeedItems=PurchaseFeedItems::where('stock_quantity','>=',0)->get();
 
@@ -176,6 +200,11 @@ class DisposeFeedItemsController extends Controller
 
     public function update(Request $request, DisposeFeedItems $disposefeeditem)
     {
+        if (!in_array(Auth::user()->role_id, [1,6,5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
     $data = $request->validate([
         'dispose_date' => 'required',
         'dispose_time' => 'required',
@@ -219,7 +248,10 @@ class DisposeFeedItemsController extends Controller
 
     public function destroy(DisposeFeedItems $disposefeeditem)
     {
-
+        if (!in_array(Auth::user()->role_id, [1,6,5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
 
         $disposefeeditem->delete();
         return redirect()->route('dispose_feed_items.list');

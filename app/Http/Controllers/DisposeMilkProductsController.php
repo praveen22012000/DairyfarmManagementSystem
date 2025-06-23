@@ -8,6 +8,7 @@ use App\Models\ManufacturerProduct;
 use App\Models\Role;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class DisposeMilkProductsController extends Controller
 {
@@ -58,6 +59,11 @@ class DisposeMilkProductsController extends Controller
     //
     public function index()
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
       $disposeMilkProducts=DisposeMilkProducts::with(['manufacture_proudct','user'])->get();
 
       return view('dispose_milk_products.index',['disposeMilkProducts'=>$disposeMilkProducts]);
@@ -65,6 +71,10 @@ class DisposeMilkProductsController extends Controller
 
     public function create()
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
 
       $manufacturedMilkProducts=ManufacturerProduct::where('stock_quantity','>',0)->get();
 
@@ -79,7 +89,10 @@ class DisposeMilkProductsController extends Controller
 
     public function store(Request $request)
     {
-  
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
 
 
       $request->validate([
@@ -123,6 +136,11 @@ class DisposeMilkProductsController extends Controller
 
     public function view(DisposeMilkProducts $disposeMilkProducts)
     {
+
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
       $manufacturedMilkProducts=ManufacturerProduct::where('stock_quantity','>',0)->get();
 
       $farm_labore_id=Role::where('role_name','FarmLabore')->pluck('id');
@@ -138,6 +156,10 @@ class DisposeMilkProductsController extends Controller
 
     public function edit(DisposeMilkProducts $disposeMilkProducts)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
 
       $manufacturedMilkProducts=ManufacturerProduct::where('stock_quantity','>=',0)->get();
 
@@ -153,6 +175,11 @@ class DisposeMilkProductsController extends Controller
 
     public function update(Request $request,DisposeMilkProducts $disposeMilkProducts)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $data=$request->validate([
 
           'manufacturer_product_id'=>'required|exists:manufacturer_products,id',
@@ -178,7 +205,11 @@ class DisposeMilkProductsController extends Controller
 
     public function destroy(DisposeMilkProducts $disposeMilkProducts)
     {
-      
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
       $disposeMilkProducts->delete();
 
         return redirect()->route('dispose_milk_product.index');

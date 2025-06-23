@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\GeneralManager;
 use App\Models\Role;
+use Illuminate\Support\Facades\Auth;
 
 class GeneralManagerController extends Controller
 {
@@ -12,6 +13,10 @@ class GeneralManagerController extends Controller
     
     public function view(GeneralManager $generalmanager)
     {
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         
         $roles = Role::all(); // Fetch all roles
 
@@ -23,6 +28,10 @@ class GeneralManagerController extends Controller
 
     public function edit(GeneralManager $generalmanager)
     {
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
           $roles = Role::all(); // Fetch all roles
 
         $general_managers=GeneralManager::with('user')->get();
@@ -33,6 +42,10 @@ class GeneralManagerController extends Controller
 
     public function update(Request $request,GeneralManager $generalmanager)
     {
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
         $data=$request->validate([
             'general_manager_id'=>'required|exists:users,id',
             'qualification'=>'required',
