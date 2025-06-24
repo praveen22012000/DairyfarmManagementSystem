@@ -83,15 +83,19 @@
 
 
                             @if($assigned_task->status == 'pending')
+                                @if(Auth::user()->role_id == 1 || Auth::user()->role_id == 6 || $assigned_task->farm_labore->user->id == auth()->id() )
                                 <form method="POST" action="{{ route('task_execution.start', $assigned_task->id) }}">
                                     @csrf
                                     <button class="btn btn-sm btn-primary">Start Task</button>
                                 </form>
+                                @endif
                             @elseif($assigned_task->status == 'in_progress')
+                                 @if(Auth::user()->role_id == 1 || Auth::user()->role_id == 6 || $assigned_task->farm_labore->user->id == auth()->id() )
                                 <form method="POST" action="{{ route('task_execution.complete', $assigned_task->id) }}">
                                     @csrf
                                     <button class="btn btn-sm btn-warning">Mark as Done</button>
                                 </form>
+                                @endif
                             @else
                                 <em>No actions</em>
                             @endif

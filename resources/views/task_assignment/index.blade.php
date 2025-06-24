@@ -58,44 +58,49 @@
 
                         
                             <a href="{{ route('tasks_assignment.view',$assigned_task->id) }}" class="btn btn-info">View</a>
-                            <a href="" class="btn btn-primary">Edit</a>
+                           
+                            <a href="{{ route('tasks_assignment.edit',$assigned_task->id) }}" class="btn btn-primary">Edit</a>
                             <button class="btn btn-danger" onclick="">Delete</button>
 
-                            @if($assigned_task->status== 'pending')
-
-                            <a href="{{ route('task-assignments.reassign-form', $assigned_task->id) }}" class="btn btn-info">Re-Assign Labore</a>
-                               
+                            @if($assigned_task->status== 'pending' || $assigned_task->status== 'rejected')
+                                    @if( Auth::user()->role_id == 1 || Auth::user()->role_id == 6 )
+                                        <a href="{{ route('task-assignments.reassign-form', $assigned_task->id) }}" class="btn btn-info">Re-Assign Labore</a>
+                                    @endif
                             @endif
 
                             @if ($assigned_task->status == 'waiting_approval')
+
+                                @if(Auth::user()->role_id == 1 || Auth::user()->role_id == 6)
                                     <!-- Reject Button that triggers the modal -->
                         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#rejectModal">
                             Approve Task
                         </button>
 
-                    <!-- Modal -->
-    <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <form action="{{ route('task_execution.approve', $assigned_task->id) }}" method="POST">
-                @csrf
+                        <!-- Modal -->
+                            <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <form action="{{ route('task_execution.approve', $assigned_task->id) }}" method="POST">
+                                        @csrf
               
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="rejectModalLabel">Review Task</h5>
-                        
-                    </div>
-                    <div class="modal-body">
-                        <textarea name="review" class="form-control" rows="4" required placeholder="Give feedback about this task"></textarea>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-danger">Submit Review</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    </div>
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="rejectModalLabel">Review Task</h5>
+                                        </div>
+
+                                    <div class="modal-body">
+                                        <textarea name="review" class="form-control" rows="4" required placeholder="Give feedback about this task"></textarea>
+                                    </div>
+
+                                    <div class="modal-footer">
+                                            <button type="submit" class="btn btn-danger">Submit Review</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    </div>
+                            </div>
+                    </form>
                 </div>
-            </form>
-        </div>
-    </div>
-@endif
+                </div>
+                    @endif
+                @endif
  
 
                         </td>

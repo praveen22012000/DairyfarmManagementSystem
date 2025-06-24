@@ -71,7 +71,7 @@ class TaskAssignmentController extends Controller
 
     public function view(TaskAssignment $taskassignment)
     {
-         if (!in_array(Auth::user()->role_id, [1,6])) 
+        if (!in_array(Auth::user()->role_id, [1,6])) 
         {
             abort(403, 'Unauthorized action.');
         }
@@ -83,8 +83,48 @@ class TaskAssignmentController extends Controller
         return view('task_assignment.view',['tasks'=>$tasks,'farm_labores'=>$farm_labores,'taskassignment'=>$taskassignment]);
     }
 
+    public function edit(TaskAssignment $taskassignment)
+    {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $tasks=Tasks::with(['task_assignment'])->get();
+
+        $farm_labores=FarmLabore::with(['user'])->get();
+
+        return view('task_assignment.edit',['tasks'=>$tasks,'farm_labores'=>$farm_labores,'taskassignment'=>$taskassignment]);
+    }
+
+    public function update(TaskAssignment $taskassignment,Request $request)
+    {
+         if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $data=$request->validate([
+             'task_id'=>'required|exists:tasks,id',
+            'assigned_to'=>'required|exists:farm_labores,id',
+            'due_date'=>'required'
+        ]);
+
+             TaskAssignment::create([
+            'task_id'=>$request->task_id,
+            'assigned_by'=>Auth::id(),
+            'assigned_to'=>$request->assigned_to,
+            'due_date'=>$request->due_date,
+            'assigned_date'=>Carbon::now(),
+
+            
+        ]);
+            return redirect()->route('tasks_assignment.list')->with('success', 'Task assigned updated successfully!');
+    }
+
     public function showReassignForm(TaskAssignment $taskassignment)
     {
+       
          if (!in_array(Auth::user()->role_id, [1,6])) 
         {
             abort(403, 'Unauthorized action.');
@@ -102,11 +142,12 @@ class TaskAssignmentController extends Controller
 
         //Is there a currently assigned laborer? ($currentLabore is not null)
         //Is the currently assigned laborer NOT already in the list of available laborers?
+        //This code ensures that the currently assigned farm labore (even if they are busy or not available) is still included in the dropdown list of labors in the task reassignment form.
         if ($currentLabore && !$availableLabores->contains('id', $currentLabore->id)) 
         {
             $farm_labores->push($currentLabore);
         }
-
+ 
         return view('re_assign_labore_for_task.create', ['taskassignment' => $taskassignment,'farm_labores' => $farm_labores]);
 
 
@@ -115,11 +156,9 @@ class TaskAssignmentController extends Controller
     
     public function reassign(Request $request,TaskAssignment $taskassignment)
     {
-         if (!in_array(Auth::user()->role_id, [1,6])) 
-        {
-            abort(403, 'Unauthorized action.');
-        }
-
+   
+     
+    
         $request->validate([
         'assigned_to' => 'required|exists:farm_labores,id',
         'due_date' => 'required|date'

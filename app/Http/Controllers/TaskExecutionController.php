@@ -11,18 +11,30 @@ class TaskExecutionController extends Controller
     //this is for the index page of the task execution table
     public function myTasks()
     {
-        // Get the logged-in user's farm labore record
-        $farmLabore = Auth::user()->farm_labore;//farm_labore is a relationship in the user.php model
+        $user = Auth::user();//this line is used to get the currently logged in user.
+        $farmLabore = $user->farm_labore; // relationship from User model
 
-      
-        if (!$farmLabore) 
-        {
-        abort(403, 'You are not authorized as a farm labore.');
-        }
+    // Allow only farm owners or farm_labores to access
+    if (!($user->role_id == 1 || $farmLabore || $user->role_id == 6)) {
+        abort(403, 'You are not authorized to access these tasks.');
+    }
         
-            // Get task assignments for this labore
-            $assigned_tasks = $farmLabore->task_assignment()->with('task')->get();
+        // If the user is a farm labore, show their tasks
+    if ($farmLabore) 
+    {
+        // in here,task_assignment and task are relationships // this used to get the tasks only associated with the paricular taboe
+        $assigned_tasks = $farmLabore->task_assignment()->with('task')->get();
+    } 
+    // If the user is a farm owner (role_id == 1), show all tasks
+    else if ($user->role_id == 1) 
+    {
+        $assigned_tasks = \App\Models\TaskAssignment::with(['task', 'farm_labore'])->get();     
+    }
 
+     else if ($user->role_id == 6) 
+    {
+        $assigned_tasks = \App\Models\TaskAssignment::with(['task', 'farm_labore'])->get();     
+    }
         
         return view('task_execution.index', compact('assigned_tasks'));
     }
@@ -30,6 +42,15 @@ class TaskExecutionController extends Controller
     
     public function startTask($id)
     {
+        $user = Auth::user();//this line is used to get the currently logged in user.
+        $farmLabore = $user->farm_labore; // relationship from User model
+
+        // Allow only farm owners or farm_labores to access
+        if (!($user->role_id == 1 || $farmLabore)) 
+        {
+        abort(403, 'You are not authorized to access these tasks.');
+        }
+
         $assignment = TaskAssignment::findOrFail($id);
 
         // Ensure the logged-in user is the one assigned
@@ -52,6 +73,15 @@ class TaskExecutionController extends Controller
 
     public function submitForApproval($id)
     {
+         $user = Auth::user();//this line is used to get the currently logged in user.
+        $farmLabore = $user->farm_labore; // relationship from User model
+
+        // Allow only farm owners or farm_labores to access
+        if (!($user->role_id == 1 || $farmLabore)) 
+        {
+        abort(403, 'You are not authorized to access these tasks.');
+        }
+        
         $assignment = TaskAssignment::findOrFail($id);
 
         if (Auth::user()->farm_labore->id !== $assignment->assigned_to) 

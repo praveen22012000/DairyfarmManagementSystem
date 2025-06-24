@@ -533,8 +533,11 @@ Route::middleware('auth')->prefix('tasks')->group(function () {
     
  
         Route::get('/view', [TaskAssignmentController::class, 'view'])->name('tasks_assignment.view');
+        Route::get('/edit', [TaskAssignmentController::class, 'edit'])->name('tasks_assignment.edit');
+        Route::post('/update', [TaskAssignmentController::class, 'update'])->name('tasks_assignment.update');
+
         Route::get('/view_reassign_form', [TaskAssignmentController::class, 'showReassignForm'])->name('task-assignments.reassign-form');
-        Route::put('/reassign', [TaskAssignmentController::class, 'reassign'])->name('task-assignments.reassign');
+        Route::put('/reassign', [TaskAssignmentController::class, 'reassign'])->name('re-assign');
  
        
      });
