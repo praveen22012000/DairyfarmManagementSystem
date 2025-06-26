@@ -8,7 +8,7 @@ use App\Models\RetailorOrder;
 use App\Models\FarmLabore;
 use App\Models\OrderAllocation;
 use App\Models\ManufacturerProduct;
-
+use Illuminate\Support\Facades\Auth;
 
 class DeliveryController extends Controller
 {

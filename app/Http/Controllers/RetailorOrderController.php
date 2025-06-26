@@ -9,7 +9,8 @@ use App\Models\RetailorOrder;
 use App\Models\RetailorOrderItems;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\RetailorOrderNotification;
 class RetailorOrderController extends Controller
 {
     //
@@ -141,6 +142,8 @@ class RetailorOrderController extends Controller
             // Commit transaction if everything is successful
             DB::commit();
 
+             // Send email to general manager
+                Mail::to('pararajasingampraveen2000@gmail.com')->send(new RetailorOrderNotification($order));
             return redirect()->route('retailor_order_items.list')->with('success', 'Retailor Order Saved successfully.');
     }
 

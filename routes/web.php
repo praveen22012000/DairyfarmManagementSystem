@@ -44,7 +44,7 @@ use App\Http\Controllers\FarmLaboreController;
 use App\Http\Controllers\GeneralManagerController;
 use App\Http\Controllers\SalesManagerController;
 use App\Http\Controllers\PurchaseVaccinePaymentsController;
-
+use App\Http\Controllers\DashboardControllerForAdmin;
 
 use Illuminate\Support\Facades\Route;
 
@@ -53,10 +53,15 @@ use App\Models\AnimalDetail;
 Route::get('/', function () {
     return view('welcome');
 });
-
+/*
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');*/
+
+Route::get('/dashboard', [DashboardControllerForAdmin::class, 'index'])
+    ->name('dashboard')
+    ->middleware('auth');  // apply role-based checks if needed
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
