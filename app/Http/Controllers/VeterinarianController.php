@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Veterinarian;
 use App\Models\Role;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class VeterinarianController extends Controller

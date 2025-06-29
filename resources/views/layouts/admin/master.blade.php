@@ -4,9 +4,6 @@
 <head>
 @include('layouts/admin/_meta')
 @include('layouts/admin/_style')
-
-
-
 </head>
 
 <body id="page-top">
@@ -39,7 +36,6 @@
 <!-- this line added by me-->@yield('js')
 
 </body>
-
 </html>
 
 

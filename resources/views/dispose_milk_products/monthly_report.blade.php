@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="container">
-    <h3>Monthly Disposed Milk Report</h3>
+    <h3 style='text-align:center'>Monthly Disposed Milk Products Report</h3>
 
     <!-- Year Dropdown Form -->
     <!-- Year Filter -->
@@ -24,7 +24,7 @@
 
         <!-- Total Disposed Milk -->
         <div class="mb-3">
-            <strong>Total Disposed Milk:</strong> {{ number_format(array_sum($monthlyData), 2) }} Liters
+            <strong>Total Disposed Milk Products:</strong> {{ number_format(array_sum($monthlyData),0) }}
         </div>
 
         <!-- Table View -->
@@ -39,7 +39,7 @@
                 @foreach ($monthlyData as $month => $quantity)
                     <tr>
                         <td>{{ $month }}</td>
-                        <td>{{ number_format($quantity, 2) }}</td>
+                        <td>{{ number_format($quantity, 0) }}</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -76,7 +76,7 @@
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Disposed Milk Products (Liters)',
+                        label: 'Disposed Milk Products',
                         data: data,
                         borderColor: 'rgba(255, 99, 132, 1)',
                         backgroundColor: 'rgba(255, 99, 132, 0.2)',

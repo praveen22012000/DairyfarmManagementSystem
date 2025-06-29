@@ -28,25 +28,27 @@
                 <input type="text" name="delivery_address" id="delivery_address" placeholder="Enter your delivery address" class="form-control rounded" value="{{old('delivery_address')}}" >
                 @error('delivery_address') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
-            <br>
+           <br>
             <div>
                 <label for="total_amount" class="block text-lg font-medium text-gray-700 mb-2">Total Amount</label>
                 <input type="text" name="total_amount" id="total_amount"  class="form-control rounded" readonly value="">
                 @error('total_amount') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
-            
+            <br>
               <div>
                 <label for="discount_amount" class="block text-lg font-medium text-gray-700 mb-2">Discount Amount</label>
                 <input type="text" name="discount_amount" id="discount_amount"  class="form-control rounded" readonly value="">
                 @error('discount_amount') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
+            <br>
               <div>
                 <label for="total_payable_amount" class="block text-lg font-medium text-gray-700 mb-2">Total Payable Amount</label>
                 <input type="text" name="total_payable_amount" id="total_payable_amount"  class="form-control rounded" readonly value="">
                 @error('total_payable_amount') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
+            <br>
         </div>
 
         <br>

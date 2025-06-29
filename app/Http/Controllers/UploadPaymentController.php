@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\RetailorOrder;
 use App\Models\OrderPayment;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+
+
 
 class UploadPaymentController extends Controller
 {

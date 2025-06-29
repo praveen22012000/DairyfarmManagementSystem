@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Models\RetailorOrder;
 use App\Models\FarmLabore;
-
+use Illuminate\Support\Facades\Auth;
 
 class AssignDeliveryPersonController extends Controller
 {

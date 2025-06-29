@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="container">
-    <h2 class="mb-4" style="text-align:center">Milk Production Report (By Animal & Year)</h2>
+    <h2 class="mb-4" style="text-align:center">Milk Production Report by Animal</h2>
 
     <!-- Filter Form -->
     <form method="GET" action="{{ route('milk.animal_year_chart') }}" class="mb-4 row">

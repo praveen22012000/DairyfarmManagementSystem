@@ -96,14 +96,18 @@ class AnimalController extends Controller
         //get the all animaltypes records from the database.and stored it in the $animal_types variable
 
 
+        //this line gets id of the female animals
         $female_animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');//newcode
 
+        //this line get the female animals which they are currently alive
         $female_Animals = AnimalDetail::whereIn('animal_type_id', $female_animal_types_id)
                                   ->where('status', 'alive') // Filter only alive animals
                                   ->get();
 
+        //this line gets the id of the male animals
         $male_animal_types_id= AnimalType::whereIn('animal_type',['Bull','BullCalf'])->pluck('id');//newcode
 
+        //this line gets the animal which they are currently alive
         $male_animals=AnimalDetail::whereIn('animal_type_id',$male_animal_types_id)
                                     ->where('status','alive')
                                     ->get();//newcode

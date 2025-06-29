@@ -45,6 +45,10 @@ use App\Http\Controllers\GeneralManagerController;
 use App\Http\Controllers\SalesManagerController;
 use App\Http\Controllers\PurchaseVaccinePaymentsController;
 use App\Http\Controllers\DashboardControllerForAdmin;
+use App\Http\Controllers\MainUserRegisterController;
+
+
+
 
 use Illuminate\Support\Facades\Route;
 
@@ -969,7 +973,7 @@ Route::middleware('auth')->prefix('animal_pregnancies')->group(function () {
  
 });
 
-
+// the below code is used to breeding events details
 Route::middleware('auth')->prefix('animal_breedings')->group(function () {
 
     Route::get('/', [BreedingEventsController::class, 'index'])->name('animal_breedings.list');
@@ -992,9 +996,28 @@ Route::middleware('auth')->prefix('animal_breedings')->group(function () {
 });
 
 
+Route::middleware('auth')->prefix('users_main_details')->group(function () {
+
+    Route::get('/', [MainUserRegisterController::class, 'index'])->name('main_user_details.list');
+  
+   
+
+    Route::group(['prefix'=>'{user}'],function(){
+       
+        Route::get('/view', [MainUserRegisterController::class, 'view'])->name('main_user_details.view');
+        Route::get('/edit', [MainUserRegisterController::class, 'edit'])->name('main_user_details.edit');
+        Route::post('/update', [MainUserRegisterController::class, 'update'])->name('main_user_details.update');
+
+       
+      
+    });
+ 
+});
 
 
 
+
+//this controller is used to register the additional details of the each users
 Route::middleware('auth')->prefix('users')->group(function () {
 
     Route::get('/', [UserRegisterController::class, 'index'])->name('users.list');

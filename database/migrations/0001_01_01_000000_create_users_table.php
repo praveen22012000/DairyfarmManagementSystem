@@ -21,6 +21,12 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->foreignId('role_id');//this is the foreignKey
+
+            $table->string('nic');
+
+            $table->string('gender')->nullable();
+            $table->date('birthdate')->nullable();
+
             $table->rememberToken();
             $table->timestamps();
 

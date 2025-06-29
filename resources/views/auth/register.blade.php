@@ -1,124 +1,125 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
-        @csrf
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dairy Farm Register</title>
+    <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
+</head>
+<body class="bg-gradient-primary">
 
-        @if ($errors->any())
-    <div class="alert alert-danger">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
+    <div class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+        <div class="card o-hidden border-0 shadow-lg w-100" style="max-width: 900px;">
+            <div class="card-body p-0">
+                <div class="row">
+                    <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+                    <div class="col-lg-7">
+                        <div class="p-5">
+                            <div class="text-center">
+                                <h1 class="h4 text-gray-900 mb-4">Create an User</h1>
+                            </div>
+
+                            <!-- Laravel Registration Form Starts -->
+                            <form method="POST" action="{{ route('register') }}" class="user">
+                                @csrf
+
+                                <!-- Name -->
+                                <div class="form-group">
+                                    <input type="text" name="name" class="form-control form-control-user" placeholder="First Name" value="{{ old('name') }}" required>
+                                    @error('name')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                <!-- Lastname -->
+                                <div class="form-group">
+                                    <input type="text" name="lastname" class="form-control form-control-user" placeholder="Last Name" value="{{ old('lastname') }}" required>
+                                    @error('lastname')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                <!-- Email -->
+                                <div class="form-group">
+                                    <input type="email" name="email" class="form-control form-control-user" placeholder="Email Address" value="{{ old('email') }}" required>
+                                    @error('email')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                <!-- Address -->
+                                <div class="form-group">
+                                    <input type="text" name="address" class="form-control form-control-user" placeholder="Enter Address" value="{{ old('address') }}" required>
+                                    @error('address')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                <!-- Phone Number -->
+                                <div class="form-group">
+                                    <input type="text" name="phone_number" class="form-control form-control-user" placeholder="Enter phone number" value="{{ old('phone_number') }}" required>
+                                    @error('phone_number')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                <!-- NIC Number -->
+                                <div class="form-group">
+                                    <input type="text" name="nic" class="form-control form-control-user" placeholder="Enter NIC number" value="{{ old('nic') }}" required>
+                                    @error('nic')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                <!-- Role Selection -->
+                                <div class="form-group">
+                                    <select name="role_id" class="form-control rounded-pill" required>
+                                        <option value="">Select the role</option>
+                                        @foreach ($roles as $i => $role)
+                                            <option value="{{ $i }}" {{ old('role_id') == $i ? 'selected' : '' }}>{{ $role }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('role_id')
+                                        <small class="text-danger">{{ $message }}</small>
+                                    @enderror
+                                </div>
+
+                                <!-- Password + Confirm -->
+                                <div class="form-group row">
+                                    <div class="col-sm-6 mb-3 mb-sm-0">
+                                        <input type="password" name="password" class="form-control form-control-user" placeholder="Password" required>
+                                        @error('password')
+                                            <small class="text-danger">{{ $message }}</small>
+                                        @enderror
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input type="password" name="password_confirmation" class="form-control form-control-user" placeholder="Repeat Password" required>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <button type="submit" class="btn btn-primary btn-user btn-block">
+                                    Register Account
+                                </button>
+                            </form>
+                            <!-- Laravel Registration Form Ends -->
+
+                            <hr>
+                            <div class="text-center">
+                                <!-- Add links here if needed -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-@endif
 
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
-        </div>
-
-        <!-- LastName-->
-        <div>
-            <x-input-label for="lastname" :value="__('LastName')" />
-            <x-text-input id="lastname" class="block mt-1 w-full" type="text" name="lastname" :value="old('lastname')" required autofocus autocomplete="lastname" />
-            <x-input-error :messages="$errors->get('lastname')" class="mt-2" />
-        </div>
-
-        <!-- Address-->
-        <div>
-            <x-input-label for="address" :value="__('Address')" />
-            <x-text-input id="address" class="block mt-1 w-full" type="text" name="address" :value="old('address')" required autofocus autocomplete="address" />
-            <x-input-error :messages="$errors->get('address')" class="mt-2" />
-        </div>
-
-
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- phone number-->
-        <div>
-            <x-input-label for="phone_number" :value="__('Phone_Number')" />
-            <x-text-input id="phone_number" class="block mt-1 w-full" type="text" name="phone_number" :value="old('phone_number')" required autofocus autocomplete="phone_number" />
-            <x-input-error :messages="$errors->get('phone_number')" class="mt-2" />
-        </div>
-
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-
-         <!-- select role -->
- 
-    
-      <!--  <div class="mt-4">//this is the anotherway to create the drop down menu
-
-            <x-input-label for="role_id" :value="__('Role')" />
-
-                <x-select-input name="role_id" :options="$roles" required>
-
-            </x-select-input>
-
-        </div>-->
-
-
-                <!-- this below code is used to create a select drop down,this is used to list the roles in the register blade.
-                and the role_id is stored in users table as the foreign_key 
-                --> 
-
-        <div class="mt-4">
-            	<x-input-label for="role" :value="__('Role')" />
-
-                        <select class = "border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md w-full shadow-sm" id="role_id" name="role_id">
- 
-                                <!-- it gets the $roles array from the RegisteredUserController. $i represent the key of the array
-                                $role represent the actual roles 
-                                -->
-                             @foreach ($roles as $i=>$role)
-               
-                                <option value="{{ $i }}">{{ $role}}</option>     
-             
-                            @endforeach
-                        </select>
-
-        </div>
-
-        
-
-
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+    <!-- Scripts -->
+    <script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+    <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
+</body>
+</html>

@@ -61,11 +61,11 @@
 
                     
                         @if( ($retailor_order->status == 'Pending' && Auth::user()->role_id == 7) ||  ($retailor_order->status == 'Pending' && Auth::user()->role_id == 1))
-                            <a href="{{ route('manager.orders.review',$retailor_order->id)  }}">Review</a>
+                            <a href="{{ route('manager.orders.review',$retailor_order->id)  }}" class="btn btn-primary">Review</a>
                         @endif
 
                         @if(  ($retailor_order->status == 'Pending' && Auth::user()->role_id == 1) || ($retailor_order->status == 'Pending' && Auth::user()->role_id == 3 && $retailor_order->user->id == auth()->id() )   )
-                            <a href="{{ route('retailor_order_items.edit',$retailor_order->id) }}">Edit</a> 
+                            <a href="{{ route('retailor_order_items.edit',$retailor_order->id) }}" class="btn btn-primary">Edit</a> 
                             |
 
                                 <form action="{{ route('order.cancel_before_approval', $retailor_order->id) }}" id="cancelBeforeForm-{{ $retailor_order->id }}" method="POST" style="display:inline;">
@@ -149,13 +149,13 @@
                         @if($retailor_order->payment_status == 'Paid')
 
                             @if(Auth::user()->role_id == 1 || Auth::user()->role_id == 7 || $retailor_order->farm_labore->user->id == auth()->id() || $retailor_order->user->id == auth()->id())
-                            <a href="{{ route('retailor_order.invoice',$retailor_order->id) }}">View Invoice</a>
+                            <a href="{{ route('retailor_order.invoice',$retailor_order->id) }}" class="btn btn-dark">View Invoice</a>
                             @endif
 
                         @endif
 
 
-                            <a href="{{ route('retailor_order_items.view',$retailor_order->id) }}">View</a>
+                            <a href="{{ route('retailor_order_items.view',$retailor_order->id) }}" class="btn btn-info">View</a>
                             
                     
                         </td>

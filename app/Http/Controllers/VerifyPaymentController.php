@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use App\Models\RetailorOrder;
 use App\Models\OrderPayment;
+use Illuminate\Support\Facades\Auth;
 
 class VerifyPaymentController extends Controller
 {

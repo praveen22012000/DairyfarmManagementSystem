@@ -77,7 +77,7 @@
                             @error("consumed_quantity.$i") <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
-                        <td>
+                        <td class="border-t px-6 py-4">
                             <select name="product_id[]" class="border border-gray-400 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none">
                                 <option value="">Select the Product</option>
                                 @foreach($milkProducts as $milkProduct)

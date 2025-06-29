@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="container">
-    <h3>Monthly Disposed Milk Report</h3>
+   
 
     <!-- Year Dropdown Form -->
     <!-- Year Filter -->
@@ -18,6 +18,12 @@
         <button type="submit" class="btn btn-success">View Report</button>
 
     </form>
+
+  
+
+      <div class="text-center my-4">
+            <h4 class="fw-bold text-primary">Monthly Disposed Milk Report {{ $year }}</h4>
+    </div>
 
     @if ($year)
         <h5 class="mt-4">Year: {{ $year }}</h5>
@@ -54,6 +60,9 @@
 @endsection
 
 @section('js')
+
+
+
 @if ($year)
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
