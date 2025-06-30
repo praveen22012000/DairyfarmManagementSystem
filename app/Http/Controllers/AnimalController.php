@@ -15,6 +15,35 @@ class AnimalController extends Controller
 {
     //
 
+    public function generateAnimalReport(Request $request)
+    {
+        $start = $request->start_date;
+        $end = $request->end_date;
+
+        $AnimalData= [];
+
+        if($start && $end)
+        {
+             $request->validate([
+                'start_date' => 'required|date',
+                'end_date' => 'required|date|after_or_equal:start_date',
+            ]);
+
+            $AnimalData= AnimalDetail::whereBetween('animal_birthdate',[$start, $end])
+            ->get();
+
+           
+        }
+
+         $totalAnimals=0;
+
+            foreach($AnimalData as $animal)
+            {
+                $totalAnimals=$totalAnimals+1;
+            }
+        return view('reports.animal_birth_report',compact('start','end','AnimalData','totalAnimals'));
+    }
+
     public function index(Request $request)
     {
         if (!in_array(Auth::user()->role_id, [1, 2, 6])) 

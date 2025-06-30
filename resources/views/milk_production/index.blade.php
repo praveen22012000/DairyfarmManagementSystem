@@ -29,6 +29,8 @@
                 </a>   
 
                  <a href="{{ route('milk.animal_year_chart') }}" class="btn btn-success">Animal-wise Monthly Report</a>
+
+                 <a class="btn btn-primary" href="">New Chart</a>
         </div>
 
         <!--end -->

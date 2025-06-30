@@ -121,7 +121,7 @@
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Custom Utilities:</h6>
-                        <a class="collapse-item" href="{{route('feed_vaccine.list')}}">Vaccine Details</a>
+                        <a class="collapse-item" href="{{route('vaccine.list')}}">Vaccine Details</a>
                          @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 6)
                         <a class="collapse-item" href="{{route('purchase_vaccine_items.list')}}">Purchase Vaccine Items</a>
                         @endif
@@ -247,7 +247,41 @@
           
 
            
+          <li class="nav-item">
+                <a class="nav-link" href="{{ route('milk.production.report') }}">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Report1 </span></a>
+            </li>
+           
+
+             <li class="nav-item">
+                <a class="nav-link" href="{{ route('milk.production.report_for_animal') }}">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Report2 </span></a>
+            </li>
+
+
+             <li class="nav-item">
+                <a class="nav-link" href="{{ route('reports.allocated_milk_for_each_product') }}">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Report 3 </span></a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('report.purchase_feed') }}">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Report 4 </span></a>
+            </li>
           
+             <li class="nav-item">
+                <a class="nav-link" href="{{ route('report.animal_birth') }}">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Report 5 </span></a>
+            </li>
+           
+          
+
+                
         
 
           

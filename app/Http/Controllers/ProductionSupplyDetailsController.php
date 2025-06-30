@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 
 class ProductionSupplyDetailsController extends Controller
 {
-    //
+    //old don't use
     public function monthlyReport(Request $request)
     {
 
@@ -61,6 +61,7 @@ class ProductionSupplyDetailsController extends Controller
 }
 
 //this function generate the report for monthly milk consumption of the each product
+//old don't use
   public function productMonthlyConsumption(Request $request)
   {
     // Get the selected year or use the current year
@@ -120,7 +121,7 @@ class ProductionSupplyDetailsController extends Controller
     return view('supply_manufacturing_milk.product_monthly_consumption', compact('tableData', 'products', 'year', 'years'));
     }
 
-
+//old don't use
     public function animalMilkUsageReport(Request $request)
     {
         //This reads the selected year from the request 
@@ -173,6 +174,41 @@ class ProductionSupplyDetailsController extends Controller
     }
 
 
+
+    public function allocatedMilkForEachProduct(Request $request)
+    {
+
+       
+    $startDate = $request->start_date;
+    $endDate = $request->end_date;
+
+    $allocatedMilk=[];
+    
+      if ($startDate && $endDate) 
+      {
+        $request->validate([
+        'start_date' => 'required|date',
+        'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+    
+        $allocatedMilk = DB::table('production_supply_details')
+        ->join('production_supplies', 'production_supply_details.production_supply_id', '=', 'production_supplies.id')
+        ->join('milk_products', 'production_supply_details.product_id', '=', 'milk_products.id')
+        ->whereBetween('production_supplies.date', [$startDate, $endDate])
+        ->select(
+            'milk_products.product_name',
+            DB::raw('SUM(production_supply_details.consumed_quantity) as total_allocated_quantity')
+        )
+        ->groupBy('production_supply_details.product_id', 'milk_products.product_name')
+        ->get();
+
+        
+        }
+
+      
+    return view('reports.allocated_milk', compact('allocatedMilk', 'startDate', 'endDate'));
+        
+    }
 
 
 

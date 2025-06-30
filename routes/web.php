@@ -81,6 +81,7 @@ Route::middleware('auth')->prefix('animal')->group(function () {
     Route::get('/create', [AnimalController::class, 'create'])->name('animal.create');
     Route::post('/store', [AnimalController::class, 'store'])->name('animal.store');
     
+    Route::get('/animal-report', [AnimalController::class, 'generateAnimalReport'])->name('report.animal_birth');
 
     Route::get('/filter', [AnimalController::class, 'filterByType'])->name('animals.filter');
 
@@ -103,9 +104,13 @@ Route::middleware('auth')->prefix('milk_production_details')->group(function () 
     Route::get('/create', [ProductionMilkController::class, 'create'])->name('production_milk.create');
     Route::post('/store', [ProductionMilkController::class, 'store'])->name('production_milk.store');
     
+    //old not use,can delete this
      Route::get('/milkproduction_records/chart', [ProductionMilkController::class, 'monthlyReport'])->name('milk_records_monthly.report');
      Route::get('/milk/animal-yearly-chart', [ProductionMilkController::class, 'animalYearlyChart'])->name('milk.animal_year_chart');
 
+     //new use this
+     Route::get('/milk-production-report', [ProductionMilkController::class, 'generateReport'])->name('milk.production.report');
+     Route::get('/milk-production-report-animal', [ProductionMilkController::class, 'generateReportPerAnimal'])->name('milk.production.report_for_animal');
      
     Route::group(['prefix'=>'{productionmilk}'],function(){
        
@@ -201,10 +206,13 @@ Route::middleware('auth')->prefix('details_about_the_milk_allocated_for_producti
     Route::get('/create', [ProductionSupplyDetailsController::class, 'create'])->name('milk_allocated_for_manufacturing.create');
     Route::post('/store', [ProductionSupplyDetailsController::class, 'store'])->name('milk_allocated_for_manufacturing.store');
     
- 
+ //old code don't use
     Route::get('/milk_allocating_for_manufacture/chart', [ProductionSupplyDetailsController::class, 'monthlyReport'])->name('monthly_milk_allocation.report');
     Route::get('/milk-consumption/product-monthly', [ProductionSupplyDetailsController::class, 'productMonthlyConsumption'])->name('milk.consumption.product.monthly');
     Route::get('/reports/animal-milk-usage', [ProductionSupplyDetailsController::class, 'animalMilkUsageReport'])->name('reports.animal_milk_usage_per_month');
+
+    //new code
+    Route::get('/reports/milk_consumption_for_each_product', [ProductionSupplyDetailsController::class, 'allocatedMilkForEachProduct'])->name('reports.allocated_milk_for_each_product');
 
 
 
@@ -376,10 +384,12 @@ Route::middleware('auth')->prefix('purchase_feed_items')->group(function () {
     Route::post('/store', [PurchaseFeedItemsController::class, 'store'])->name('purchase_feed_items.store');
 
 
+    //old don't use
     Route::get('/report/monthly-feed-purchases', [PurchaseFeedItemsController::class, 'monthlyFeedPurchaseReport'])->name('report.monthly_feed_purchase');
     Route::get('/reports/monthly-feed-spending', [PurchaseFeedItemsController::class, 'monthlyFeedPurchaseCostReport'])->name('reports.feed_spending_for_each_product');
 
-
+    //new code
+      Route::get('/report/Feed_Purchases', [PurchaseFeedItemsController::class, 'purchaseFeedReport'])->name('report.purchase_feed');
 
     Route::group(['prefix'=>'{purchasefeeditem}'],function(){
        

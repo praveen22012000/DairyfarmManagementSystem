@@ -15,6 +15,7 @@ use Carbon\Carbon;
 class PurchaseFeedItemsController extends Controller
 {
 
+    //old don't use 
     public function monthlyFeedPurchaseReport(Request $request)
     {
     // Default to current year
@@ -62,6 +63,7 @@ class PurchaseFeedItemsController extends Controller
     return view('purchase_feed_items_by_suppliers.monthly_feed_purchases', compact('tableData', 'feeds', 'year', 'years', 'totalPerFeed'));
     }
 
+    // old code.don't code
     public function monthlyFeedPurchaseCostReport(Request $request)
     {
     $year = $request->input('year', now()->year);
@@ -97,7 +99,36 @@ class PurchaseFeedItemsController extends Controller
     return view('purchase_feed_items_by_suppliers.monthly_feed_spending_for_each_product', compact('tableData', 'monthlyCost', 'year', 'years'));
     }
 
+    //new code use below
 
+    public function purchaseFeedReport(Request $request)
+    {
+         $start = $request->start_date;
+        $end = $request->end_date;
+
+        $purchaseFeedData = [];
+
+        if($start && $end)
+        {
+             $request->validate([
+                    'start_date' => 'required|date',
+                    'end_date' => 'required|date|after_or_equal:start_date',
+            ]);
+
+            $purchaseFeedData = DB::table('purchase_feed_items')
+            ->join('purchase_feeds','purchase_feed_items.purchase_id','=','purchase_feeds.id')
+            ->join('feeds','purchase_feed_items.feed_id','=','feeds.id')
+             ->whereBetween('purchase_feeds.purchase_date', [$start, $end])
+             ->select(
+            'feeds.feed_name',
+            DB::raw('SUM(purchase_feed_items.purchase_quantity) as total_purchase_quantity')
+        )->groupBy('purchase_feed_items.feed_id','feeds.feed_name')
+        ->get();
+        }
+
+       
+         return view('reports.purchase_feed', compact('purchaseFeedData', 'start', 'end'));
+    }
 
 
 

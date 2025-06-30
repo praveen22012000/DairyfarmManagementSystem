@@ -7,6 +7,7 @@ use App\Models\AnimalDetail;
 use App\Models\ProductionMilk;
 use App\Models\User;
 use App\Models\Role;
+
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,6 +16,7 @@ use Illuminate\Http\Request;
 class ProductionMilkController extends Controller
 {
 
+    //dont's use this is old code
     public function monthlyReport(Request $request)
     {
     $year = $request->input('year', now()->year);
@@ -35,6 +37,7 @@ class ProductionMilkController extends Controller
     return view('milk_production.monthly_report', compact('monthlyData', 'year'));
    }
 
+   //dont' use this is old code
    public function animalYearlyChart(Request $request)
    {
     $year = $request->input('year');
@@ -71,8 +74,83 @@ class ProductionMilkController extends Controller
     return view('milk_production.animal_year_chart', compact('animals', 'monthlyProduction', 'year', 'animal_id'));
     }
 
+    //this is new code,display the amount of milk gain from each animals between specific date
+    public function generateReport(Request $request)
+    {
+       
+    $start = $request->start_date;
+    $end = $request->end_date;
+
    
-    
+    $milkData = [];
+
+    if ($start && $end) 
+    {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+        ]);
+
+     
+
+        $milkData = \App\Models\ProductionMilk::whereBetween('production_date', [$start, $end])
+            ->select('animal_id', \DB::raw('SUM(Quantity_Liters) as total_milk'))
+            ->groupBy('animal_id')
+            ->with('AnimalDetail')
+            ->get();
+    }
+
+   
+
+    return view('reports.milk_production_report', compact('milkData', 'start', 'end'));
+    }
+
+    //this function is used to get the milk records of the animal between the particular dates
+    public function  generateReportPerAnimal(Request $request)
+    {
+        $start = $request->start_date;
+        $end = $request->end_date;
+        $animalID = $request->animal_id;
+
+        $milkData = [];
+
+          $female_animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');
+
+         
+          $female_animals = AnimalDetail::whereIn('animal_type_id', $female_animal_types_id)->get();
+
+      
+
+
+        if ($start && $end) 
+        {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'animal_id' => 'required|exists:animal_details,id'
+        ]);
+
+
+         $milkData = \App\Models\ProductionMilk::whereBetween('production_date', [$start, $end])
+    ->where('animal_id', $animalID)
+    ->with('AnimalDetail')
+    ->get();
+
+        }
+
+        $total_quantity =0 ;
+
+        foreach($milkData as $data)
+        {
+            $total_quantity=$total_quantity+$data->Quantity_Liters;
+        }
+
+          return view('reports.milk_production_report_for_animal', compact('milkData', 'start', 'end','female_animals','total_quantity'));
+   
+    }
+
+
+
     public function index()
     {
         if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
