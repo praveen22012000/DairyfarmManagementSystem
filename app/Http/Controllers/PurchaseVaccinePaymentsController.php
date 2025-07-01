@@ -5,45 +5,73 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\PurchaseVaccinePayments;
 use App\Models\PurchaseVaccine;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class PurchaseVaccinePaymentsController extends Controller
 {
     //
      //this function used to calculate the total purchase payment for the particular purchase_id
-    public function getPurchaseAmountVaccine($id)
+    public function getPaymentAmount($id)
     {
-        
-    // Calculate total of all purchase_feed_items for this purchase
-    $totalAmount = PurchaseVaccineItems::where('purchase_id', $id)
-                    ->selectRaw('SUM(unit_price * purchase_quantity) as total')
-                    ->value('total');
+        $purchase = PurchaseVaccine::with('purchase_vaccine_items')->find($id); // gets the record with the matching ID.
 
-    return response()->json(['total_amount' => $totalAmount]);
+        if (!$purchase) // This line checks if a valid purchase was found.
+        {
+        return response()->json(['amount' => 0]);// This returns a JSON response with a key called amount and sets its value to 0.
+        }
 
+        $totalAmount = 0; // this line initializes a variable called $totalAmount and sets it to 0
+
+        foreach ($purchase->purchase_vaccine_items as $item) // This starts a foreach loop.
+        {
+        $totalAmount += $item->unit_price * $item->purchase_quantity; // this line calculates the  totalAmount value
+        }
+
+        return response()->json(['amount' => $totalAmount]); //After calculating the total for all items, this line sends a JSON response back to the browser or frontend
     }
 
 
-    public function create()
+    public function index()
     {
         if (!in_array(Auth::user()->role_id, [1, 7])) 
         {
             abort(403, 'Unauthorized action.');
         }
 
+        $purchase_vaccine_payments = PurchaseVaccinePayments::with('purchase_vaccine')->get();
+
+        return view('purchase_vaccine_payments.index',['purchase_vaccine_payments'=>$purchase_vaccine_payments]);
+    }
+
+
+    public function create()
+    {
+
+        if (!in_array(Auth::user()->role_id, [1, 7])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
+        //this gets the Ids of the paid purchase_vaccine_ids
         $paid_purchase_Vaccine_Ids=PurchaseVaccinePayments::pluck('purchase_id');
 
+       
       
-
+        // this gets the un paid purchase vaccines ids.this will be sent to the create.blade.php
         $unpaid_purchase_vaccine_Query=PurchaseVaccine::whereNotIn('id', $paid_purchase_Vaccine_Ids);
 
-       $unpaid_purchase_vaccines=$unpaid_purchase_vaccine_Query->get();
+       
+        //it gets the unpaid vaccine items
+        $unpaid_purchase_vaccines=$unpaid_purchase_vaccine_Query->get();
+
+  
 
         return view('purchase_vaccine_payments.create',['unpaid_purchase_vaccines'=>$unpaid_purchase_vaccines]);
     }
 
 
-     public function store(Request $request)
+    public function store(Request $request)
     {
 
          if (!in_array(Auth::user()->role_id, [1, 7])) 
@@ -52,9 +80,9 @@ class PurchaseVaccinePaymentsController extends Controller
         }
         
         $validated = $request->validate([
-            'purchase_vaccine_id' => 'required|exists:purchase_vaccines,id',
+            'purchase_id' => 'required|exists:purchase_vaccines,id',
             'payment_amount' => 'required|numeric|min:0.01',
-            'payment_date' => 'required|date',
+            'payment_date' => 'required|date|before_or_equal:today',
         ]);
 
                 // Generate Reference Number (Example logic)
@@ -64,7 +92,7 @@ class PurchaseVaccinePaymentsController extends Controller
             // Create and save the payment record in the database
             $payment = new PurchaseVaccinePayments();
 
-            $payment->purchase_vaccine_id = $request->purchase_vaccine_id;
+            $payment->purchase_id = $request->purchase_id;
             $payment->payment_amount = $request->payment_amount;
             $payment->payment_date = $request->payment_date;
             $payment->payment_receiver = auth()->id();
@@ -73,7 +101,7 @@ class PurchaseVaccinePaymentsController extends Controller
             $payment->save();
 
             // Retrieve relevant data for the payment slip
-            $purchase = PurchaseVaccine::find($request->purchase_vaccine_id);
+            $purchase = PurchaseVaccine::find($request->purchase_id);
             $user = User::find(auth()->id());
 
             $pdf = \PDF::loadView('payment_slips.vaccine_payment', [
@@ -83,7 +111,68 @@ class PurchaseVaccinePaymentsController extends Controller
             ]);
 
 
-            return $pdf->download('payment_slip_' . $referenceNumber . '.pdf');
+           return redirect()->route('purchase_vaccine_payments.list')->with('success', 'Purchase vaccine payment record saved successfully!');
     }
 
+    public function edit(Request $request,PurchaseVaccinePayments $purchasevaccinepayment)
+    {
+        
+        if (!in_array(Auth::user()->role_id, [1, 7])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $paid_purchase_vaccine_Ids = PurchaseVaccinePayments::pluck('purchase_id');
+
+        $paid_purchase_vaccine_Query = PurchaseVaccine::whereIn('id',$paid_purchase_vaccine_Ids);
+
+         $paid_purchase_vaccines=$paid_purchase_vaccine_Query->get();
+
+         $purchase_vaccine_payments = PurchaseVaccinePayments::with(['user','purchase_vaccine'])->get();
+
+     
+        return view('purchase_vaccine_payments.edit',['purchasevaccinepayment'=>$purchasevaccinepayment,'paid_purchase_vaccines'=>$paid_purchase_vaccines,'purchase_vaccine_payments'=>$purchase_vaccine_payments]);
+
+
+    }
+
+     public function update(Request $request,PurchaseVaccinePayments $purchasevaccinepayment)
+    {
+        
+        if (!in_array(Auth::user()->role_id, [1, 7])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
+         $data=$request->validate([
+            'purchase_id' => 'required|unique:purchase_vaccine_payments,purchase_id|exists:purchase_vaccine,id',
+            'payment_amount' => 'required|numeric|min:0.01',
+            'payment_date' => 'required|date|before_or_equal:today',
+        ]);
+
+          $purchasevaccinepayment->update($data);
+
+        return redirect()->route('purchase_vaccine_payments.list')->with('success', 'Purchase vaccine payment record updated successfully!');
+
+    }
+
+    public function view()
+    {
+         if (!in_array(Auth::user()->role_id, [1, 7])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $paid_purchase_vaccine_Ids = PurchaseVaccinePayments::pluck('purchase_id');
+
+        $paid_purchase_vaccine_Query = PurchaseVaccine::whereIn('id',$paid_purchase_vaccine_Ids);
+
+         $paid_purchase_vaccines=$paid_purchase_vaccine_Query->get();
+
+         $purchase_vaccine_payments = PurchaseVaccinePayments::with(['user','purchase_vaccine'])->get();
+
+          return view('purchase_vaccine_payments.view',['purchasevaccinepayment'=>$purchasevaccinepayment,'paid_purchase_vaccines'=>$paid_purchase_vaccines,'purchase_vaccine_payments'=>$purchase_vaccine_payments]);
+
+
+    }
 }

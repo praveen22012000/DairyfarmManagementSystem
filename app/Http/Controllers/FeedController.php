@@ -39,11 +39,11 @@ class FeedController extends Controller
             abort(403, 'Unauthorized action.');
         }
         $request->validate([
-            'feed_name'=>'required',
+            'feed_name'=>'required|unique:feeds,feed_name',
             'manufacturer'=>'required',
           
             'unit_type'=>'required',
-            'unit_price'=>'required'
+            'unit_price'=>'required|numeric|min:0.01'
         ]);
 
         Feed::create([

@@ -40,11 +40,11 @@ class VaccineController extends Controller
         } 
 
         $request->validate([
-            'vaccine_name'=>'required',
+            'vaccine_name'=>'required|unique:vaccines,vaccine_name',
             'manufacturer'=>'required',
           
             'unit_type'=>'required',
-            'unit_price'=>'required'
+            'unit_price'=>'required|numeric|min:1'
         ]);
 
         Vaccine::create([
@@ -76,11 +76,11 @@ class VaccineController extends Controller
         } 
 
         $data=$request->validate([
-            'vaccine_name'=>'required',
+            'vaccine_name'=>'required|unique:vaccines,vaccine_name',
             'manufacturer'=>'required',
           
             'unit_type'=>'required',
-            'unit_price'=>'required'
+            'unit_price'=>'required|numeric|min:1'
         ]);
 
         $vaccine->update($data);

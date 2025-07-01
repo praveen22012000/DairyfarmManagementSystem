@@ -48,10 +48,12 @@ class DisposeVaccineItemsController extends Controller
             abort(403, 'Unauthorized action.');
         } 
 
+      
+
         $request->validate([
 
             'dispose_date'=>'required',
-            'dispose_time'=>'required',
+            'dispose_time'=>'required|date_format:H:i',
 
             'purchase_vaccine_item_id'=>'required|array',
             'purchase_vaccine_item_id.*'=>'required',
@@ -159,7 +161,7 @@ class DisposeVaccineItemsController extends Controller
         } 
     $data = $request->validate([
         'dispose_date' => 'required',
-        'dispose_time' => 'required',
+        'dispose_time' => 'required|date_format:H:i|before_or_equal:now',
         'purchase_vaccine_item_id' => 'required',
         'dispose_quantity' => 'required|numeric|min:1',
         'reason_for_dispose' => 'required',

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('vaccine_name')->unique(); // e.g., "Dairy Feed", "Bovine Vaccine"
             $table->string('manufacturer'); 
             $table->string('unit_type');
-            $table->string('unit_price');
+            $table->decimal('unit_price');
 
             $table->timestamps();
         });

@@ -173,7 +173,7 @@ class PurchaseFeedItemsController extends Controller
         $request->validate([
 
             'supplier_id'=>'required|exists:suppliers,id',
-            'purchase_date'=>'required',
+            'purchase_date'=>'required|before_or_equal:today',
            
 
             'feed_id'=>'required|array',
@@ -186,11 +186,31 @@ class PurchaseFeedItemsController extends Controller
             'purchase_quantity.*'=>'required|numeric|min:1',
 
             'manufacture_date'=>'required|array',
-            'manufacture_date.*'=>'required',
+            'manufacture_date.*'=>'required|date|before_or_equal:today',
 
             'expire_date'=>'required|array',
             'expire_date.*'=>'required'
         ]);
+
+            // Step 2: Custom validation for matching indexes
+    $errors = [];
+
+    foreach ($request->input('expire_date') as $index => $expireDate) {
+        $manufactureDate = $request->input('manufacture_date')[$index] ?? null;
+
+        if ($manufactureDate && $expireDate) {
+            if (Carbon::parse($expireDate)->lt(Carbon::parse($manufactureDate))) {
+                $errors["expire_date.$index"] = "The Expiry Date must be after or equal to the Manufacture Date.";
+            }
+        }
+    }
+
+    // If custom validation fails, return with errors
+    if (!empty($errors)) {
+        return redirect()->back()
+            ->withErrors($errors)
+            ->withInput();
+    }
 
 
 

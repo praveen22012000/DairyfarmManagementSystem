@@ -438,7 +438,7 @@ Route::middleware('auth')->prefix('purchase_feed_items_payments')->group(functio
 //this below group is used to manage purchase vaccine details
 Route::middleware('auth')->prefix('purchase_vaccine_items_payments')->group(function () {
 
-  //  Route::get('/', [PurchaseFeedPaymentController::class, 'index'])->name('purchase_feed_payments.list');
+    Route::get('/', [PurchaseVaccinePaymentsController::class, 'index'])->name('purchase_vaccine_payments.list');
    
      Route::get('/create', [PurchaseVaccinePaymentsController::class, 'create'])->name('purchase_vaccine_payments.create');
 
@@ -447,18 +447,18 @@ Route::middleware('auth')->prefix('purchase_vaccine_items_payments')->group(func
    //  Route::get('/payment-slip/{id}', [PurchaseFeedPaymentController::class, 'downloadPaymentSlip'])->name('payment.slip.download');
 
  
-    Route::get('/get-purchase-amount/{id}', [PurchaseVaccinePaymentsController::class, 'getPurchaseAmountVaccine']);
+   Route::get('/get-vaccine-payment-amount/{id}', [PurchaseVaccinePaymentsController::class, 'getPaymentAmount'])->name('get.vaccine.payment.amount');
 
-  /*   Route::group(['prefix'=>'{purchasefeedpayment}'],function(){
+     Route::group(['prefix'=>'{purchasevaccinepayment}'],function(){
         
-         Route::get('/edit', [PurchaseFeedPaymentController::class, 'edit'])->name('purchase_feed_payments.edit');
-         Route::post('/update', [PurchaseFeedPaymentController::class, 'update'])->name('purchase_feed_payments.update');
+         Route::get('/edit', [PurchaseVaccinePaymentsController::class, 'edit'])->name('purchase_vaccine_payments.edit');
+         Route::post('/update', [PurchaseVaccinePaymentsController::class, 'update'])->name('purchase_vaccine_payments.update');
  
          Route::get('/view', [PurchaseFeedPaymentController::class, 'view'])->name('purchase_feed_payments.view');
          Route::post('/destroy', [PurchaseFeedItemsController::class, 'destroy'])->name('purchase_feed_items.destroy');
  
        
-     });*/
+     });
  
     
  });

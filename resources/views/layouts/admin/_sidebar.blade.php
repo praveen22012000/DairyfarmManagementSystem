@@ -146,7 +146,7 @@
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Custom Utilities:</h6>
-                        <a class="collapse-item" href="{{route('purchase_vaccine_payments.create')}}">Purchase Vaccine Payment</a>
+                        <a class="collapse-item" href="{{route('purchase_vaccine_payments.list')}}">Purchase Vaccine Payment</a>
                         <a class="collapse-item" href="{{route('purchase_feed_payments.list')}}">Purchase Feed Payment</a>
                 
                        

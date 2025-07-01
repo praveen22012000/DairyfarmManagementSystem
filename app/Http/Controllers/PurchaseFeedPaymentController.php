@@ -48,7 +48,7 @@ class PurchaseFeedPaymentController extends Controller
 
     public function index()
     {
-         if (!in_array(Auth::user()->role_id, [1, 7])) 
+        if (!in_array(Auth::user()->role_id, [1, 7])) 
         {
             abort(403, 'Unauthorized action.');
         }
