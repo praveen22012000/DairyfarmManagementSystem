@@ -24,6 +24,7 @@
                         <th>Breeding ID</th>
                         <th>Female Cow Name</th>
                         <th>Male Name</th>
+                        <th>Veterinarian</th>
                         <th>insemination Type</th>
                         <th>Breeding Notes</th>
                         <th>Actions</th>
@@ -34,6 +35,7 @@
                         <td>{{$breeding->id}}</td>
                         <td>{{$breeding->femalecow->animal_name}}</td>
                         <td>{{$breeding->malecow->animal_name}}</td>
+                        <td>{{$breeding->user->name}}</td>
                         <td>{{$breeding->insemination_type}}</td>
                         <td>{{$breeding->notes}}</td>
 

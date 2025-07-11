@@ -11,6 +11,7 @@ use App\Models\PurchaseFeedItems;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PurchaseFeedItemsController extends Controller
 {
@@ -103,7 +104,7 @@ class PurchaseFeedItemsController extends Controller
 
     public function purchaseFeedReport(Request $request)
     {
-         $start = $request->start_date;
+        $start = $request->start_date;
         $end = $request->end_date;
 
         $purchaseFeedData = [];
@@ -127,7 +128,37 @@ class PurchaseFeedItemsController extends Controller
         }
 
        
-         return view('reports.purchase_feed', compact('purchaseFeedData', 'start', 'end'));
+            return view('reports.purchase_feed', compact('purchaseFeedData', 'start', 'end'));
+    }
+
+
+    public function downloadPDFforPurchaseFeed(Request $request)
+    {
+             $start = $request->start_date;
+             $end = $request->end_date;
+
+            $purchaseFeedData = [];
+
+        if($start && $end)
+        {
+             $request->validate([
+                    'start_date' => 'required|date',
+                    'end_date' => 'required|date|after_or_equal:start_date',
+            ]);
+
+                $purchaseFeedData = DB::table('purchase_feed_items')
+                                    ->join('purchase_feeds','purchase_feed_items.purchase_id','=','purchase_feeds.id')
+                                    ->join('feeds','purchase_feed_items.feed_id','=','feeds.id')
+                                    ->whereBetween('purchase_feeds.purchase_date', [$start, $end])
+                                    ->select(
+                                                'feeds.feed_name',
+                                                DB::raw('SUM(purchase_feed_items.purchase_quantity) as total_purchase_quantity')
+                                            )->groupBy('purchase_feed_items.feed_id','feeds.feed_name')
+                                    ->get();
+        }
+
+         $pdfInstance = Pdf::loadView('reports_pdf.purchase_feed_report_pdf', compact('purchaseFeedData', 'start', 'end'));
+         return $pdfInstance->download('Purchase Feed Items Report.pdf');
     }
 
 
@@ -193,24 +224,46 @@ class PurchaseFeedItemsController extends Controller
         ]);
 
             // Step 2: Custom validation for matching indexes
-    $errors = [];
 
-    foreach ($request->input('expire_date') as $index => $expireDate) {
-        $manufactureDate = $request->input('manufacture_date')[$index] ?? null;
 
-        if ($manufactureDate && $expireDate) {
-            if (Carbon::parse($expireDate)->lt(Carbon::parse($manufactureDate))) {
-                $errors["expire_date.$index"] = "The Expiry Date must be after or equal to the Manufacture Date.";
+            $feeds = $request->feed_id;
+            $manufacture_dates = $request->manufacture_date;
+            
+          
+            foreach ($feeds as $index => $feed) 
+            {
+                if ($manufacture_dates[$index] > $request->purchase_date) 
+                {
+                    $feed = Feed::findOrFail($feed);
+                         return back()->withInput()->withErrors
+                         ([
+                                'purchase_date' => 'The purchase date (' . $request->purchase_date . ') for feed "' . $feed->feed_name . '" should not be earlier than its manufacture date (' . $manufacture_dates[$index] . ').'
+                        ]);
+                }
             }
-        }
-    }
 
-    // If custom validation fails, return with errors
-    if (!empty($errors)) {
-        return redirect()->back()
-            ->withErrors($errors)
-            ->withInput();
-    }
+        $errors = [];
+
+        foreach ($request->input('expire_date') as $index => $expireDate) 
+        {
+                $manufactureDate = $request->input('manufacture_date')[$index] ?? null;
+
+                if ($manufactureDate && $expireDate) 
+                {
+                    if (Carbon::parse($expireDate)->lt(Carbon::parse($manufactureDate))) 
+                    {
+                        $errors["expire_date.$index"] = "The Expiry Date must be after or equal to the Manufacture Date.";
+                    }
+                }
+        }
+
+        // If custom validation fails, return with errors
+        if (!empty($errors)) 
+        {
+            return redirect()->back()
+                                    ->withErrors($errors)
+                                    ->withInput();
+        }
 
 
 
@@ -244,6 +297,9 @@ class PurchaseFeedItemsController extends Controller
                 'expire_date'=>$expireDates[$index]
             ]);
         }
+
+        
+        return redirect()->route('purchase_feed_items.list')->with('success', 'Purchase Feed Item record saved successfully!');
     }
 
     public function edit(PurchaseFeedItems $purchasefeeditem)

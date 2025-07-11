@@ -205,7 +205,7 @@ public function monthlyReport(Request $request)
         }
        
         $request->validate([
-            'date' => ['required', 'date'],
+            'date' => 'required|date|before_or_equal:today',
             'time' => 'required',
             'enter_by' => 'required',
             'product_id' => 'required|array',
@@ -213,7 +213,7 @@ public function monthlyReport(Request $request)
             'quantity' => 'required|array',
             'quantity.*' => 'required|numeric|min:1',
             'manufacture_date' => 'required|array', // Validate that manufacture_date is an array
-            'manufacture_date.*' => 'required|date', // Validate each element in the array as a date
+            'manufacture_date.*' => 'required|date|before_or_equal:today', // Validate each element in the array as a date
             'expire_date' => 'required|array', // Validate that expire_date is an array
             'expire_date.*' => 'required|date', // Validate each element in the array as a date
             'user_id' => 'required|array',
@@ -229,6 +229,22 @@ public function monthlyReport(Request $request)
         $manufactureDates=$request->manufacture_date;
         $expireDates=$request->expire_date;
         $users=$request->user_id;
+
+            foreach ( $products as $index => $product) 
+            {
+          
+                if ($manufactureDates[$index] > $expireDates[$index]) 
+                 {
+                    $milk_product = MilkProduct::findOrFail($product);
+
+                    return back()->withInput()->withErrors([
+                    'expire_date' => 'The expiry date (' . $expireDates[$index] . ') for product "' . $milk_product->product_name . '" should not be earlier than its manufacture date (' . $manufactureDates[$index] . ').'
+                    ]);
+                }
+
+            }
+
+
     
         $manufacturer=Manufacturer::create([
             'date'=>$request->date,
@@ -236,11 +252,13 @@ public function monthlyReport(Request $request)
             'enter_by'=>$request->enter_by
         ]);
 
-        foreach ( $products as $index => $product) {
+        foreach ( $products as $index => $product) 
+        {
           
     
             // Save the milk consumption record
-            ManufacturerProduct::create([
+            ManufacturerProduct::create
+            ([
                 'manufacturer_id' => $manufacturer->id,
          
                 'product_id' => $request->product_id[$index],

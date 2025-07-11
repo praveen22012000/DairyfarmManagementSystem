@@ -6,7 +6,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="float-left">
-                    <h2>Feed And Vaccine Details </h2>
+                    <h2>Feed  Details </h2>
                 </div>
 
                 <div class="float-right">

@@ -4,6 +4,7 @@
        
 <div class="container">
     <h2>User Details</h2>
+    <br>
     <form method="POST" action="{{ route('main_user_details.update',$user->id) }}">
         @csrf
        @if ($errors->any())
@@ -15,6 +16,22 @@
                 </ul>
             </div>
         @endif
+
+            <div class="form-group">
+                    <label for="role_id">Role</label>
+           
+                        <!-- this is used to list the animal types-->
+                <select name="role_id" id="role_id" class="form-control" >
+                        <option value="">Select Role</option>
+             
+                        @foreach ($roles as $role)
+                            <option value="{{ $role->id }}"
+                            {{ $user->role_id == $role->id ? 'selected' : '' }}
+                            >{{ $role->role_name}}</option>
+                        @endforeach
+                </select>
+                    @error('role_id') <span class="text-danger">{{ $message }}</span> @enderror
+            </div>
 
             <div class="form-group">
                 <label for="name">First Name:</label>
@@ -64,7 +81,7 @@
           
             
 
-        </div>
+    
 
 
             <button type="submit" class="btn btn-success mt-3">Update</button>

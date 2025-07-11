@@ -9,6 +9,8 @@ use App\Models\Role;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use App\Mail\LowStockMilkProductNotification;
+use Illuminate\Support\Facades\Mail;
 
 class DisposeMilkProductsController extends Controller
 {
@@ -66,6 +68,8 @@ class DisposeMilkProductsController extends Controller
 
       $disposeMilkProducts=DisposeMilkProducts::with(['manufacture_proudct','user'])->get();
 
+     // dd($disposeMilkProducts);
+
       return view('dispose_milk_products.index',['disposeMilkProducts'=>$disposeMilkProducts]);
     }
 
@@ -95,11 +99,11 @@ class DisposeMilkProductsController extends Controller
         }
 
 
-      $request->validate([
+        $request->validate([
 
         'manufacturer_product_id'=>'required|exists:manufacturer_products,id',
         'user_id'=>'required|exists:users,id',
-        'date'=>'required',
+        'date'=>'required|before_or_equal:today',
         'dispose_quantity'=>'required|numeric|min:1',
         'reason_for_dispose'=>'required'
 
@@ -108,19 +112,28 @@ class DisposeMilkProductsController extends Controller
         // Retrieve the production milk record
         $disposeManufacturerProduct = ManufacturerProduct::findOrFail($request->manufacturer_product_id);
 
+       // dd($disposeManufacturerProduct);
+
+        if($disposeManufacturerProduct->manufacture_date > $request->date)
+        {
+            return redirect()->back()->withInput()->withErrors([
+                 'date' => 'Disposal date should not before than product manufacture date'
+                 ]);
+        }
+
          // Check if stock is sufficient for disposal
-         if ($request->dispose_quantity > $disposeManufacturerProduct->stock_quantity) 
-         {
+        if ($request->dispose_quantity > $disposeManufacturerProduct->stock_quantity) 
+        {
              return redirect()->back()->withInput()->withErrors([
                  'dispose_quantity' => 'Not enough milk product stock available for disposal.'
                  ]);
-         }
+        }
 
           // Deduct the disposed quantity from stock
           $disposeManufacturerProduct->decrement('stock_quantity', $request->dispose_quantity);
 
            // Create a new disposal record
-           DisposeMilkProducts::create([
+           $dispose_milk_product = DisposeMilkProducts::create([
 
             'manufacturer_product_id'=>$request->manufacturer_product_id,
             'user_id'=>$request->user_id,
@@ -129,6 +142,21 @@ class DisposeMilkProductsController extends Controller
             'reason_for_dispose'=>$request->reason_for_dispose
 
             ]);
+
+            $product_id = $disposeManufacturerProduct->product_id;
+
+
+
+            $available_stock = ManufacturerProduct::where('product_id',$product_id)->sum('stock_quantity');
+
+
+         
+
+            if($available_stock < 10)
+            {
+                   Mail::to('pararajasingampraveen22@gmail.com')->send(new LowStockMilkProductNotification($available_stock,$dispose_milk_product));
+
+            }
 
         return redirect()->route('dispose_milk_product.index')->with('success', 'Dispose Milk Product saved successfully.');
 
@@ -141,7 +169,7 @@ class DisposeMilkProductsController extends Controller
         {
             abort(403, 'Unauthorized action.');
         }
-      $manufacturedMilkProducts=ManufacturerProduct::where('stock_quantity','>',0)->get();
+      $manufacturedMilkProducts=ManufacturerProduct::all();
 
       $farm_labore_id=Role::where('role_name','FarmLabore')->pluck('id');
 

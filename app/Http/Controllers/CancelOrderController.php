@@ -6,6 +6,9 @@ use App\Models\RetailorOrder;
 use App\Models\OrderAllocation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Mail\CancelOrderBeforeApprovedNotification;
+use App\Mail\CancelOrderAfterApprovedNotification;
+use Illuminate\Support\Facades\Mail;
 
 class CancelOrderController extends Controller
 {
@@ -30,6 +33,8 @@ class CancelOrderController extends Controller
         // Cancel the order
         $order->status = 'canceled';
         $order->save();
+
+            Mail::to('pararajasingampraveen22@gmail.com')->send(new CancelOrderBeforeApprovedNotification($order));
 
         return redirect()->route('retailor_order_items.list')->with('success', 'Order cancelled successfully before approval.');
     }
@@ -57,6 +62,7 @@ class CancelOrderController extends Controller
         $order->status = 'canceled';
         $order->save();
 
+          Mail::to('pararajasingampraveen22@gmail.com')->send(new CancelOrderAfterApprovedNotification($order));
         return redirect()->route('retailor_order_items.list')->with('success', 'Order canceled successfully.');
     }
 

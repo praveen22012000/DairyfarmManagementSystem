@@ -28,17 +28,18 @@ class AnimalDetail extends Model
         'weight_at_first_service'
     ];
 
-    public function getAgeAttribute()
+    public function getAgeAttribute()//This is a custom accessor method in Laravel.//The method name follows this pattern: get{Name}Attribute.
     {
-        $birthDate= Carbon::parse($this->animal_birthdate);
+        $birthDate= Carbon::parse($this->animal_birthdate);//Carbon::parse(...) converts the animal_birthdate string (e.g., "2020-03-15") into a Carbon date object.//$this->animal_birthdate means: get the value of the animal_birthdate field for the current animal
 
-        $now= Carbon::now();
+        $now= Carbon::now();// Gets the current date and time as a Carbon object. //$now stores today’s date.
 
 
-        $totalDays=$birthDate->diffInDays($now);
+        $totalDays=$birthDate->diffInDays($now);//Calculates the total number of days between $birthDate and $now.
 
-        $years=intdiv($totalDays,365);
-        $remainingDays=$totalDays%365;
+        $years=intdiv($totalDays,365);// intdiv(...) performs integer division: it divides without decimal places.//Divides the total number of days by 365 to get the number of full years.
+
+        $remainingDays=$totalDays%365;// % is the modulus operator: it gives the remainder after dividing.
 
         return "{$years} years and {$remainingDays} days";
     }

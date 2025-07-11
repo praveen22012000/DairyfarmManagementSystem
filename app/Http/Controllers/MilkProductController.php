@@ -44,15 +44,21 @@ class MilkProductController extends Controller
   
         $request->validate([
 
-            'product_name'=>'required|string|max:255',
-            'unit_price'=>'required|numeric|min:0',
+            'product_name'=>'required|string|max:255|unique:milk_products,product_name',
+            'unit_price'=>'required|numeric|min:1',
             'ingredients' => 'required|array',
             'ingredients.*' => 'required|string|max:255',
 
         ]);
 
-       
+        $ingredients = $request->ingredients;
         
+        if (count($ingredients) !== count(array_unique($ingredients))) 
+        {
+                return back()
+                    ->withErrors(['ingredients' => 'Duplicate ingredients are not allowed.'])
+                    ->withInput();
+        }
 
 
          // Create the milk product

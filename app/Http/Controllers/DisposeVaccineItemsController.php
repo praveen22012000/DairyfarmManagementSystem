@@ -5,14 +5,76 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\DisposeVaccineDetails;
-
+use App\Models\Vaccine;
 use App\Models\DisposeVaccineItems;
 use App\Models\PurchaseVaccineItems;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\LowStockVaccineNotification;
+use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class DisposeVaccineItemsController extends Controller
 {
     //
+    public function DisposeVaccineItemsReport(Request $request)
+    {
+        $start = $request->start_date;
+        $end = $request->end_date;
+
+        $disposeVaccineData = [];
+
+        if($start && $end)
+        {
+             $request->validate([
+                    'start_date' => 'required|date',
+                    'end_date' => 'required|date|after_or_equal:start_date',
+            ]);
+
+            $disposeVaccineData = DB::table('dispose_vaccine_items')
+            ->join('dispose_vaccine_details','dispose_vaccine_items.dispose_vaccine_detail_id','=','dispose_vaccine_details.id')
+            ->join('purchase_vaccine_items','dispose_vaccine_items.purchase_vaccine_item_id','=','purchase_vaccine_items.id')
+            ->join('vaccines','purchase_vaccine_items.vaccine_id','=','vaccines.id')
+             ->whereBetween('dispose_vaccine_details.dispose_date', [$start, $end])
+             ->select(
+            'vaccines.vaccine_name',
+            DB::raw('SUM(dispose_vaccine_items.dispose_quantity) as total_dispose_quantity')
+        )->groupBy('vaccines.vaccine_name')
+        ->get();
+        }
+          return view('reports.dispose_vaccine', compact('disposeVaccineData', 'start', 'end'));
+    }
+
+    public function DisposeVaccineItemsReportPDFDownload(Request $request)
+    {
+         $start = $request->start_date;
+        $end = $request->end_date;
+
+        $disposeVaccineData = [];
+
+        if($start && $end)
+        {
+             $request->validate([
+                    'start_date' => 'required|date',
+                    'end_date' => 'required|date|after_or_equal:start_date',
+            ]);
+
+            $disposeVaccineData = DB::table('dispose_vaccine_items')
+            ->join('dispose_vaccine_details','dispose_vaccine_items.dispose_vaccine_detail_id','=','dispose_vaccine_details.id')
+            ->join('purchase_vaccine_items','dispose_vaccine_items.purchase_vaccine_item_id','=','purchase_vaccine_items.id')
+            ->join('vaccines','purchase_vaccine_items.vaccine_id','=','vaccines.id')
+             ->whereBetween('dispose_vaccine_details.dispose_date', [$start, $end])
+             ->select(
+            'vaccines.vaccine_name',
+            DB::raw('SUM(dispose_vaccine_items.dispose_quantity) as total_dispose_quantity')
+        )->groupBy('vaccines.vaccine_name')
+        ->get();
+        }
+
+         $pdfInstance = Pdf::loadView('reports_pdf.dispose_vaccine_pdf', compact('disposeVaccineData', 'start', 'end'));
+         return $pdfInstance->download('Dispose Vaccine Items Report.pdf');
+    }
 
     public function index()
     {
@@ -27,6 +89,8 @@ class DisposeVaccineItemsController extends Controller
 
       return view('dispose_vaccine_items.index',['disposeVaccineItems'=>$disposeVaccineItems]);
     }
+
+    
 
     public function create()
     {
@@ -69,6 +133,19 @@ class DisposeVaccineItemsController extends Controller
         $disposeQuantities=$request->dispose_quantity;
         $reasonForDisposes=$request->reason_for_dispose;
 
+        foreach ($purchaseVaccineItems as $index => $purchaseVaccineItem) 
+        {
+                $purchaseVaccineItemModel = PurchaseVaccineItems::findOrFail($purchaseVaccineItem);
+
+                if ($purchaseVaccineItemModel->manufacture_date > $request->dispose_date) 
+                {
+                        return back()->withInput()->withErrors
+                        ([
+                                'dispose_date' => 'The dispose date (' . $request->dispose_date . ') should not be earlier than the manufacture date (' . $purchaseVaccineItemModel->manufacture_date . ') of the vaccine ' . $purchaseVaccineItemModel->vaccine->vaccine_name . '.'
+                        ]);
+                }
+        }
+
         
         $invalidRows=[];
         $errors=[];
@@ -101,27 +178,43 @@ class DisposeVaccineItemsController extends Controller
         foreach($purchaseVaccineItems as $index => $purchaseVaccineItem)
         {
                  
-        // Retrieve the production milk record
-        $disposePurchaseVaccineItem = PurchaseVaccineItems::findOrFail($purchaseVaccineItem);
+                // Retrieve the production milk record
+                $disposePurchaseVaccineItem = PurchaseVaccineItems::findOrFail($purchaseVaccineItem);
 
 
-        if ($disposePurchaseVaccineItem) {
-            // Deduct stock quantity
-            $disposePurchaseVaccineItem->stock_quantity -= $disposeQuantities[$index];
-            $disposePurchaseVaccineItem->save();
-        }
+                if ($disposePurchaseVaccineItem) 
+                {
+                    // Deduct stock quantity
+                    $disposePurchaseVaccineItem->stock_quantity -= $disposeQuantities[$index];
+                    $disposePurchaseVaccineItem->save();
+                }
        
 
        
-         DisposeVaccineItems::create([
-            'purchase_vaccine_item_id'=>$request->purchase_vaccine_item_id[$index],
-            'dispose_vaccine_detail_id'=>$disposeVaccineDetail->id,
-            'dispose_quantity'=>$disposeQuantities[$index],
-            'reason_for_dispose'=>$reasonForDisposes[$index]
-        ]);
+            DisposeVaccineItems::create
+            ([
+                    'purchase_vaccine_item_id'=>$request->purchase_vaccine_item_id[$index],
+                    'dispose_vaccine_detail_id'=>$disposeVaccineDetail->id,
+                    'dispose_quantity'=>$disposeQuantities[$index],
+                    'reason_for_dispose'=>$reasonForDisposes[$index]
+            ]);
 
         }
- 
+
+        $VaccineIds = Vaccine::pluck('id');
+
+        foreach($VaccineIds as $vaccine_id)
+        {
+         
+            $vaccine = Vaccine::findOrFail($vaccine_id);
+            $availableStock = PurchaseVaccineItems::where('vaccine_id',$vaccine_id)->sum('stock_quantity');
+
+            if($availableStock  < 5)
+            {
+                 Mail::to('pararajasingampraveen22@gmail.com')->send(new LowStockVaccineNotification($vaccine,$availableStock));
+            }
+        }
+           return redirect()->route('dispose_vaccine_items.list')->with('success', 'Dispose vaccine record stored successfully.');
 
     }
 
@@ -160,12 +253,25 @@ class DisposeVaccineItemsController extends Controller
             abort(403, 'Unauthorized action.');
         } 
     $data = $request->validate([
-        'dispose_date' => 'required',
-        'dispose_time' => 'required|date_format:H:i|before_or_equal:now',
+        'dispose_date' => 'required|before_or_equal:today',
+        'dispose_time' => 'required',
         'purchase_vaccine_item_id' => 'required',
         'dispose_quantity' => 'required|numeric|min:1',
         'reason_for_dispose' => 'required',
     ]);
+
+    $purchaseVaccineItemModel = PurchaseVaccineItems::findOrFail($request->purchase_vaccine_item_id);
+
+    //dd($purchaseVaccineItemModel);
+
+                if ($purchaseVaccineItemModel->manufacture_date > $request->dispose_date) 
+                {
+                        return back()->withInput()->withErrors
+                        ([
+                                'dispose_date' => 'The dispose date (' . $request->dispose_date . ') should not be earlier than the manufacture date (' . $purchaseVaccineItemModel->manufacture_date . ') of the vaccine ' . $purchaseVaccineItemModel->vaccine->vaccine_name . '.'
+                        ]);
+                }
+    
 
     // Calculate available stock by adding back the original disposed quantity
     $availableStock = $disposevaccineitem->purchase_vaccine_items->stock_quantity + $disposevaccineitem->dispose_quantity;
@@ -188,7 +294,8 @@ class DisposeVaccineItemsController extends Controller
     $newStockQuantity = $availableStock - $request->dispose_quantity;
 
     // Update stock quantity
-    $disposevaccineitem->purchase_vaccine_items->update([
+    $disposevaccineitem->purchase_vaccine_items->update
+    ([
         'stock_quantity' => $newStockQuantity
     ]);
 

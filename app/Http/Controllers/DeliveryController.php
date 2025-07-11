@@ -9,6 +9,11 @@ use App\Models\FarmLabore;
 use App\Models\OrderAllocation;
 use App\Models\ManufacturerProduct;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\StartDeliveryNotification;
+use App\Mail\DeliveryNotification;
+use App\Mail\LowStockProductWhenDeliveryNotification;
+use App\Models\MilkProduct;
 
 class DeliveryController extends Controller
 {
@@ -29,6 +34,8 @@ class DeliveryController extends Controller
 
         $order->status = 'Out for Delivery';
         $order->save();
+
+          Mail::to('pararajasingampraveen22@gmail.com')->send(new StartDeliveryNotification($order));
 
         return redirect()->back()->with('success', 'Order marked as Out for Delivery.');
     }
@@ -83,7 +90,28 @@ class DeliveryController extends Controller
                 }
         }
 
-       
+        //the below code is used for notification when low stock
+            // Get all ordered items for this order
+            $orderItems = $order->retailor_order_item; // plural: items
+
+            // Extract product_ids from the collection
+            $productIds = $orderItems->pluck('product_id');
+
+
+            foreach($productIds as $pro_id)
+            {
+                $milk_product = MilkProduct::findOrfail($pro_id);
+
+            
+                $available_stock = ManufacturerProduct::where('product_id',$pro_id)->sum('stock_quantity');
+
+                if($available_stock < 10)
+                {
+                     Mail::to('pararajasingampraveen22@gmail.com')->send(new LowStockProductWhenDeliveryNotification($milk_product,$available_stock,));
+                }
+            }
+
+        Mail::to('pararajasingampraveen22@gmail.com')->send(new DeliveryNotification($order));
 
         return redirect()->back()->with('success', 'Order is successfully Delivered and stock is updated.');
     }

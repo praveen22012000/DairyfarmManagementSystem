@@ -75,12 +75,12 @@
                             <input type="number" class="form-control" name="quantity" value="" style="width: 80px;" readonly>
                         </td>
 
-                        <td class="border-t px-6 py-4">
+                        <td class="border-t px-6 py-4 text-left text-gray-800">
                             <input type="text" name="dispose_quantity" value="{{$disposevaccineitem->dispose_quantity}}" class="form-control"  style="width: 80px;">
                             @error("dispose_quantity") <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
-                        <td>
+                        <td class="border-t px-6 py-4 text-left text-gray-800">
                         <input type="text" name="reason_for_dispose" class="form-control" value="{{$disposevaccineitem->reason_for_dispose}}"   style="width:300px;" value="">
                         @error("reason_for_dispose") <span class="text-danger">{{ $message }}</span> @enderror
                         </td>

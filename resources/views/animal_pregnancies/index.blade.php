@@ -9,7 +9,7 @@
                     <h2>Animals Pregnancies</h2>
                 </div>
                 <div class="float-right">
-                <a  class="btn btn-success btn-md btn-rounded" href="{{route('appointment.create')}}"><i class="mdi mdi-plus-circle mdi-18px"></i>Appointment</a>
+                <a  class="btn btn-success btn-md btn-rounded" href="{{route('animal_pregnancies.create')}}"><i class="mdi mdi-plus-circle mdi-18px"></i>Add Pregnancy</a>
                 </div>
             </div>
             <div class="card-body">

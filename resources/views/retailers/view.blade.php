@@ -4,7 +4,7 @@
        
 <div class="container">
     <h2>User Registration</h2>
-<form method="POST" action="">
+<form>
    
     @csrf
 
@@ -83,9 +83,7 @@
 
 @section('js')
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
-   
 <script>
 
 $(document).ready(function () {

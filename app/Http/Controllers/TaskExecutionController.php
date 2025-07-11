@@ -5,6 +5,12 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Models\TaskAssignment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\StartTaskNotification;
+use App\Mail\TaskCompletionNotification;
+use App\Mail\TaskApprovalNotification;
+use App\Mail\TaskRejectionNotification;
+
 
 class TaskExecutionController extends Controller
 {
@@ -40,10 +46,13 @@ class TaskExecutionController extends Controller
     }
 
     
-    public function startTask($id)
+    public function startTask($id)// this functions is wrriten for starting
     {
         $user = Auth::user();//this line is used to get the currently logged in user.
+
         $farmLabore = $user->farm_labore; // relationship from User model
+
+        
 
         // Allow only farm owners or farm_labores to access
         if (!($user->role_id == 1 || $farmLabore)) 
@@ -54,10 +63,16 @@ class TaskExecutionController extends Controller
         $assignment = TaskAssignment::findOrFail($id);
 
         // Ensure the logged-in user is the one assigned
-        if (Auth::user()->farm_labore->id !== $assignment->assigned_to) 
+        if($user->role_id == 5)
         {
-        abort(403, 'Unauthorized');
-        }
+
+        
+                if (Auth::user()->farm_labore->id !== $assignment->assigned_to) 
+                {
+                    abort(403, 'Unauthorized');
+                }
+
+         }
 
         if ($assignment->status !== 'pending') 
         {
@@ -68,10 +83,12 @@ class TaskExecutionController extends Controller
         $assignment->started_at = now(); // optional timestamp
         $assignment->save();
 
+        Mail::to('pararajasingampraveen22@gmail.com')->send(new StartTaskNotification($assignment));
+
         return back()->with('success', 'Task started successfully.');
     }
 
-    public function submitForApproval($id)
+    public function submitForApproval($id)// this is for labore complete this work click the marksAs done button
     {
          $user = Auth::user();//this line is used to get the currently logged in user.
         $farmLabore = $user->farm_labore; // relationship from User model
@@ -84,10 +101,19 @@ class TaskExecutionController extends Controller
         
         $assignment = TaskAssignment::findOrFail($id);
 
-        if (Auth::user()->farm_labore->id !== $assignment->assigned_to) 
+                // Ensure the logged-in user is the one assigned
+        if($user->role_id == 5)
         {
-        abort(403, 'Unauthorized');
+             if (Auth::user()->farm_labore->id !== $assignment->assigned_to) 
+                {
+                    abort(403, 'Unauthorized');
+                }
+
         }
+
+               
+
+
         if ($assignment->status !== 'in_progress') 
         {
         return back()->with('error', 'Task is not in progress.');
@@ -97,10 +123,13 @@ class TaskExecutionController extends Controller
         $assignment->completed_at = now(); // optional timestamp
         $assignment->save();
 
+
+        Mail::to('pararajasingampraveen22@gmail.com')->send(new TaskCompletionNotification($assignment));
+
         return back()->with('success', 'Task submitted for approval.');
     }
 
-    public function approveTask(Request $request,$id)
+    public function approveTask(Request $request,$id)// this is for manager approve the labores work
     {
 
           // Validate the input
@@ -131,6 +160,8 @@ class TaskExecutionController extends Controller
         // Set labore as available again
         $assignment->farm_labore->update(['status' => 'Available']);
 
+         Mail::to('pararajasingampraveen22@gmail.com')->send(new TaskApprovalNotification($assignment));
+
         return back()->with('success', 'Task is approved successfully.');
     
     }
@@ -145,12 +176,18 @@ class TaskExecutionController extends Controller
         // Find the task assignment
         $assignment = TaskAssignment::findOrFail($id);
 
-        // Ensure only the assigned labore can reject it
-        if (Auth::user()->farm_labore->id !== $assignment->assigned_to) 
+        if(Auth::user()->role_id == 5)
         {
-        abort(403, 'Unauthorized action.');
+                 // Ensure only the assigned labore can reject it
+                if (Auth::user()->farm_labore->id !== $assignment->assigned_to) 
+                {
+                    abort(403, 'Unauthorized action.');
+                }
+
+
         }
 
+       
         // Check if task is still pending
         if ($assignment->status !== 'pending') 
         {
@@ -163,6 +200,8 @@ class TaskExecutionController extends Controller
         $assignment->save();
 
         $assignment->farm_labore->update(['status' => 'Available']);
+
+         Mail::to('pararajasingampraveen22@gmail.com')->send(new TaskRejectionNotification($assignment));
 
         return redirect()->back()->with('success', 'Task rejected successfully.');
     }

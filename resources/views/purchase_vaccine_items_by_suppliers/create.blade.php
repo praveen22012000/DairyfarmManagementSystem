@@ -38,7 +38,7 @@
             <div>
                 <label for="purchase_date" class="block text-lg font-medium text-gray-700 mb-2">Date</label>
                 <br>
-                <input type="date" name="purchase_date" id="purchase_date" class="form-control rounded">
+                <input type="date" name="purchase_date" id="purchase_date" value="{{old('purchase_date')}}" class="form-control rounded">
                 @error('purchase_date') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
@@ -117,8 +117,8 @@
                         </td>
 
 
-
-                        <td>
+ 
+                        <td class="border-t px-6 py-4 text-left text-gray-800">
                             <button type="button" class="btn btn-danger remove-row">Remove</button>
                         </td>
 

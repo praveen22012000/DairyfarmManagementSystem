@@ -66,7 +66,7 @@
                         <td>{{$manufacturerProduct->quantity}}</td>
                         <td>{{$manufacturerProduct->stock_quantity}}</td>
                         <td>{{$manufacturerProduct->manufacture_date}}</td>
-                        <td>{{$manufacturerProduct->manufacture_date}}</td>
+                        <td>{{$manufacturerProduct->expire_date}}</td>
                         <td>{{$manufacturerProduct->user->name}}</td>
                        
                  

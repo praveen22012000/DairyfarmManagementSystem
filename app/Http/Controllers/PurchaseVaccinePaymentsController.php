@@ -31,6 +31,24 @@ class PurchaseVaccinePaymentsController extends Controller
         return response()->json(['amount' => $totalAmount]); //After calculating the total for all items, this line sends a JSON response back to the browser or frontend
     }
 
+     //this function is used to download the payment slip later
+    public function downloadPaymentSlip($id)
+    {
+        $payment = PurchaseVaccinePayments::with('purchase_vaccine','user')->findOrFail($id);
+
+   
+
+        $pdf = \PDF::loadView('payment_slips.index_vaccine_payment', [
+        'payment' => $payment,
+       
+     //   'user' => $payment->user,
+        //'reference_number'=> $payment->reference_number
+        ]);
+
+    return $pdf->download('payment_slip_' . $payment->reference_number . '.pdf');
+    }
+
+
 
     public function index()
     {
@@ -85,6 +103,16 @@ class PurchaseVaccinePaymentsController extends Controller
             'payment_date' => 'required|date|before_or_equal:today',
         ]);
 
+        $purchase_vaccine = PurchaseVaccine::findOrfail($request->purchase_id);
+
+        foreach($purchase_vaccine->purchase_vaccine_items as $index => $item)
+        {
+            if($item->manufacture_date > $request->payment_date)
+            {
+                return back()->withInput()->withErrors(['payment_date'=> $request->payment_date .'should not before than  vaccine name '.$item->vaccine->vaccine_name.' manufacture date'.$item->manufacture_date ]);
+            }
+        }
+
                 // Generate Reference Number (Example logic)
             $nextPaymentId = \DB::table('purchase_vaccine_payments')->max('id') + 1;//"Find the maximum (highest) value in the id column of the purchase_vaccine_payments table."This adds 1 to the highest ID, giving the next ID you can use manually.
             $referenceNumber = 'TXN-' . now()->year . '-' . str_pad($nextPaymentId, 3, '0', STR_PAD_LEFT);//The function str_pad() is used to pad a string with extra characters so it reaches a certain length.
@@ -110,8 +138,8 @@ class PurchaseVaccinePaymentsController extends Controller
                 'user' => $user
             ]);
 
-
-           return redirect()->route('purchase_vaccine_payments.list')->with('success', 'Purchase vaccine payment record saved successfully!');
+              return $pdf->download('payment_slip_for_vaccine_payment' . $referenceNumber . '.pdf');
+           //return redirect()->route('purchase_vaccine_payments.list')->with('success', 'Purchase vaccine payment record saved successfully!');
     }
 
     public function edit(Request $request,PurchaseVaccinePayments $purchasevaccinepayment)
@@ -127,6 +155,8 @@ class PurchaseVaccinePaymentsController extends Controller
         $paid_purchase_vaccine_Query = PurchaseVaccine::whereIn('id',$paid_purchase_vaccine_Ids);
 
          $paid_purchase_vaccines=$paid_purchase_vaccine_Query->get();
+
+        // dd($paid_purchase_vaccines);
 
          $purchase_vaccine_payments = PurchaseVaccinePayments::with(['user','purchase_vaccine'])->get();
 
@@ -145,7 +175,7 @@ class PurchaseVaccinePaymentsController extends Controller
         }
 
          $data=$request->validate([
-            'purchase_id' => 'required|unique:purchase_vaccine_payments,purchase_id|exists:purchase_vaccine,id',
+            'purchase_id' => "required|exists:purchase_vaccines,id|unique:purchase_vaccine_payments,purchase_id,$purchasevaccinepayment->id",
             'payment_amount' => 'required|numeric|min:0.01',
             'payment_date' => 'required|date|before_or_equal:today',
         ]);
@@ -156,7 +186,7 @@ class PurchaseVaccinePaymentsController extends Controller
 
     }
 
-    public function view()
+    public function view(Request $request,PurchaseVaccinePayments $purchasevaccinepayment)
     {
          if (!in_array(Auth::user()->role_id, [1, 7])) 
         {
@@ -173,6 +203,19 @@ class PurchaseVaccinePaymentsController extends Controller
 
           return view('purchase_vaccine_payments.view',['purchasevaccinepayment'=>$purchasevaccinepayment,'paid_purchase_vaccines'=>$paid_purchase_vaccines,'purchase_vaccine_payments'=>$purchase_vaccine_payments]);
 
+
+    }
+
+    public function destroy(PurchaseVaccinePayments $purchasevaccinepayment)
+    {
+        if (!in_array(Auth::user()->role_id, [1, 7])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $purchasevaccinepayment->delete();
+
+        return redirect()->route('purchase_vaccine_payments.list');
 
     }
 }

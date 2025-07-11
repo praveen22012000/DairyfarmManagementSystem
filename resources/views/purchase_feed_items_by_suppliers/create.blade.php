@@ -118,7 +118,7 @@
 
 
 
-                        <td>
+                        <td class="border-t px-6 py-4 text-left text-gray-800">
                             <button type="button" class="btn btn-danger remove-row">Remove</button>
                         </td>
 

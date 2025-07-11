@@ -35,8 +35,8 @@ class BreedingEvents extends Model
         return $this->belongsTo(User::class,'veterinarian_id');
     }
 
-    public function pregnancies()
+    public function pregnancy()
     {
-        return $this->belongsTo(Pregnancies::class,'breeding_id');
+        return $this->hasOne(Pregnancies::class,'breeding_id');
     }
 }

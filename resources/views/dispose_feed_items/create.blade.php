@@ -81,17 +81,17 @@
                             <input type="number" class="form-control" name="quantity[]" value="{{ isset($oldPurchaseFeedItemIds[$i]) ? ($purchaseFeedItems->firstWhere('id', $oldPurchaseFeedItemIds[$i])?->stock_quantity ?? '') : '' }}" style="width: 80px;" readonly>
                         </td>
 
-                        <td class="border-t px-6 py-4">
+                        <td class="border-t px-6 py-4 text-left text-gray-800">
                             <input type="text" name="dispose_quantity[]" value="{{ $oldDisposedQuantities[$i] ?? '' }}" class="form-control"  style="width: 80px;">
                             @error("dispose_quantity.$i") <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
-                        <td>
+                        <td class="border-t px-6 py-4 text-left text-gray-800">
                         <input type="text" name="reason_for_dispose[]" class="form-control"  style="width:300px;" value="{{$oldReasonForDisposes[$i] ?? ''}}">
                         @error("reason_for_dispose.$i") <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
-                        <td class="border-t px-6 py-4">
+                        <td class="border-t px-6 py-4 text-left text-gray-800">
                             <button type="button" class="btn btn-danger remove-row">Remove</button>
                         </td>
                     </tr>

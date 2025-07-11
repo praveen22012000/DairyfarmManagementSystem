@@ -4,7 +4,7 @@
 <div class="col-md-12">
 
        
-            <h1>Animal Registration Form</h1>     
+            <h1 style="text-align:center">Animal Registration Form</h1>     
             
         
 

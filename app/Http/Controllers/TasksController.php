@@ -41,7 +41,7 @@ class TasksController extends Controller
 
 
         $request->validate([
-            'title'=>'required',
+            'title'=>'required|unique:tasks,title',
             'description'=>'required'
         ]);
 
@@ -72,7 +72,7 @@ class TasksController extends Controller
         }
 
         $data= $request->validate([
-            'title'=>'required',
+            'title' => 'required|unique:tasks,title,' . $task->id,// Ignore the current record with this id when checking for duplicates.
             'description'=>'required'
         ]);
 

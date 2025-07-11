@@ -95,7 +95,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-   function confirmDelete(vaccineId) {
+   function confirmDelete(vaccineConsumeItemId) {
         Swal.fire({
             title: "Are you sure?",
             text: "This will permanently delete the Vaccine Consumption record.",
@@ -108,7 +108,7 @@
             if (result.isConfirmed) {
                 // Set form action dynamically based on animal ID
                 let deleteForm = document.getElementById("deleteForm");
-                deleteForm.action = `/vaccine_consume_items_by_animals/${vaccineconsumeitemId}/destroy`;
+                deleteForm.action = `/vaccine_consume_items_by_animals/${vaccineConsumeItemId}/destroy`;
                 deleteForm.submit();
             }
         });

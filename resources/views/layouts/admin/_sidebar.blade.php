@@ -13,9 +13,25 @@
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
+
+            @php
+                    $roleId = Auth::user()->role_id;
+                    $dashboardRoute = match ($roleId) 
+                    {
+                        1 => route('admin.dashboard'),
+                        6 => route('gm.dashboard'),
+                        7 => route('sales.dashboard'),
+                        2 => route('veterinarian.dashboard'),
+                        5 => route('labore.dashboard'),
+                        3 => route('retailor.dashboard'),
+                        default => '#'
+                    };
+            @endphp
+
+
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" href="{{ $dashboardRoute }}">
                   
                     <span>Dashboard</span></a>
             </li>
@@ -235,8 +251,8 @@
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Custom Utilities:</h6>
-                        <a class="collapse-item" href="">Salary Details</a>
-                        <a class="collapse-item" href="">Monthly Salary</a>
+                        <a class="collapse-item" href="{{ route('salary.list') }}">Salary Details</a>
+                        <a class="collapse-item" href="{{ route('monthly_salary_payment.create') }}">Monthly Salary</a>
                        
                             
                     </div>
@@ -244,10 +260,23 @@
             </li>
              @endif
            
-          
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('role_salary.list') }}">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Salary</span></a>
+            </li>
+
+             <li class="nav-item">
+                <a class="nav-link" href="{{ route('monthly_salary_assign.list') }}">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Monthly Salary</span></a>
+            </li>
+
+
+            
 
            
-          <li class="nav-item">
+            <li class="nav-item">
                 <a class="nav-link" href="{{ route('milk.production.report') }}">
                     <i class="fa-solid fa-calendar-check"></i>
                     <span>Report1 </span></a>
@@ -280,18 +309,48 @@
             </li>
            
           
-
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('vaccine_items.report') }}">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Report 6 </span></a>
+            </li>
                 
         
+             <li class="nav-item">
+                <a class="nav-link" href="{{ route('dispose_feed_items.report') }}">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Dispose Feed </span></a>
+            </li>
 
           
+             <li class="nav-item">
+                <a class="nav-link" href="{{ route('dispose_vaccine_items.report') }}">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Dispose Vaccine</span></a>
+            </li>
 
          
 
-
+             <li class="nav-item">
+                <a class="nav-link" href="{{ route('delivered.retailor_order_items') }}">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Delivered Retailor Orders</span></a>
+            </li>
           
 
-          
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('my_profile.show') }}">
+                    <i class="fa fa-user"></i>
+                    <span>My Profile</span>
+                </a>
+            </li>
+
+             <li class="nav-item">
+                <a class="nav-link" href="{{ route('password.change.form') }}">
+                    <i class="fa fa-user"></i>
+                    <span>Change Password</span>
+                </a>
+            </li>
 
             
 

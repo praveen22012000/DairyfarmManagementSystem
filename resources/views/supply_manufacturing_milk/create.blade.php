@@ -144,7 +144,7 @@
 
     // Function to check for validation errors in the table rows
     function checkForErrors() {
-        let hasErrors = false;
+        let hasErrors = false;//A boolean variable named hasErrors is created and set to false initially.//This will be used to track whether any error exists in the table rows.
 
         // Loop through all rows and check for error messages
         $("#milkTable tbody tr").each(function () {
@@ -164,13 +164,14 @@
 
 
     //This function controls whether the "Add" button (#addRow) should be shown or hidden.
-    function updateAddButtonVisibility() {
+    function updateAddButtonVisibility() 
+    {
 
         //Finds the first <tr> in #milkTable tbody (first row of the table).
         //Retrieves the number of <option> elements inside the production_milk_id[] dropdown but subtracts 1 to exclude the default "Select the Product" option.
         //Counts the total rows currently present in the table.
-        let totalMilkItems = $("#milkTable tbody tr:first").find("select[name='production_milk_id[]'] option").length - 1; // Exclude the default option
-        let totalRows = $("#milkTable tbody tr").length;
+        let totalMilkItems = $("#milkTable tbody tr:first").find("select[name='production_milk_id[]'] option").length - 1; // This line counts how many milk product options are available in the dropdown (except the default one like "Select a product").
+        let totalRows = $("#milkTable tbody tr").length;//It counts how many rows (<tr>) currently exist in the body (<tbody>) of the table with ID milkTable and stores that number in a variable called totalRows.
 
 
         //If the number of rows equals or exceeds the number of available milk items, the "Add" button is hidden.
@@ -182,11 +183,12 @@
         }
     }
 
-    $("#addRow").click(function () {
+    $("#addRow").click(function () { // This line uses jQuery to attach a click event listener to the button with the ID addRow.
 
         //Find the Table and Clone the First Row
-        let table = $("#milkTable tbody");
-        let newRow = table.find("tr:first").clone();
+        let table = $("#milkTable tbody");// This uses jQuery to select the <tbody> section inside a table with the ID milkTable.
+
+        let newRow = table.find("tr:first").clone();// Go to the <tbody> of the milk table. Then, find the first row in that body, make a copy of it, and save that copied row in a variable named newRow.
 
         // Clear input values in the new row
         
@@ -217,15 +219,18 @@
     });
 
   //  Ensures that each row has a unique milk item selection.
-    function updateMilkItemOptions() {
+    function updateMilkItemOptions() // This defines a function called updateMilkItemOptions.
+    {
 
         let selectedItems = [];//Creates an empty array selectedItems.
 
        // Loops through all dropdowns named production_milk_id[] and stores selected values in selectedItems.
-        $("select[name='production_milk_id[]']").each(function () {
-            let selectedValue = $(this).val();
-            if (selectedValue) {
-                selectedItems.push(selectedValue);
+        $("select[name='production_milk_id[]']").each(function () // This line loops through all <select> dropdowns with the name production_milk_id[]
+        {
+            let selectedValue = $(this).val();// Gets the currently selected value of the dropdown.
+            if (selectedValue) // f a value is selected (i.e., not blank), then:
+            {
+                selectedItems.push(selectedValue);// Add that selected value  into the selectedItems array.
             }
         });
 
@@ -233,12 +238,17 @@
 
         //It iterates over all <select> dropdowns that have the name production_milk_id[] and hides any option 
         // --that has already been selected in another dropdown
-        $("select[name='production_milk_id[]']").each(function () {
-            let currentValue = $(this).val();
+        $("select[name='production_milk_id[]']").each(function () // Uses jQuery to loop through all <select> dropdowns in your table that have the name production_milk_id[].
+        {
+            let currentValue = $(this).val();// $(this) refers to the current <select> dropdown being processed.val() gets the currently selected value from that dropdown.
+
             $(this).find("option").each(function () {
-                if ($(this).val() !== "" && selectedItems.includes($(this).val()) && $(this).val() !== currentValue) {
+                if ($(this).val() !== "" && selectedItems.includes($(this).val()) && $(this).val() !== currentValue) // This is a condition to decide whether the current <option> should be hidden.
+                {
                     $(this).hide(); // Hide already selected items
-                } else {
+                }
+                 else 
+                {
                     $(this).show(); // Show unselected items
                 }
             });

@@ -25,7 +25,9 @@
                 <option value="">Select the Task</option>
            
                     @foreach($tasks as $task)
-                <option value="{{$task->id}}">{{$task->title}}</option>
+                <option value="{{$task->id}}"
+                    {{ old('task_id') == $task->id ? 'selected' : '' }}
+                >{{$task->title}}</option>
                     @endforeach
             </select>
 
@@ -41,7 +43,9 @@
                 <option value="">Select the Task</option>
            
                 @foreach($farm_labores as $farm_labore)
-                    <option value="{{$farm_labore->id}}">{{ $farm_labore->user->name }}</option>
+                    <option value="{{$farm_labore->id}}"
+                       {{ old('assigned_to') == $farm_labore->id ? 'selected' : '' }}
+                    >{{ $farm_labore->user->name }}</option>
                 @endforeach
             </select>
             @error('assigned_to') <span class="text-danger">{{ $message }}</span> @enderror
@@ -50,13 +54,13 @@
 
         <div class="form-group">
             <label for="due_date">Due Date</label>
-                <input type="date" name="due_date" class="form-control rounded" id="due_date">
+                <input type="date" name="due_date" value="{{ old('due_date') }}" class="form-control rounded" id="due_date">
                 @error('due_date') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
 
 
         
-        <button type="submit" class="btn btn-success mt-3">Save</button>
+        <button type="submit" class="btn btn-success mt-3">Assign</button>
     </form>
 </div>
 

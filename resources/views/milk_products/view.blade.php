@@ -6,7 +6,7 @@
 <div class="col-md-12">
 
        
-            <h1>Milk Products Details</h1>     
+            <h1 style="text-align:center;">Milk Products Details</h1>     
         
 
     <br>

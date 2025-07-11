@@ -23,10 +23,12 @@ class RetailorOrderNotification extends Mailable
     }*/
 
       public $order; // Make the order available in the email view
+      public $retailor_order_items; // Add this line
 
-    public function __construct($order)
+    public function __construct($order,$retailor_order_items)
     {
         $this->order = $order;
+        $this->retailor_order_items = $retailor_order_items; // Add this line
     }
 
     public function build()

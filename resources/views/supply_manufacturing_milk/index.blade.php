@@ -76,7 +76,7 @@
 
                         <a href="{{route('milk_allocated_for_manufacturing.view',$productionSupplyDetail->id)}}" class="btn btn-info">View</a>
                         <a href="{{route('milk_allocated_for_manufacturing.edit',$productionSupplyDetail->id)}}" class="btn btn-primary">Edit</a>
-                        <button class="btn btn-danger" onclick="">Delete</button>
+                        <button class="btn btn-danger" onclick="confirmDelete({{ $productionSupplyDetail->id }})">Delete</button>
                     
                         </td>
                     </tr>
@@ -112,10 +112,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-   function confirmDelete(milkProductId) {
+   function confirmDelete(productionSupplyDetailsId) {
         Swal.fire({
             title: "Are you sure?",
-            text: "This will permanently delete the milk Product record.",
+            text: "This will permanently delete the milk consumption record.",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#d33",
@@ -125,7 +125,7 @@
             if (result.isConfirmed) {
                 // Set form action dynamically based on animal ID
                 let deleteForm = document.getElementById("deleteForm");
-                deleteForm.action = `/milk_product_details/${milkProductId}/destroy`;
+                deleteForm.action = `/details_about_the_milk_allocated_for_production/${productionSupplyDetailsId}/destroy`;
                 deleteForm.submit();
             }
         });

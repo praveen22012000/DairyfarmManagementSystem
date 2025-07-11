@@ -13,6 +13,17 @@
     <form  method="POST" enctype="multipart/form-data" action="{{route('animal_pregnancies.update',$pregnancie->id)}}">
         @csrf
 
+               @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
         <fieldset class="border p-4 mb-4">
         <legend class="w-auto px-2">General Information</legend>
 
@@ -50,7 +61,7 @@
                 </option>
                 @endforeach
             </select>
-            @error('male_cow_id') <span class="text-danger">{{ $message }}</span> @enderror
+            @error('breeding_id') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
 
 
@@ -126,3 +137,56 @@
 </div>
 
 @endsection
+
+@section('js')
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#female_cow_id').on('change', function () {
+            var cowId = $(this).val(); // Get selected female cow ID
+            var breedingSelect = $('#breeding_id'); // Breeding event dropdown
+
+            breedingSelect.empty(); // Clear current options
+            breedingSelect.append('<option value="">Loading...</option>'); // Show loading
+
+            if (cowId) {
+                $.ajax({
+                    url: '/animal_pregnancies/get-breeding-events/' + cowId, // Ensure this matches your route
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        console.log("Breeding events:", data); // Log response for debugging
+
+                        breedingSelect.empty(); // Clear options again
+                        breedingSelect.append('<option value="">Select Breeding Event</option>');
+
+                        if (data.length > 0) {
+                            data.forEach(function (breeding) {
+                                breedingSelect.append(
+                                    '<option value="' + breeding.id + '">' +
+                                    'Breeding ID: ' + breeding.id +
+                                    ' | Female Cow: ' + (breeding.femalecow?.animal_name || 'Unknown') +
+                                    ' | Male Cow: ' + (breeding.malecow?.animal_name || 'Unknown') +
+                                    ' | Date: ' + breeding.breeding_date +
+                                    '</option>'
+                                );
+                            });
+                        } else {
+                            breedingSelect.append('<option value="">No valid breeding events found</option>');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX error:", status, error);
+                        breedingSelect.empty().append('<option value="">Error loading breeding events</option>');
+                    }
+                });
+            } else {
+                breedingSelect.empty().append('<option value="">Select Breeding Event</option>');
+            }
+        });
+    });
+</script>
+
+@endsection
+

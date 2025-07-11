@@ -10,6 +10,8 @@ use App\Models\ProductionMilk;
 use App\Models\DisposeMilk;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth; 
+use App\Mail\LowStockMilkNotification;
+use Illuminate\Support\Facades\Mail;
 
 class DisposeMilkController extends Controller
 {
@@ -80,11 +82,7 @@ class DisposeMilkController extends Controller
         $farm_labors=User::where('role_id',$farm_labore_id)->get();
 
 
-      
-       
-
         return view('dispose_milk.create',['ProductionsMilks'=>$ProductionsMilks,'farm_labors'=>$farm_labors]);
-
 
     }
 
@@ -102,7 +100,7 @@ class DisposeMilkController extends Controller
 
             'production_milk_id'=>'required|exists:production_milks,id',
             'user_id'=>'required|exists:users,id',
-            'date'=>'required',
+            'date'=>'required|before_or_equal:today',
             'dispose_quantity'=>'required|numeric|min:0',
             'reason_for_dispose'=>'required'
 
@@ -112,6 +110,14 @@ class DisposeMilkController extends Controller
 
            // Retrieve the production milk record
             $productionMilk = ProductionMilk::findOrFail($request->production_milk_id);
+
+              // Check if disposal date is before production date
+            if ($request->date < $productionMilk->production_date)
+            {
+                         return back()->withInput()->withErrors([
+                            'date' => 'The disposal date cannot be earlier than the production date ('.$productionMilk->production_date.')',
+                         ]);
+            }
 
            
       
@@ -137,6 +143,15 @@ class DisposeMilkController extends Controller
 
             ]);
 
+              $available_stock = ProductionMilk::sum('stock_quantity');
+
+        if($available_stock < 10)
+        {
+             Mail::to('pararajasingampraveen22@gmail.com')->send(new LowStockMilkNotification($available_stock));
+
+        }
+      
+
             return redirect()->route('dispose_milk.list')->with('success', 'Dispose Milk record saved successfully');
 
     }
@@ -148,13 +163,13 @@ class DisposeMilkController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $ProductionsMilks = ProductionMilk::where('stock_quantity', '>', 0)->get();
+        $ProductionMilks = DisposeMilk::all();//this line is used to get the milk_production_ids of the DisposeMilks
 
         $farm_labore_id=Role::where('role_name','FarmLabore')->pluck('id');
 
         $farm_labors=User::where('role_id',$farm_labore_id)->get();
 
-        return view('dispose_milk.view',['ProductionsMilks'=>$ProductionsMilks,'farm_labors'=>$farm_labors,'disposeMilk'=>$disposeMilk]);
+        return view('dispose_milk.view',['ProductionMilks'=>$ProductionMilks,'farm_labors'=>$farm_labors,'disposeMilk'=>$disposeMilk]);
 
     }
 
@@ -165,14 +180,16 @@ class DisposeMilkController extends Controller
             abort(403, 'Unauthorized action.');
         } 
 
-        $ProductionsMilks = ProductionMilk::where('stock_quantity', '>', 0)->get();
+   
+
+         $ProductionMilks = DisposeMilk::all();//this line is used to get the milk_production_ids of the DisposeMilks
 
         $farm_labore_id=Role::where('role_name','FarmLabore')->pluck('id');
 
         $farm_labors=User::where('role_id',$farm_labore_id)->get();
-
-        
-        return view('dispose_milk.edit',['ProductionsMilks'=>$ProductionsMilks,'farm_labors'=>$farm_labors,'disposeMilk'=>$disposeMilk]);
+ 
+   
+        return view('dispose_milk.edit',['ProductionMilks'=>$ProductionMilks,'farm_labors'=>$farm_labors,'disposeMilk'=>$disposeMilk]);
     }
 
     public function update(Request $request,DisposeMilk $disposeMilk)
@@ -186,11 +203,23 @@ class DisposeMilkController extends Controller
 
             'production_milk_id'=>"required|exists:production_milks,id",
             'user_id'=>"required|exists:users,id",
-            'date'=>'required',
+            'date'=>'required|before_or_equal:today',
             'dispose_quantity'=>'required|numeric|min:0',
             'reason_for_dispose'=>'required'
 
         ]);
+
+         // Retrieve the production milk record
+            $productionMilk = ProductionMilk::findOrFail($request->production_milk_id);
+
+
+            // Check if disposal date is before production date
+            if ($request->date < $productionMilk->production_date)
+            {
+                         return back()->withInput()->withErrors([
+                            'date' => 'The disposal date cannot be earlier than the production date ('.$productionMilk->production_date.')',
+                         ]);
+            }
       
         $new_consumed_quantity =$disposeMilk->production_milk->stock_quantity+$disposeMilk->dispose_quantity-$request->dispose_quantity;
 

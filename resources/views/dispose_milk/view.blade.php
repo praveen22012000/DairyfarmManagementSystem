@@ -5,7 +5,7 @@
 <div class="col-md-12">
 
        
-            <h1>Dispose Milk Registration Form</h1>     
+            <h1 style="text-align:center;">Dispose Milk Registration Form</h1>     
         
 
     <br>
@@ -16,19 +16,18 @@
     
 
 
-        <div class="form-group">
+       <div class="form-group">
         <label for="production_milk_id">Milk Production Item</label>
         <select name="production_milk_id" id="production_milk_id" class="form-control" >
             <option value="">Select the Milk Production Item</option>
-            @foreach($ProductionsMilks as $ProductionsMilk)
-                <option value="{{$ProductionsMilk->id}}"
-                {{$disposeMilk->production_milk_id==$ProductionsMilk->id ? 'selected' : ''}}
-                >{{ $ProductionsMilk->AnimalDetail->animal_name.'|'. $ProductionsMilk->production_date.'|'.$ProductionsMilk->shift}}</option>
+            @foreach($ProductionMilks as $ProductionsMilk)
+                <option value="{{$ProductionsMilk->production_milk_id}}"
+                {{$disposeMilk->production_milk_id==$ProductionsMilk->production_milk_id ? 'selected' : ''}}
+                >{{ $ProductionsMilk->production_milk->AnimalDetail->animal_name.'|'. $ProductionsMilk->production_milk->production_date.'|'.$ProductionsMilk->production_milk->shift}}</option>
             @endforeach
         </select>
         @error('production_milk_id') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
-
     
         <div class="form-group">
             <label for="user_id">Farm Labor</label>

@@ -14,8 +14,14 @@ class Role extends Model
         return $this->hasMany(User::class);
     }
 
-    public function salary()
+   // will be delete in the duture 
+ /*   public function salary()
     {
         return $this->hasOne(Salary::class,'role_id');
+    }*/
+
+    public function role_salary()
+    {
+        return $this->hasOne(RoleSalary::class,'role_id');
     }
 }

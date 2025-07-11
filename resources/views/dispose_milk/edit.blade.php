@@ -5,14 +5,14 @@
 <div class="col-md-12">
 
        
-            <h1>Dispose Milk Registration Form</h1>     
+            <h1 style="text-align:center;">Dispose Milk Registration Form</h1>     
         
 
     <br>
 
     <form  method="POST" enctype="multipart/form-data" action="{{route('dispose_milk.update',$disposeMilk->id)}}">
         @csrf
-
+{{ $disposeMilk }}
         
 
 
@@ -20,10 +20,10 @@
         <label for="production_milk_id">Milk Production Item</label>
         <select name="production_milk_id" id="production_milk_id" class="form-control" >
             <option value="">Select the Milk Production Item</option>
-            @foreach($ProductionsMilks as $ProductionsMilk)
-                <option value="{{$ProductionsMilk->id}}"
-                {{$disposeMilk->production_milk_id==$ProductionsMilk->id ? 'selected' : ''}}
-                >{{ $ProductionsMilk->AnimalDetail->animal_name.'|'. $ProductionsMilk->production_date.'|'.$ProductionsMilk->shift}}</option>
+            @foreach($ProductionMilks as $ProductionsMilk)
+                <option value="{{$ProductionsMilk->production_milk_id}}"
+                {{$disposeMilk->production_milk_id==$ProductionsMilk->production_milk_id ? 'selected' : ''}}
+                >{{ $ProductionsMilk->production_milk->AnimalDetail->animal_name.'|'. $ProductionsMilk->production_milk->production_date.'|'.$ProductionsMilk->production_milk->shift}}</option>
             @endforeach
         </select>
         @error('production_milk_id') <span class="text-danger">{{ $message }}</span> @enderror
@@ -40,8 +40,8 @@
             @foreach($farm_labors as $farm_labor)
 
                 <option value="{{$farm_labor->id}}"
-                {{$disposeMilk->user_id==$farm_labor->id ? 'selected' : ''}}
-                >{{$farm_labor->name}}</option>
+                {{ $disposeMilk->user_id == $farm_labor->id ? 'selected' : ''}}
+                >{{ $farm_labor->name}}</option>
             @endforeach
 
             </select>

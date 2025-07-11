@@ -57,10 +57,10 @@
 
                         <td>
 
-                        <a href="" class="btn btn-secondary">Slip</a>
-                        <a href="" class="btn btn-info">View</a>
+                        <a href="{{ route('vaccine_payment.slip.download',$purchase_vaccine_payment->id) }}" class="btn btn-secondary">Slip</a>
+                        <a href="{{ route('purchase_vaccine_payments.view',$purchase_vaccine_payment->id) }}" class="btn btn-info">View</a>
                         <a href="{{ route('purchase_vaccine_payments.edit',$purchase_vaccine_payment->id) }}" class="btn btn-primary">Edit</a>
-                        <button class="btn btn-danger" onclick="">Delete</button>
+                        <button class="btn btn-danger" onclick="confirmDelete({{$purchase_vaccine_payment->id}})">Delete</button>
                     
                         </td>
                     </tr>
@@ -97,10 +97,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-   function confirmDelete(purchaseVaccineItemId) {
+   function confirmDelete(purchaseVaccinePaymentId) {
         Swal.fire({
             title: "Are you sure?",
-            text: "This will permanently delete the Vaccine Purchase record.",
+            text: "This will permanently delete the Vaccine Payment record.",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#d33",
@@ -110,7 +110,7 @@
             if (result.isConfirmed) {
                 // Set form action dynamically based on animal ID
                 let deleteForm = document.getElementById("deleteForm");
-                deleteForm.action = `/purchase_vaccine_items/${purchaseVaccineItemId}/destroy`;
+                deleteForm.action = `/purchase_vaccine_items_payments/${purchaseVaccinePaymentId}/destroy`;
                 deleteForm.submit();
             }
         });

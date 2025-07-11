@@ -10,6 +10,8 @@ use App\Models\PurchaseFeedItems;
 use App\Models\FeedConsumeDetails;
 use App\Models\FeedConsumeItems;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\LowStockFeedNotification;
 
 class FeedConsumeItemsController extends Controller
 {
@@ -52,11 +54,11 @@ class FeedConsumeItemsController extends Controller
         $request->validate([
 
             'animal_id'=>'required|exists:animal_details,id',
-            'date'=>'required',
+            'date'=>'required|before_or_equal:today',
             'time'=>'required',
 
             'consumed_quantity'=>'required|array',
-            'consumed_quantity.*'=>'required',
+            'consumed_quantity.*'=>'required|numeric|min:1',
 
             'notes'=>'required|array',
             'notes.*'=>'required',
@@ -129,6 +131,21 @@ class FeedConsumeItemsController extends Controller
             'notes'=>$notes[$index]
         ]);
 
+        }
+
+        
+        $FeedIds = Feed::pluck('id');
+
+        foreach($FeedIds as $feed_id)
+        {
+         
+            $feed = Feed::findOrFail($feed_id);
+            $availableStock = PurchaseFeedItems::where('feed_id',$feed_id)->sum('stock_quantity');
+
+            if($availableStock  < 5)
+            {
+                 Mail::to('pararajasingampraveen22@gmail.com')->send(new LowStockFeedNotification($feed,$availableStock));
+            }
         }
 
     }

@@ -21,7 +21,7 @@
 @endif
 
 
-    <h1>Feed  Registration Form</h1>     
+    <h1 style="text-align:center;">Feed  Registration Form</h1>     
         
         <!-- Name Field -->
         <div class="mb-4">
@@ -59,7 +59,7 @@
         </div>
 
         
-        <button type="submit" class="btn btn-success mt-3">Save Record</button>
+        <button type="submit" class="btn btn-success mt-3">Update</button>
       
     </form>
 

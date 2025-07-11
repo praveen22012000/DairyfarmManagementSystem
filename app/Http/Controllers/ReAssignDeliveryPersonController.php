@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 
 use App\Models\RetailorOrder;
 use App\Models\FarmLabore;
-
+use App\Mail\ReAssignDeliveryPersonNotification;
+use Illuminate\Support\Facades\Mail;
 
 class ReAssignDeliveryPersonController extends Controller
 {
@@ -52,6 +53,8 @@ class ReAssignDeliveryPersonController extends Controller
      $order->save();
  
 
+      // 7. Redirect back with success message
+              Mail::to('pararajasingampraveen22@gmail.com')->send(new ReAssignDeliveryPersonNotification($order));
 
     return redirect()->route('retailor_order_items.list')->with('success', 'New Delivery person assigned successfully!');
     }

@@ -83,12 +83,12 @@
                         </td>
 
                         
-                        <td>
+                        <td class="border-t px-6 py-4 text-left text-gray-800">
                             <input type="number" class="form-control" name="purchase_quantity" value="{{$purchasevaccineitem->purchase_quantity}}" style="width: 100px;">
                             @error("purchase_quantity") <span class="text-danger">{{ $message }}</span> @enderror  
                         </td>
 
-                        <td>
+                        <td class="border-t px-6 py-4 text-left text-gray-800">
                             <input type="number" class="form-control" name="unit_price" value="{{$purchasevaccineitem->unit_price}}"  style="width: 100px;">
                             @error("unit_price") <span class="text-danger">{{ $message }}</span> @enderror  
                         </td>
@@ -96,13 +96,13 @@
 
 
                    
-                        <td>
+                        <td class="border-t px-6 py-4 text-left text-gray-800">
                             <input type="date" name="manufacture_date" value="{{$purchasevaccineitem->manufacture_date}}"  class="border border-gray-400 rounded-lg px-2 py-1 w-28 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             @error("manufacture_date") <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
            
-                        <td>
+                        <td class="border-t px-6 py-4 text-left text-gray-800">
                             <input type="date" name="expire_date" value="{{$purchasevaccineitem->expire_date}}"  class="border border-gray-400 rounded-lg px-2 py-1 w-28 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             @error("expire_date") <span class="text-danger">{{ $message }}</span> @enderror
                         </td>

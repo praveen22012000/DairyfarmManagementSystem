@@ -8,6 +8,8 @@ use App\Models\ManufacturerProduct;
 use App\Models\OrderAllocation;
 use App\Models\RetailorOrderItems;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\RetailorOrderStatusNotification;
 use Illuminate\Http\Request;
 
 class OrderReviewController extends Controller
@@ -129,6 +131,8 @@ class OrderReviewController extends Controller
         $order->status = 'Approved';
         $order->save();
 
+         Mail::to($order->user->email)->send(new RetailorOrderStatusNotification($order));
+
     return redirect()->route('retailor_order_items.list')->with('success', 'Retailor Order Approved successfully.');
     }
 
@@ -144,6 +148,9 @@ class OrderReviewController extends Controller
          $order = RetailorOrder::findOrFail($orderId);
          $order->status = 'Rejected';
          $order->save();
+
+            
+        Mail::to($order->user->email)->send(new RetailorOrderStatusNotification($order));
  
          return redirect()->route('retailor_order_items.list')->with('success', 'Order rejected successfully.');
      }

@@ -18,7 +18,7 @@
 
     <!--this is used to list the female_cow_name -->
         <div class="form-group">
-        {{$taskassignment}}
+      
             <label for="task_id">Task</label>
 
             <select name="task_id" id="task_id" class="form-control">

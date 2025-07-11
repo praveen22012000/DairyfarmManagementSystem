@@ -9,6 +9,9 @@ use App\Models\FarmLabore;
 use App\Models\TaskAssignment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TaskAssignmentNotification;
+use App\Mail\ReAssignFarmLaboreNotification;
 
 class TaskAssignmentController extends Controller
 {
@@ -48,10 +51,10 @@ class TaskAssignmentController extends Controller
         $request->validate([
             'task_id'=>'required|exists:tasks,id',
             'assigned_to'=>'required|exists:farm_labores,id',
-            'due_date'=>'required'
+            'due_date'=>'required|after_or_equal:today'
         ]);
 
-        TaskAssignment::create([
+        $task_assignment = TaskAssignment::create([
             'task_id'=>$request->task_id,
             'assigned_by'=>Auth::id(),
             'assigned_to'=>$request->assigned_to,
@@ -65,6 +68,8 @@ class TaskAssignmentController extends Controller
         FarmLabore::where('id', $request->assigned_to)->update([
         'status' => 'Busy'
         ]);
+
+           Mail::to('pararajasingampraveen22@gmail.com')->send(new TaskAssignmentNotification($task_assignment));
 
         return redirect()->route('tasks_assignment.list')->with('success', 'Task assigned successfully!');
     }
@@ -104,21 +109,22 @@ class TaskAssignmentController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $data=$request->validate([
+            $data=$request->validate
+            ([
              'task_id'=>'required|exists:tasks,id',
             'assigned_to'=>'required|exists:farm_labores,id',
-            'due_date'=>'required'
-        ]);
+            'due_date'=>'required|after_or_equal:today'
+            ]);
 
-             TaskAssignment::create([
-            'task_id'=>$request->task_id,
-            'assigned_by'=>Auth::id(),
-            'assigned_to'=>$request->assigned_to,
-            'due_date'=>$request->due_date,
-            'assigned_date'=>Carbon::now(),
+            $taskassignment->update
+            ([
+                    'task_id' => $data['task_id'],
+                    'assigned_by' => Auth::id(), // You may or may not want to update this
+                    'assigned_to' => $data['assigned_to'],
+                    'due_date' => $data['due_date'],
+                    'assigned_date' => Carbon::now(), // optional: update only if reassigning
+            ]);
 
-            
-        ]);
             return redirect()->route('tasks_assignment.list')->with('success', 'Task assigned updated successfully!');
     }
 
@@ -161,7 +167,7 @@ class TaskAssignmentController extends Controller
     
         $request->validate([
         'assigned_to' => 'required|exists:farm_labores,id',
-        'due_date' => 'required|date'
+        'due_date' => 'required|after_or_equal:today'
         ]);
 
          //  $assignment = TaskAssignment::findOrFail($id);
@@ -192,7 +198,8 @@ class TaskAssignmentController extends Controller
             $newLabore->save();
         }
 
-    
+         Mail::to('pararajasingampraveen22@gmail.com')->send(new ReAssignFarmLaboreNotification($taskassignment));
+
         return redirect()->route('tasks_assignment.list')->with('success', 'Task is re-assigned successfully!');
    
     }

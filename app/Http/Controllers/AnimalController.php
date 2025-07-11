@@ -10,11 +10,13 @@ use App\Models\AnimalDetail;
 use App\Models\AnimalType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 
 class AnimalController extends Controller
 {
     //
-
+// this is the new code for find the animals who born between the specific dates
     public function generateAnimalReport(Request $request)
     {
         $start = $request->start_date;
@@ -44,6 +46,38 @@ class AnimalController extends Controller
         return view('reports.animal_birth_report',compact('start','end','AnimalData','totalAnimals'));
     }
 
+    public function generateAnimalReportPDF(Request $request)
+    {
+         $start = $request->start_date;
+        $end = $request->end_date;
+
+        $AnimalData= [];
+
+        if($start && $end)
+        {
+             $request->validate([
+                'start_date' => 'required|date',
+                'end_date' => 'required|date|after_or_equal:start_date',
+            ]);
+
+            $AnimalData= AnimalDetail::whereBetween('animal_birthdate',[$start, $end])
+            ->get();
+
+           
+        }
+
+         $totalAnimals=0;
+
+            foreach($AnimalData as $animal)
+            {
+                $totalAnimals=$totalAnimals+1;
+            }
+        
+            
+         $pdfInstance = Pdf::loadView('reports_pdf.animal_birth_report_pdf', compact('start','end','AnimalData','totalAnimals'));
+         return $pdfInstance->download('Animal Birth Report.pdf');
+    }
+
     public function index(Request $request)
     {
         if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
@@ -55,17 +89,18 @@ class AnimalController extends Controller
 
         if($q)
         {
-            $animals = AnimalDetail::where('animal_name','like',"%{$q}%")
-            ->orWhere('animal_type_id','like',"%{$q}%")
+            $animals = AnimalDetail::where('animal_name','like',"%{$q}%")//it checks the animals names that contain the text $q
+            ->orWhere('animal_type_id','like',"%{$q}%")//This checks if the animal_type_id contains the search term $q
             ->with('AnimalType')
-            ->orderBy('id', 'desc')
+            ->orderBy('id', 'desc')//This line sorts the results based on the id field in descending order.
             ->paginate();
         }
         else
         {
-            $animals = AnimalDetail::with('AnimalType')
+            $animals = AnimalDetail::with('AnimalType')//If there's no search input, just get the list of all animals
             ->orderBy('id', 'desc')
-            ->paginate(5);
+            ->paginate(5);//Paginates the list with 5 animals per page
+
         }
 
         $animal_types=AnimalType::all();
@@ -79,18 +114,18 @@ class AnimalController extends Controller
     }
 
 
-    public function filterByType(Request $request)
+    public function filterByType(Request $request)// This defines a controller method named filterByType
     {
          if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
         {
             abort(403, 'Unauthorized action.');
         }
 
-        $animalTypeId = $request->input('animal_type_id');
+        $animalTypeId = $request->input('animal_type_id');//This line gets the selected animal type ID from the request sent by the JavaScript.
 
-        $animals = AnimalDetail::where('animal_type_id', $animalTypeId)
+        $animals = AnimalDetail::where('animal_type_id', $animalTypeId)//Fetches all animals from the animal_details table where the animal_type_id matches the selected value.
         ->with('AnimalType') // Load the related animal type
-        ->get()
+        ->get() // Executes the query and returns the collection of matching animals.
         ->map(function ($animal) {
             return [
                 'id' => $animal->id,
@@ -156,26 +191,35 @@ class AnimalController extends Controller
         }
 
 
-        $request->validate([
-           
-            'animal_type_id'=>'required',
-            'animal_birthdate'=>'required|before_or_equal:today',
-            'animal_name'=>'required|string|max:255|unique:animal_details,animal_name',
-           
-            'ear_tag'=>'required|unique:animal_details,ear_tag',
-            'sire_id'=>'nullable|exists:animal_details,id',
-            'dam_id'=>'nullable|exists:animal_details,id',
+       $request->validate([
+            'animal_type_id' => 'required',
+            'animal_birthdate' => 'required|before_or_equal:today',
+            'animal_name' => 'required|string|max:255|unique:animal_details,animal_name',
+            'ear_tag' => 'required|unique:animal_details,ear_tag',
+            'sire_id' => 'nullable|exists:animal_details,id',
+            'dam_id' => 'nullable|exists:animal_details,id',
 
             'status' => 'required|in:alive,deceased',
-            'death_date' => 'nullable|date|required_if:status,deceased',
+            'death_date' => [
+                                'nullable',
+                                'date',
+                                'required_if:status,deceased',
+                                 function ($attribute, $value, $fail) use ($request) 
+                                 {
+                                    if ($value && $request->animal_birthdate && $value < $request->animal_birthdate) 
+                                    {
+                                    $fail('The death date should not be before the birthdate.');
+                                    }
+                                }
+        ],
 
-            'color'=>'required',
-            'weight_at_birth'=>'required',
-            'age_at_first_service'=>'required',
-            'weight_at_first_service'=>'required'
+            'color' => 'required',
+            'weight_at_birth' => 'required|numeric|min:1',
+            'age_at_first_service' => 'required|numeric|min:0',
+            'weight_at_first_service' => 'required|numeric|min:0',
+]);
 
-        ]);
-
+     
      
         AnimalDetail::create(
             [
@@ -296,12 +340,23 @@ class AnimalController extends Controller
             'dam_id'=>'nullable|exists:animal_details,id',
 
             'status' => 'required|in:alive,deceased',
-            'death_date' => 'nullable|date|required_if:status,deceased',
+              'death_date' => [
+                                'nullable',
+                                'date',
+                                'required_if:status,deceased',
+                                 function ($attribute, $value, $fail) use ($request) 
+                                 {
+                                    if ($value && $request->animal_birthdate && $value < $request->animal_birthdate) 
+                                    {
+                                    $fail('The death date should not be before the birthdate.');
+                                    }
+                                }
+        ],
            
             'color'=>'required',
-            'weight_at_birth'=>'required',
-            'age_at_first_service'=>'required',
-            'weight_at_first_service'=>'required'
+            'weight_at_birth'=>'required|numeric|min:1',
+            'age_at_first_service'=>'required|numeric|min:0',
+            'weight_at_first_service'=>'required|numeric|min:0'
 
         ], [
             'animal_birthdate.before_or_equal' => 'Animal birthdate should be today or a past date.',

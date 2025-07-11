@@ -21,7 +21,7 @@
 @endif
 
 
-    <h1>Vaccine  Registration Form</h1>     
+    <h1 style="text-align:center;">Vaccine  Registration Form</h1>     
         
         <!-- Name Field -->
         <div class="mb-4">

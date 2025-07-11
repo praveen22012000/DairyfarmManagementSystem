@@ -46,8 +46,14 @@ use App\Http\Controllers\SalesManagerController;
 use App\Http\Controllers\PurchaseVaccinePaymentsController;
 use App\Http\Controllers\DashboardControllerForAdmin;
 use App\Http\Controllers\MainUserRegisterController;
-
-
+use App\Http\Controllers\RoleSalaryController;
+use App\Http\Controllers\MonthlySalaryAssignmentController;
+use App\Http\Controllers\DashboardForGeneralManager;
+use App\Http\Controllers\DashboardControllerForSalesManager;
+use App\Http\Controllers\DashboardForVeterinarians;
+use App\Http\Controllers\DashboardControllerForFarmLabore;
+use App\Http\Controllers\DashboardForRetailor;
+use App\Http\Controllers\MyProfileController;
 
 
 use Illuminate\Support\Facades\Route;
@@ -62,9 +68,50 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');*/
 
+//this is the new code
+/*
 Route::get('/dashboard', [DashboardControllerForAdmin::class, 'index'])
     ->name('dashboard')
-    ->middleware('auth');  // apply role-based checks if needed
+    ->middleware('auth');  */
+    // apply role-based checks if needed
+
+
+//new code now added by me
+
+Route::get('/dashboard', function () {
+    $user = Auth::user();
+
+    switch ($user->role_id) {
+        case 1:
+            return redirect()->route('admin.dashboard');
+        case 6:
+            return redirect()->route('gm.dashboard');
+        case 7:
+            return redirect()->route('sales.dashboard');
+        case 2:
+            return redirect()->route('veterinarian.dashboard');
+        case 5:
+            return redirect()->route('labore.dashboard');
+        case 3:
+            return redirect()->route('retailor.dashboard');
+        default:
+            abort(403, 'Unauthorized dashboard access.');
+    }
+})->middleware('auth')->name('dashboard');
+
+
+//this is also new code added by me
+Route::middleware('auth')->group(function () {
+   Route::get('/admin/dashboard', [DashboardControllerForAdmin::class, 'index'])->name('admin.dashboard');
+   Route::get('/general_manager/dashboard', [DashboardForGeneralManager::class, 'index'])->name('gm.dashboard');
+   Route::get('/sales_manager/dashboard', [DashboardControllerForSalesManager::class, 'index'])->name('sales.dashboard');
+   Route::get('/veterinarian/dashboard', [DashboardForVeterinarians::class, 'index'])->name('veterinarian.dashboard');
+   Route::get('/farm_labore/dashboard', [DashboardControllerForFarmLabore::class, 'index'])->name('labore.dashboard');
+   Route::get('/retailor/dashboard', [DashboardForRetailor::class, 'index'])->name('retailor.dashboard');
+});
+
+
+
 
 
 Route::middleware('auth')->group(function () {
@@ -82,6 +129,7 @@ Route::middleware('auth')->prefix('animal')->group(function () {
     Route::post('/store', [AnimalController::class, 'store'])->name('animal.store');
     
     Route::get('/animal-report', [AnimalController::class, 'generateAnimalReport'])->name('report.animal_birth');
+     Route::get('/animal-report/pdf', [AnimalController::class, 'generateAnimalReportPDF'])->name('report.animal_birth_pdf');
 
     Route::get('/filter', [AnimalController::class, 'filterByType'])->name('animals.filter');
 
@@ -112,6 +160,10 @@ Route::middleware('auth')->prefix('milk_production_details')->group(function () 
      Route::get('/milk-production-report', [ProductionMilkController::class, 'generateReport'])->name('milk.production.report');
      Route::get('/milk-production-report-animal', [ProductionMilkController::class, 'generateReportPerAnimal'])->name('milk.production.report_for_animal');
      
+     //the below code for the download pdf of the above two function
+     Route::get('/milk-production-report/pdf', [ProductionMilkController::class, 'downloadPDFforGenerateReport'])->name('milk.production.report.pdf');
+     Route::get('/milk-production-report-animal/pdf', [ProductionMilkController::class, 'downloadPDFforGenerateReportPerAnimal'])->name('milk.production.report.animal.pdf');
+
     Route::group(['prefix'=>'{productionmilk}'],function(){
        
         Route::get('/edit', [ProductionMilkController::class, 'edit'])->name('production_milk.edit');
@@ -178,6 +230,21 @@ Route::middleware('auth')->prefix('milk_dispose')->group(function () {
 });
 
 
+//this below group is used to change the profile of the user
+Route::middleware('auth')->prefix('my_profile')->group(function () {
+  //  Route::get('/', [DisposeMilkController::class, 'index'])->name('dispose_milk.list');
+    Route::get('/show', [MyProfileController::class, 'show'])->name('my_profile.show');
+    Route::get('/edit', [MyProfileController::class, 'edit'])->name('my_profile.edit');
+    Route::post('/update', [MyProfileController::class, 'update'])->name('my_profile.update');
+
+
+    Route::get('/change-password/show', [MyProfileController::class, 'showChangePasswordForm'])->name('password.change.form');
+    Route::post('/change-password', [MyProfileController::class, 'changePassword'])->name('password.change');
+      
+   
+ 
+});
+
 
 
 //this group is used to input the milk product details
@@ -213,6 +280,7 @@ Route::middleware('auth')->prefix('details_about_the_milk_allocated_for_producti
 
     //new code
     Route::get('/reports/milk_consumption_for_each_product', [ProductionSupplyDetailsController::class, 'allocatedMilkForEachProduct'])->name('reports.allocated_milk_for_each_product');
+    Route::get('/reports/milk_consumption_for_each_product/pdf', [ProductionSupplyDetailsController::class, 'downloadPDFforAllocatedMilk'])->name('reports.allocated_milk_for_each_product.pdf');
 
 
 
@@ -390,6 +458,7 @@ Route::middleware('auth')->prefix('purchase_feed_items')->group(function () {
 
     //new code
       Route::get('/report/Feed_Purchases', [PurchaseFeedItemsController::class, 'purchaseFeedReport'])->name('report.purchase_feed');
+       Route::get('/report/Feed_Purchases/pdf', [PurchaseFeedItemsController::class, 'downloadPDFforPurchaseFeed'])->name('report.purchase_feed_pdf');
 
     Route::group(['prefix'=>'{purchasefeeditem}'],function(){
        
@@ -444,7 +513,7 @@ Route::middleware('auth')->prefix('purchase_vaccine_items_payments')->group(func
 
     Route::post('/store', [PurchaseVaccinePaymentsController::class, 'store'])->name('purchase_vaccine_payments.store');
 
-   //  Route::get('/payment-slip/{id}', [PurchaseFeedPaymentController::class, 'downloadPaymentSlip'])->name('payment.slip.download');
+    Route::get('/payment-slip/{id}', [PurchaseVaccinePaymentsController::class, 'downloadPaymentSlip'])->name('vaccine_payment.slip.download');
 
  
    Route::get('/get-vaccine-payment-amount/{id}', [PurchaseVaccinePaymentsController::class, 'getPaymentAmount'])->name('get.vaccine.payment.amount');
@@ -454,8 +523,8 @@ Route::middleware('auth')->prefix('purchase_vaccine_items_payments')->group(func
          Route::get('/edit', [PurchaseVaccinePaymentsController::class, 'edit'])->name('purchase_vaccine_payments.edit');
          Route::post('/update', [PurchaseVaccinePaymentsController::class, 'update'])->name('purchase_vaccine_payments.update');
  
-         Route::get('/view', [PurchaseFeedPaymentController::class, 'view'])->name('purchase_feed_payments.view');
-         Route::post('/destroy', [PurchaseFeedItemsController::class, 'destroy'])->name('purchase_feed_items.destroy');
+         Route::get('/view', [PurchaseVaccinePaymentsController::class, 'view'])->name('purchase_vaccine_payments.view');
+         Route::post('/destroy', [PurchaseVaccinePaymentsController::class, 'destroy'])->name('purchase_feed_items.destroy');
  
        
      });
@@ -491,6 +560,9 @@ Route::middleware('auth')->prefix('retailor_order_items')->group(function () {
    
      Route::get('/create', [RetailorOrderController::class, 'create'])->name('retailor_order_items.create');
      Route::post('/store', [RetailorOrderController::class, 'store'])->name('retailor_order_items.store');
+
+     Route::get('/delivered_ordered_products/report', [RetailorOrderController::class, 'totalDeliverOrdersReport'])->name('delivered.retailor_order_items');
+     Route::get('/delivered_ordered_products/report/pdf', [RetailorOrderController::class, 'totalDeliverOrdersReportDownloadPDF'])->name('delivered.retailor_order_items.report.pdf');
 
     // Route::get('/payment-slip/{id}', [PurchaseFeedPaymentController::class, 'downloadPaymentSlip'])->name('payment.slip.download');
 
@@ -784,7 +856,12 @@ Route::middleware('auth')->prefix('dispose_feed_items')->group(function () {
    
      Route::get('/create', [DisposeFeedItemsController::class, 'create'])->name('dispose_feed_items.create');
      Route::post('/store', [DisposeFeedItemsController::class, 'store'])->name('dispose_feed_items.store');
+
+     //below is the new report
+     Route::get('/dispose_feed_report', [DisposeFeedItemsController::class, 'DisposeFeedItemsReport'])->name('dispose_feed_items.report');
+     Route::get('/dispose_feed_report/pdf', [DisposeFeedItemsController::class, 'DisposeFeedItemsReportPDFDownload'])->name('dispose_feed_items_pdf.report');
  
+     //below is the old report can delete it
     Route::get('/reports/feed-disposal', [DisposeFeedItemsController::class, 'monthlyFeedDisposalReport'])->name('feed.disposal.report');
 
 
@@ -812,6 +889,9 @@ Route::middleware('auth')->prefix('purchase_vaccine_items')->group(function () {
    
      Route::get('/create', [PurchaseVaccineItemsController::class, 'create'])->name('purchase_vaccine_items.create');
      Route::post('/store', [PurchaseVaccineItemsController::class, 'store'])->name('purchase_vaccine_items.store');
+
+     Route::get('/vaccine_report', [PurchaseVaccineItemsController::class, 'purchaseVaccineReport'])->name('vaccine_items.report');
+      Route::get('/vaccine_report_pdf', [PurchaseVaccineItemsController::class, 'purchaseVaccineReportDownloadPDF'])->name('vaccine_items.report.pdf');
  
      Route::group(['prefix'=>'{purchasevaccineitem}'],function(){
         
@@ -837,6 +917,9 @@ Route::middleware('auth')->prefix('dispose_vaccine_items')->group(function () {
    
      Route::get('/create', [DisposeVaccineItemsController::class, 'create'])->name('dispose_vaccine_items.create');
      Route::post('/store', [DisposeVaccineItemsController::class, 'store'])->name('dispose_vaccine_items.store');
+
+    Route::get('/dispose_vaccine_report', [DisposeVaccineItemsController::class, 'DisposeVaccineItemsReport'])->name('dispose_vaccine_items.report');
+     Route::get('/dispose_vaccine_report/pdf', [DisposeVaccineItemsController::class, 'DisposeVaccineItemsReportPDFDownload'])->name('dispose_vaccine_items_pdf.report');
  
      Route::group(['prefix'=>'{disposevaccineitem}'],function(){
         
@@ -965,6 +1048,8 @@ Route::middleware('auth')->prefix('animal_calvings')->group(function () {
 Route::middleware('auth')->prefix('animal_pregnancies')->group(function () {
 
     Route::get('/', [PregnanciesController::class, 'index'])->name('animal_pregnancies.list');
+
+    Route::get('/get-breeding-events/{female_cow_id}', [PregnanciesController::class, 'getBreedingEvents']);
   
     Route::get('/create', [PregnanciesController::class, 'create'])->name('animal_pregnancies.create');
     Route::post('/store', [PregnanciesController::class, 'store'])->name('animal_pregnancies.store');
@@ -1004,6 +1089,60 @@ Route::middleware('auth')->prefix('animal_breedings')->group(function () {
     });
  
 });
+
+
+// the below code is used to role salary details
+Route::middleware('auth')->prefix('role_salary_details')->group(function () {
+
+    Route::get('/', [RoleSalaryController::class, 'index'])->name('role_salary.list');
+  
+    Route::get('/create', [RoleSalaryController::class, 'create'])->name('role_salary.create');
+   Route::post('/store', [RoleSalaryController::class, 'store'])->name('role_salary.store');
+
+     Route::group(['prefix'=>'{rolesalary}'],function(){
+       
+        Route::get('/view', [RoleSalaryController::class, 'view'])->name('role_salalry.view');
+        Route::get('/edit', [RoleSalaryController::class, 'edit'])->name('role_salary.edit');
+        Route::post('/update', [RoleSalaryController::class, 'update'])->name('role_salary.update');
+
+        Route::get('/delete', [BreedingEventsController::class, 'delete'])->name('animal_breedings.delete');
+      //  Route::post('/destroy', [BreedingEventsController::class, 'destroy'])->name('animal_breedings.destroy');
+
+      
+    });
+ 
+});
+
+
+// the below code is used to manage monthly salary assignment details
+Route::middleware('auth')->prefix('monthly_salary_details')->group(function () {
+
+    Route::get('/', [MonthlySalaryAssignmentController::class, 'index'])->name('monthly_salary_assign.list');
+  
+    Route::get('/create', [MonthlySalaryAssignmentController::class, 'create'])->name('monthly_salary_assign.create');
+    Route::post('/store', [MonthlySalaryAssignmentController::class, 'store'])->name('monthly_salary_assign.store');
+
+     Route::group(['prefix'=>'{monthlysalaryassign}'],function(){
+       
+        Route::get('/view', [MonthlySalaryAssignmentController::class, 'view'])->name('monthly_salary_assign.view');
+        Route::get('/edit', [MonthlySalaryAssignmentController::class, 'edit'])->name('monthly_salary_assign.edit');
+        Route::post('/update', [MonthlySalaryAssignmentController::class, 'update'])->name('monthly_salary_assign.update');
+
+      //  Route::get('/delete', [BreedingEventsController::class, 'delete'])->name('animal_breedings.delete');
+      //  Route::post('/destroy', [BreedingEventsController::class, 'destroy'])->name('animal_breedings.destroy');
+
+      
+    });
+ 
+});
+
+
+
+
+
+
+
+
 
 
 Route::middleware('auth')->prefix('users_main_details')->group(function () {

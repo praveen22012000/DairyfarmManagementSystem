@@ -11,10 +11,69 @@ use App\Models\PurchaseVaccine;
 use App\Models\PurchaseVaccineItems;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PurchaseVaccineItemsController extends Controller
 {
     //
+    public function purchaseVaccineReport(Request $request)
+    {
+        $start = $request->start_date;
+        $end = $request->end_date;
+
+        $purchaseVaccineData = [];
+
+        if($start && $end)
+        {
+
+            $request->validate([
+                    'start_date' => 'required|date',
+                    'end_date' => 'required|date|after_or_equal:start_date',
+            ]);
+            
+            $purchaseVaccineData = DB::table('purchase_vaccine_items')
+                                ->join('purchase_vaccines','purchase_vaccine_items.purchase_id','=','purchase_vaccines.id')
+                                ->join('vaccines','purchase_vaccine_items.vaccine_id','=','vaccines.id')
+                                ->whereBetween('purchase_vaccines.purchase_date',[$start,$end])
+                                ->select('vaccines.vaccine_name', DB::raw('SUM(purchase_vaccine_items.purchase_quantity) as total_purchase_quantity'))
+                                ->groupBy('purchase_vaccine_items.vaccine_id','vaccines.vaccine_name')
+                                ->get();
+        }
+
+
+         return view('reports.purchase_vaccine', compact('purchaseVaccineData', 'start', 'end'));
+    }
+
+    public function purchaseVaccineReportDownloadPDF(Request $request)
+    {
+         $start = $request->start_date;
+        $end = $request->end_date;
+
+        $purchaseVaccineData = [];
+
+        if($start && $end)
+        {
+
+            $request->validate([
+                    'start_date' => 'required|date',
+                    'end_date' => 'required|date|after_or_equal:start_date',
+            ]);
+            
+            $purchaseVaccineData = DB::table('purchase_vaccine_items')
+                                ->join('purchase_vaccines','purchase_vaccine_items.purchase_id','=','purchase_vaccines.id')
+                                ->join('vaccines','purchase_vaccine_items.vaccine_id','=','vaccines.id')
+                                ->whereBetween('purchase_vaccines.purchase_date',[$start,$end])
+                                ->select('vaccines.vaccine_name', DB::raw('SUM(purchase_vaccine_items.purchase_quantity) as total_purchase_quantity'))
+                                ->groupBy('purchase_vaccine_items.vaccine_id','vaccines.vaccine_name')
+                                ->get();
+        }
+
+         $pdfInstance = Pdf::loadView('reports_pdf.purchase_vaccine_report_pdf', compact('purchaseVaccineData', 'start', 'end'));
+         return $pdfInstance->download('Purchase Vaccine Items Report.pdf');
+    }
+
+
     public function index()
     {
         if (!in_array(Auth::user()->role_id, [1, 6])) 
@@ -72,24 +131,44 @@ class PurchaseVaccineItemsController extends Controller
         ]);
 
         // Step 2: Custom validation for matching indexes
-    $errors = [];
 
-    foreach ($request->input('expire_date') as $index => $expireDate) {
-        $manufactureDate = $request->input('manufacture_date')[$index] ?? null;
+        $vaccines = $request->vaccine_id;
+        $manufacture_dates = $request->manufacture_date;
+   
+        foreach( $vaccines as $index => $vaccine )
+        {
 
-        if ($manufactureDate && $expireDate) {
-            if (Carbon::parse($expireDate)->lt(Carbon::parse($manufactureDate))) {
-                $errors["expire_date.$index"] = "The Expiry Date must be after or equal to the Manufacture Date.";
+                if($request->purchase_date < $manufacture_dates[$index])
+                {
+                    $vaccine = Vaccine::findOrFail($vaccine);
+
+                        return back()->withInput()->withErrors
+                         ([
+                                'purchase_date' => 'The purchase date (' . $request->purchase_date . ') for feed "' . $vaccine->vaccine_name . '" should not be earlier than its manufacture date (' . $manufacture_dates[$index] . ').'
+                        ]);
+                }
+        }
+
+        foreach ($request->input('expire_date') as $index => $expireDate) 
+        {
+            $manufactureDate = $request->input('manufacture_date')[$index] ?? null;
+
+            if ($manufactureDate && $expireDate) 
+            {
+                if (Carbon::parse($expireDate)->lt(Carbon::parse($manufactureDate))) 
+                {
+                    $errors["expire_date.$index"] = "The Expiry Date must be after or equal to the Manufacture Date.";
+                }
             }
         }
-    }
 
-    // If custom validation fails, return with errors
-    if (!empty($errors)) {
+         // If custom validation fails, return with errors
+        if (!empty($errors)) 
+        {
         return redirect()->back()
-            ->withErrors($errors)
-            ->withInput();
-    }
+                                ->withErrors($errors)
+                                ->withInput();
+        }
 
 
         $vaccines=$request->vaccine_id;
@@ -122,7 +201,7 @@ class PurchaseVaccineItemsController extends Controller
             ]);
         }
 
-
+        return redirect()->route('purchase_vaccine_items.list')->with('success', 'Consumed Feed record updated successfully!');
 
     }
 

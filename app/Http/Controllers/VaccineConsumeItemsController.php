@@ -11,6 +11,8 @@ use App\Models\Appointment;
 use App\Models\VaccineConsumeDetails;
 use App\Models\VaccineConsumeItems;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\LowStockVaccineNotification;
 
 class VaccineConsumeItemsController extends Controller
 {
@@ -36,35 +38,37 @@ class VaccineConsumeItemsController extends Controller
             abort(403, 'Unauthorized action.');
         } 
 
-    $animals = AnimalDetail::all();
-    $vaccinations = Vaccine::all();
-    $vaccination_items = PurchaseVaccineItems::with(['purchase_vaccine','vaccine','vaccine_consume_items'])->get();
+        $animals = AnimalDetail::all();
+        $vaccinations = Vaccine::all();
+        $vaccination_items = PurchaseVaccineItems::with(['purchase_vaccine','vaccine','vaccine_consume_items'])->get();
 
-    // Get the currently authenticated user
-    $user = auth()->user();
+        // Get the currently authenticated user
+        $user = auth()->user();
     
-    // Get used appointment IDs to exclude
-    $usedAppointmentIds = VaccineConsumeDetails::pluck('appointment_id');
+        // Get used appointment IDs to exclude
+        $usedAppointmentIds = VaccineConsumeDetails::pluck('appointment_id');
     
-    // Base query for appointments
-    $appointmentsQuery = Appointment::whereNotIn('id', $usedAppointmentIds);
+        // Base query for appointments
+        $appointmentsQuery = Appointment::whereNotIn('id', $usedAppointmentIds);
     
-    // If user is not admin (role_id != 1), filter by veterinarian
-    if ($user->role_id != 1) 
-    {
+        // If user is not admin (role_id != 1), filter by veterinarian
+        if ($user->role_id != 1) 
+        {
         $appointmentsQuery->where('veterinarian_id', $user->id);
-    }
+        }
     
-    // Get the filtered appointments
-    $appointments = $appointmentsQuery->get();
+        // Get the filtered appointments
+        $appointments = $appointmentsQuery->get();
 
-    return view('vaccine_consumption_details.create', [
+        return view('vaccine_consumption_details.create', [
         'animals' => $animals,
         'vaccinations' => $vaccinations,
         'vaccination_items' => $vaccination_items,
         'appointments' => $appointments,
         'isAdmin' => $user->role_id == 1 // Pass this to view for UI hints
-    ]);
+        ]);
+
+
     }
 
     public function store(Request $request)
@@ -75,7 +79,8 @@ class VaccineConsumeItemsController extends Controller
             abort(403, 'Unauthorized action.');
         } 
 
-        $request->validate([
+        $request->validate
+        ([
             'vaccination_date'=>'required',
             'appointment_id'=>'required|exists:appointments,id',
             
@@ -97,13 +102,24 @@ class VaccineConsumeItemsController extends Controller
         $vaccinationItemIds=$request->vaccination_item_id;
         $consumedQunatities=$request->consumed_quantity;
 
+        foreach($vaccinationItemIds as $index=>$vaccinationItemId)
+        {
+            $vaccination_item = PurchaseVaccineItems::findOrfail($vaccinationItemId);
+
+            if($request->vaccination_date < $vaccination_item->manufacture_date)
+            {
+                return back()->withInput()->withErrors(['vaccination_date'=>$vaccination_item->vaccine->vaccine_name.' vaccination date should not before than vaccine manufacture date '.$vaccination_item->manufacture_date]);
+            }
+        }
+
         $invalidRows=[];
         $errors=[];
 
         
         //this calculation is different from other 
         // Calculate total consumption per vaccine item
-        foreach ($request->vaccination_item_id as $index => $itemId) {
+        foreach ($request->vaccination_item_id as $index => $itemId) 
+        {
             $quantity = (int)$request->consumed_quantity[$index];
             
             if (!isset($consumptionByItem[$itemId])) {
@@ -114,14 +130,16 @@ class VaccineConsumeItemsController extends Controller
 
 
           // Check against available stock
-          foreach ($consumptionByItem as $itemId => $totalConsumed) {
+        foreach ($consumptionByItem as $itemId => $totalConsumed) 
+        {
             $item = PurchaseVaccineItems::findOrFail($itemId);
             if ($item->stock_quantity < $totalConsumed) {
                 $errors["consumed_quantity"] = "Total consumption for vaccine item {$item->vaccine->vaccine_name} exceeds available stock (Available: {$item->stock_quantity}, Requested: {$totalConsumed})";
             }
         }
 
-        if (!empty($errors)) {
+        if (!empty($errors)) 
+        {
             return redirect()
                 ->back()
                 ->withInput()
@@ -158,6 +176,24 @@ class VaccineConsumeItemsController extends Controller
         ]);
 
         }
+
+        $VaccineIds = Vaccine::pluck('id');
+
+        foreach($VaccineIds as $vaccine_id)
+        {
+         
+            $vaccine = Vaccine::findOrFail($vaccine_id);
+            $availableStock = PurchaseVaccineItems::where('vaccine_id',$vaccine_id)->sum('stock_quantity');
+
+            if($availableStock  < 5)
+            {
+                 Mail::to('pararajasingampraveen22@gmail.com')->send(new LowStockVaccineNotification($vaccine,$availableStock));
+            }
+        }
+ 
+
+           return redirect()->route('vaccine_consume_items.list')->with('success', 'Vaccine Consume items record stored successfully!');
+
     }
 
     public function view(VaccineConsumeItems $vaccineconsumeitem)
@@ -185,8 +221,8 @@ class VaccineConsumeItemsController extends Controller
         $appointmentsQuery->where('veterinarian_id', $user->id);
         }
     
-    // Get the filtered appointments
-    $appointments = $appointmentsQuery->get();
+            // Get the filtered appointments
+        $appointments = $appointmentsQuery->get();
 
 
         return view('vaccine_consumption_details.view',['animals'=>$animals,'vaccinations'=>$vaccinations,'vaccination_items'=>$vaccination_items,'vaccineconsumeitem'=>$vaccineconsumeitem,'appointments'=>$appointments]);

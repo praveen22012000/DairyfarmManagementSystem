@@ -24,7 +24,7 @@
             <div>
                 <label for="date" class="block text-lg font-medium text-gray-700 mb-2">Date</label>
                 <br>
-                <input type="date" name="date" id="date" class="form-control rounded"
+                <input type="date" name="date" id="date" value="{{ old('date') }}" class="form-control rounded"
                   >
                 @error('date') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
@@ -33,7 +33,7 @@
             <div>
                 <label for="time" class="block text-lg font-medium text-gray-700 mb-2">Time</label>
                 <br>
-                <input type="time" name="time" id="time"  class="form-control rounded">
+                <input type="time" name="time" id="time" value="{{ old('time') }}" class="form-control rounded">
                 @error('time') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
             <br>
@@ -41,7 +41,7 @@
             <div>
                 <label for="enter_by" class="block text-lg font-medium text-gray-700 mb-2">Entered By</label>
                 <br>
-                <input type="text" name="enter_by" id="enter_by" placeholder="Enter your name" class="form-control rounded"
+                <input type="text" name="enter_by" id="enter_by" value="{{ old('enter_by') }}" placeholder="Enter your name" class="form-control rounded"
                    >
                 @error('enter_by') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
@@ -94,7 +94,7 @@
 
                         <!-- MilkDetails (Smaller Width) -->
                         <td>
-                            <input type="number" class="form-control" name="quantity[]" value="{{ $oldManufacturedQuantities[$i] ?? '' }} "  style="width: 100px;">
+                            <input type="number" class="form-control" name="quantity[]" value="{{ $oldManufacturedQuantities[$i] ?? '' }}"  style="width: 100px;">
                             @error("quantity.$i") <span class="text-danger">{{ $message }}</span> @enderror  
                         </td>
 

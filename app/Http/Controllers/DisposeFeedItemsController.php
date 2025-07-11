@@ -8,12 +8,17 @@ use App\Models\DisposeFeedDetaills;
 use App\Models\DisposeFeedItems;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\LowStockFeedNotification;
+use Barryvdh\DomPDF\Facade\Pdf;
+
+use App\Models\Feed;
 
 class DisposeFeedItemsController extends Controller
 {
-    //
+    //old don't use
    public function monthlyFeedDisposalReport(Request $request)
-{
+    {
  
     $year = $request->input('year', now()->year);
 
@@ -60,7 +65,71 @@ class DisposeFeedItemsController extends Controller
     }
 
     return view('dispose_feed_items.monthly_dispose_report', compact('tableData', 'monthlyTotals', 'year'));
-}
+    }
+
+    //new code use this is used to get the details of the feed items disposed between two specific dates
+    public function DisposeFeedItemsReport(Request $request)
+    {
+
+        $start = $request->start_date;
+        $end = $request->end_date;
+
+        $disposeFeedData = [];
+
+        if($start && $end)
+        {
+             $request->validate([
+                    'start_date' => 'required|date',
+                    'end_date' => 'required|date|after_or_equal:start_date',
+            ]);
+
+            $disposeFeedData = DB::table('dispose_feed_items')
+            ->join('dispose_feed_detaills','dispose_feed_items.dispose_feed_detail_id','=','dispose_feed_detaills.id')
+            ->join('purchase_feed_items','dispose_feed_items.purchase_feed_item_id','=','purchase_feed_items.id')
+            ->join('feeds','purchase_feed_items.feed_id','=','feeds.id')
+             ->whereBetween('dispose_feed_detaills.dispose_date', [$start, $end])
+             ->select(
+            'feeds.feed_name',
+            DB::raw('SUM(dispose_feed_items.dispose_quantity) as total_dispose_quantity')
+        )->groupBy('feeds.feed_name')
+        ->get();
+        }
+    
+            return view('reports.dispose_feed', compact('disposeFeedData', 'start', 'end'));
+    }
+
+    //the following function is used to download the pdf of the dispose milk product items.
+    public function DisposeFeedItemsReportPDFDownload(Request $request)
+    {
+     
+       $start = $request->start_date;
+        $end = $request->end_date;
+
+        $disposeFeedData = [];
+
+        if($start && $end)
+        {
+             $request->validate([
+                    'start_date' => 'required|date',
+                    'end_date' => 'required|date|after_or_equal:start_date',
+            ]);
+
+            $disposeFeedData = DB::table('dispose_feed_items')
+            ->join('dispose_feed_detaills','dispose_feed_items.dispose_feed_detail_id','=','dispose_feed_detaills.id')
+            ->join('purchase_feed_items','dispose_feed_items.purchase_feed_item_id','=','purchase_feed_items.id')
+            ->join('feeds','purchase_feed_items.feed_id','=','feeds.id')
+             ->whereBetween('dispose_feed_detaills.dispose_date', [$start, $end])
+             ->select(
+            'feeds.feed_name',
+            DB::raw('SUM(dispose_feed_items.dispose_quantity) as total_dispose_quantity')
+        )->groupBy('feeds.feed_name')
+        ->get();
+        } 
+
+
+        $pdfInstance = Pdf::loadView('reports_pdf.dispose_feed_pdf', compact('disposeFeedData', 'start', 'end'));
+         return $pdfInstance->download('Dispose Feed Items Report.pdf');
+    }
 
     public function index()
     {
@@ -95,9 +164,10 @@ class DisposeFeedItemsController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $request->validate([
+        $request->validate
+        ([
 
-            'dispose_date'=>'required',
+            'dispose_date'=>'required|before_or_equal:today',
             'dispose_time'=>'required',
 
             'purchase_feed_item_id'=>'required|array',
@@ -166,6 +236,23 @@ class DisposeFeedItemsController extends Controller
         ]);
 
         }
+
+        $FeedIds = Feed::pluck('id');
+
+        foreach($FeedIds as $feed_id)
+        {
+         
+            $feed = Feed::findOrFail($feed_id);
+            $availableStock = PurchaseFeedItems::where('feed_id',$feed_id)->sum('stock_quantity');
+
+            if($availableStock  < 5)
+            {
+                 Mail::to('pararajasingampraveen22@gmail.com')->send(new LowStockFeedNotification($feed,$availableStock));
+            }
+        }
+
+
+        
 
         return redirect()->route('dispose_feed_items.list')->with('success', 'Dispose Feed Record saved successfully.');
     }

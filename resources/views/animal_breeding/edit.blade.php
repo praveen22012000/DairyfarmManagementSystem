@@ -13,6 +13,17 @@
     <form  method="POST" enctype="multipart/form-data" action="{{ route('animal_breedings.update',$animalbreeding->id) }}">
         @csrf
 
+             @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
         <fieldset class="border p-4 mb-4">
         <legend class="w-auto px-2">General Information</legend>
 

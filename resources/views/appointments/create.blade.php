@@ -9,6 +9,16 @@
 <form action="{{ route('appointment.store') }}" method="POST">
     @csrf
 
+     @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
     <div class="form-group">
     <label for="veterinarian_id">Select Veterinarian:</label>
     <select name="veterinarian_id" id="veterinarian_id"  class="form-control">

@@ -11,9 +11,76 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\RetailorOrderNotification;
+use App\Mail\RetailorOrderUpdateNotification;
+
+use App\Models\ManufacturerProduct;
+use App\Mail\LowStockProductWhenDeliveryNotification;
+
+use Barryvdh\DomPDF\Facade\Pdf;
+
+
 class RetailorOrderController extends Controller
 {
-    //
+    //the below function is used to calculate the total retailor orders
+    public function totalDeliverOrdersReport(Request $request)
+    {
+        $start = $request->start_date;
+        $end = $request->end_date;
+
+        $totalDeliveredOrders = [];
+
+         if($start && $end)
+        {
+             $request->validate([
+                    'start_date' => 'required|date',
+                    'end_date' => 'required|date|after_or_equal:start_date',
+            ]);
+
+            $totalDeliveredOrders = DB::table('retailor_order_items')
+            ->join('retailor_orders','retailor_order_items.order_id','=','retailor_orders.id')
+            ->join('milk_products','retailor_order_items.product_id','=','milk_products.id')
+             ->whereBetween('retailor_orders.ordered_date', [$start, $end])
+             ->where('retailor_orders.status','Delivered')
+             ->select(
+                    'milk_products.product_name',
+                    DB::raw('SUM(retailor_order_items.ordered_quantity) as total_delivered_quantity'),
+           
+                    )->groupBy('milk_products.product_name')
+            ->get();
+        } 
+
+         return view('reports.delivered_retailor_orders', compact('totalDeliveredOrders', 'start', 'end'));
+    }
+
+    public function totalDeliverOrdersReportDownloadPDF(Request $request)
+    {
+         $start = $request->start_date;
+        $end = $request->end_date;
+
+        $totalDeliveredOrders = [];
+
+         if($start && $end)
+        {
+             $request->validate([
+                    'start_date' => 'required|date',
+                    'end_date' => 'required|date|after_or_equal:start_date',
+            ]);
+
+            $totalDeliveredOrders = DB::table('retailor_order_items')
+            ->join('retailor_orders','retailor_order_items.order_id','=','retailor_orders.id')
+            ->join('milk_products','retailor_order_items.product_id','=','milk_products.id')
+             ->whereBetween('retailor_orders.ordered_date', [$start, $end])
+             ->where('retailor_orders.status','Delivered')
+             ->select(
+            'milk_products.product_name',
+            DB::raw('SUM(retailor_order_items.ordered_quantity) as total_delivered_quantity')
+        )->groupBy('milk_products.product_name')
+        ->get();
+        } 
+
+         $pdfInstance = Pdf::loadView('reports_pdf.delivered_retailor_orders_pdf', compact('totalDeliveredOrders', 'start', 'end'));
+         return $pdfInstance->download('DeliveredMilkProdcuts.pdf');
+    }
 
     public function index()
     {
@@ -51,6 +118,8 @@ class RetailorOrderController extends Controller
         {
             abort(403, 'Unauthorized action.');
         }
+
+        
 
         $milk_products=MilkProduct::with('retailor_order_item')->get();
 
@@ -142,8 +211,32 @@ class RetailorOrderController extends Controller
             // Commit transaction if everything is successful
             DB::commit();
 
+          
+          //the below code is used for notification when low stock
+            // Get all ordered items for this order
+            $orderItems = $order->retailor_order_item; // plural: items
+
+            // Extract product_ids from the collection
+            $productIds = $orderItems->pluck('product_id');
+
+
+            foreach($productIds as $pro_id)
+            {
+                $milk_product = MilkProduct::findOrfail($pro_id);
+
+            
+                $available_stock = ManufacturerProduct::where('product_id',$pro_id)->sum('stock_quantity');
+
+                if($available_stock < 10)
+                {
+                     Mail::to('pararajasingampraveen22@gmail.com')->send(new LowStockProductWhenDeliveryNotification($milk_product,$available_stock,));
+                }
+            }
+
+            $retailor_order_items=RetailorOrderItems::where('order_id',$order->id)->get();
+
              // Send email to general manager
-                Mail::to('pararajasingampraveen2000@gmail.com')->send(new RetailorOrderNotification($order));
+                Mail::to('pararajasingampraveen22@gmail.com')->send(new RetailorOrderNotification($order,$retailor_order_items));
             return redirect()->route('retailor_order_items.list')->with('success', 'Retailor Order Saved successfully.');
     }
 
@@ -228,6 +321,11 @@ class RetailorOrderController extends Controller
 
             // Commit transaction if everything is successful
             DB::commit();
+
+            $retailor_order_items=RetailorOrderItems::where('order_id',$retailororder->id)->get();
+
+              // Send email to general manager
+                Mail::to('pararajasingampraveen22@gmail.com')->send(new RetailorOrderUpdateNotification($retailororder,$retailor_order_items));
 
         return redirect()->route('retailor_order_items.list')->with('success', 'Retailor Order updated successfully.');
     }

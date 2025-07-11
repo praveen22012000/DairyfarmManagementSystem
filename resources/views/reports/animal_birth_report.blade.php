@@ -39,6 +39,15 @@
         </button>
     </div>
 </form>
+<br><br>
+
+@if (!empty($AnimalData) && count($AnimalData))
+    <form method="GET" action="{{ route('report.animal_birth_pdf') }}" target="_blank">
+        <input type="hidden" name="start_date" value="{{ $start }}">
+        <input type="hidden" name="end_date" value="{{ $end }}">
+        <button type="submit" class="btn btn-danger mb-3">Download as PDF</button>
+    </form>
+@endif
 
     {{-- Show the report only if data is available --}}
     @if (!empty($AnimalData) && count($AnimalData))

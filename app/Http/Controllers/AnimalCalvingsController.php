@@ -39,12 +39,14 @@ class AnimalCalvingsController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $Child_animals = AnimalDetail::whereNotNull('sire_id')
-                                ->whereNotNull('dam_id')
-                                ->whereNotIn('id', AnimalCalvings::pluck('calf_id')->toArray())
+        $Child_animals = AnimalDetail::whereNotNull('sire_id')//sire_id is not null
+                                ->whereNotNull('dam_id')//dam_id is not null
+                                ->whereNotIn('id', AnimalCalvings::pluck('calf_id')->toArray())//id's not in the animal calvings table
                                 ->get();
 
-       $veterinarians_id=Role::whereIn('role_name',['Veterinarian'])->pluck('id');
+       $veterinarians_id=Role::whereIn('role_name',['Veterinarion'])->pluck('id');
+
+     //  dd($veterinarians_id);
         $veterinarians=User::whereIn('role_id', $veterinarians_id)->get();
 
 

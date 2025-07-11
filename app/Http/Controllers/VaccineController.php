@@ -58,6 +58,16 @@ class VaccineController extends Controller
         return redirect()->route('vaccine.list')->with('success', 'Vaccine record created successfully!');
     }
 
+      public function view(Vaccine $vaccine)
+    {
+        if (!in_array(Auth::user()->role_id, [1, 6, 2])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
+        return view('vaccine_details.view',['vaccine'=>$vaccine]);
+    }
+
     public function edit(Vaccine $vaccine)
     {
         if (!in_array(Auth::user()->role_id, [1, 6, 2])) 
@@ -76,7 +86,7 @@ class VaccineController extends Controller
         } 
 
         $data=$request->validate([
-            'vaccine_name'=>'required|unique:vaccines,vaccine_name',
+            'vaccine_name'=>"required|unique:vaccines,vaccine_name,$vaccine->id",
             'manufacturer'=>'required',
           
             'unit_type'=>'required',

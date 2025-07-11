@@ -5,6 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\MainUserRegister;
+use App\Models\Role;
+
+use App\Models\Veterinarian;
+use App\Models\Retailer;
+use App\Models\SalesManager;
+use App\Models\GeneralManager;
+use App\Models\FarmLabore;
+
 class MainUserRegisterController extends Controller
 {
     //
@@ -19,14 +27,23 @@ class MainUserRegisterController extends Controller
 
     public function view(User $user)
     {
-       return view('main_user_details.view',['user'=>$user]);
+          $targeted_role_ids = ['1','2','3','5','6','7'];
+
+        $roles= Role::whereIn('id',$targeted_role_ids)->get();
+
+       return view('main_user_details.view',['user'=>$user,'roles'=>$roles]);
     }
 
 
     public function edit(User $user)
     {
-    
-       return view('main_user_details.edit',['user'=>$user]);
+        $targeted_role_ids = ['1','2','3','5','6','7'];
+
+        $roles= Role::whereIn('id',$targeted_role_ids)->get();
+
+ 
+
+       return view('main_user_details.edit',['user'=>$user,'roles'=>$roles]);
     }
 
     //the following code is used to extract gender and birthdate from the nic
@@ -71,9 +88,15 @@ class MainUserRegisterController extends Controller
 
     public function update(request $request,User $user)
     {
+         $user = User::findOrFail($user->id);//find the user whose record is  being updated
 
-          $data=$request->validate([
+     
+
+         $oldRoleId = $user->role_id;// find the user's role_id
+
+          $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'role_id' => 'required|exists:roles,id',
             'lastname' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string', 'max:255'],
             'phone_number' => ['required', 'string', 'max:255'],
@@ -83,9 +106,41 @@ class MainUserRegisterController extends Controller
 
             //  Extract gender and birthdate from NIC
         [$gender, $birthdate] = $this->extractDetailsFromNIC($request->nic);
+
+
+        // 4. Handle role change
+        if ($validated['role_id'] != $oldRoleId) 
+        {
+                switch ($oldRoleId) 
+                {
+                         case 2: // veterinarian
+                                Veterinarian::where('veterinarian_id', $user->id)->delete();
+                                break;
+                        case 7: // sales manager
+                                SalesManager::where('sales_manager_id', $user->id)->delete();
+                                break;
+                        case 5: // labore
+                                FarmLabore::where('farm_labore_id', $user->id)->delete();
+                                break;
+
+                         case 6: // labore
+                                GeneralManager::where('general_manager_id', $user->id)->delete();
+                                break;
+
+                        case 3:
+                                Retailer::where('retailer_id', $user->id)->delete();
+                                break;
+
+                    
+                        
+           
+                }
+        }
  
      
-        $user->update($data);
+        // 5. Update user
+        $user->update($validated);
+
 
       
          return redirect()->route('main_user_details.list')->with('success', 'User Details updated successfully!');

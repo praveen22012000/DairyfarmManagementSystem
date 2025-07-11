@@ -5,7 +5,7 @@
 <div class="col-md-12">
 
        
-            <h1>Purchase Vaccine Payments</h1>     
+            <h1 style="text-align:center;">Purchase Vaccine Payments</h1>     
         
 
     <br>
@@ -13,8 +13,7 @@
     <form  method="POST" enctype="multipart/form-data" action="{{ route('purchase_vaccine_payments.update',$purchasevaccinepayment->id) }}">
         @csrf
 
-        <fieldset class="border p-4 mb-4">
-        <legend class="w-auto px-2">General Information</legend>
+     
 
 
         <div class="form-group">
@@ -46,10 +45,10 @@
         </div>
 
 
-        </fieldset>
+       
 
         
-        <button type="submit" class="btn btn-success mt-3">Update</button>
+        
     </form>
 
 </div>

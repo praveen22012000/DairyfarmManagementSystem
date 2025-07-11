@@ -11,6 +11,7 @@ use App\Models\RetailorOrder;
 use App\Models\MilkProduct;
 use App\Models\ManufacturerProduct;
 
+
 class DashboardControllerForAdmin extends Controller
 {
     //
@@ -65,8 +66,10 @@ class DashboardControllerForAdmin extends Controller
     //This calculate the total amount of yougurts in the stock
     $total_yogurt_stock = ManufacturerProduct::where('product_id','1')->sum('stock_quantity');
 
-    $cheese = MilkProduct::find(2);
-    $total_cheese_stock  = ManufacturerProduct::where('product_id','2')->sum('stock_quantity');
+    $cheese = MilkProduct::find(4);
+    $total_cheese_stock  = ManufacturerProduct::where('product_id','5')->sum('stock_quantity');
+
+  
 
     //the total below code is used to genrate the chart
    // Get all delivered orders with their items

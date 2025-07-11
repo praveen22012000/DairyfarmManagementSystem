@@ -11,6 +11,9 @@ use App\Models\ManufacturerProduct;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Mail\LowStockMilkNotification;
+use Illuminate\Support\Facades\Mail;
 
 use Illuminate\Http\Request;
 
@@ -174,7 +177,7 @@ class ProductionSupplyDetailsController extends Controller
     }
 
 
-
+//this function is new
     public function allocatedMilkForEachProduct(Request $request)
     {
 
@@ -208,6 +211,37 @@ class ProductionSupplyDetailsController extends Controller
       
     return view('reports.allocated_milk', compact('allocatedMilk', 'startDate', 'endDate'));
         
+    }
+// this function is for the download PDF for the above function
+    public function downloadPDFforAllocatedMilk(Request $request)
+    {
+         $startDate = $request->start_date;
+         $endDate = $request->end_date;
+
+           if ($startDate && $endDate) 
+            {
+                    $request->validate
+                    ([
+                        'start_date' => 'required|date',
+                        'end_date' => 'required|date|after_or_equal:start_date',
+                    ]);
+    
+                    $allocatedMilk = DB::table('production_supply_details')
+                                        ->join('production_supplies', 'production_supply_details.production_supply_id', '=', 'production_supplies.id')
+                                        ->join('milk_products', 'production_supply_details.product_id', '=', 'milk_products.id')
+                                        ->whereBetween('production_supplies.date', [$startDate, $endDate])
+                                        ->select(
+                                                    'milk_products.product_name',
+                                                    DB::raw('SUM(production_supply_details.consumed_quantity) as total_allocated_quantity')
+                                                )
+                                            ->groupBy('production_supply_details.product_id', 'milk_products.product_name')
+                                            ->get();
+
+        
+            }
+
+        $pdfInstance = Pdf::loadView('reports_pdf.allocated_milk_product_pdf', compact('allocatedMilk', 'startDate', 'endDate'));
+        return $pdfInstance->download('Allocated_milk_product.pdf');
     }
 
 
@@ -254,83 +288,8 @@ class ProductionSupplyDetailsController extends Controller
             abort(403, 'Unauthorized action.');
         }
         
-    $request->validate([
-        'date' => 'required|date',
-        'time' => 'required',
-        'entered_by' => 'required|string',
-        'production_milk_id' => 'required|array',
-        'production_milk_id.*' => 'exists:production_milks,id',
-        'consumed_quantity' => 'required|array',
-        'consumed_quantity.*' => 'numeric|min:0',
-        'product_id' => 'required|array',
-        'product_id.*' => 'exists:milk_products,id',
-    ]);
-
-    $productionMilkIds = $request->production_milk_id;
-    $consumedQuantities = $request->consumed_quantity;
-
-    // Array to store invalid rows
-    $invalidRows = [];
-
-    $errors = [];
-
-    // First, check if any row exceeds stock quantity
-    foreach ($productionMilkIds as $index => $productionMilkId) 
-    {
-        $stockMilk = ProductionMilk::find($productionMilkId);
-
-        if ($stockMilk && $consumedQuantities[$index] > $stockMilk->stock_quantity) {
-          //  $invalidRows[] = $index + 1; // Store row number for error message
-          $errors["consumed_quantity.$index"] = "The entered quantity ($consumedQuantities[$index]) exceeds the available stock ($stockMilk->stock_quantity).";
-           
-        }
-    }
-
-   
-    if (!empty($errors)) 
-    {
-        return redirect()->back()->withErrors($errors)->withInput();
-    }
-    
-
-
-
-    // If all rows are valid, proceed with deduction
-    $productionSupply = ProductionSupply::create([
-        'date' => $request->date,
-        'time' => $request->time,
-        'entered_by' => $request->entered_by,
-    ]);
-
-    foreach ($productionMilkIds as $index => $productionMilkId) {
-        $stockMilk = ProductionMilk::find($productionMilkId);
-
-        if ($stockMilk) {
-            // Deduct stock quantity
-            $stockMilk->stock_quantity -= $consumedQuantities[$index];
-            $stockMilk->save();
-        }
-
-        // Save the milk consumption record
-        ProductionSupplyDetails::create([
-            'production_milk_id' => $productionMilkId,
-            'production_supply_id' => $productionSupply->id,
-            'product_id' => $request->product_id[$index],
-            'consumed_quantity' => $consumedQuantities[$index],
-        ]);
-    }
-
-    return redirect()->route('milk_allocated_for_manufacturing.index')->with('success', 'Milk consumption record saved successfully.');
-}
-/*
-
-    public function store(Request $request)
-    {
-
-       
-        
         $request->validate([
-            'date' => 'required|date',
+            'date' => 'required|date|before_or_equal:today',
             'time' => 'required',
             'entered_by' => 'required|string',
             'production_milk_id' => 'required|array',
@@ -340,54 +299,94 @@ class ProductionSupplyDetailsController extends Controller
             'product_id' => 'required|array',
             'product_id.*' => 'exists:milk_products,id',
         ]);
-     
 
-        
         $productionMilkIds = $request->production_milk_id;
         $consumedQuantities = $request->consumed_quantity;
 
+        $consume_date= $request->date;
+
+        foreach($productionMilkIds as $index => $productionMilkId)
+        {
+            $productionMilk = ProductionMilk::find($productionMilkId);
+
+            if($productionMilk->production_date > $consume_date)
+            {
+                     return back()->withInput()->withErrors([
+                            'date' => 'The milk consumption date cannot be earlier than the milk production date ('.$productionMilk->production_date.')',
+                         ]);
+            }
+
+
+        }
+
+        // Array to store invalid rows
+        $invalidRows = [];
+
         $errors = [];
 
-         // Check if any row exceeds stock quantity
+        // First, check if any row exceeds stock quantity
         foreach ($productionMilkIds as $index => $productionMilkId) 
         {
-                $stockMilk = ProductionMilk::find($productionMilkId);
-        
-                if ($stockMilk && $consumedQuantities[$index] > $stockMilk->stock_quantity) 
-                {
-                return redirect()->back()->withErrors(['error' => 'One or more rows contain a consumed quantity greater than the available stock. No data has been deducted.'])->withInput();
-                }
+            $stockMilk = ProductionMilk::find($productionMilkId);
+
+            if ($stockMilk && $consumedQuantities[$index] > $stockMilk->stock_quantity) 
+            {
+                //  $invalidRows[] = $index + 1; // Store row number for error message
+                $errors["consumed_quantity.$index"] = "The entered quantity ($consumedQuantities[$index]) exceeds the available stock ($stockMilk->stock_quantity).";
+           
+            }
         }
+
+   
+        if (!empty($errors)) 
+        {
+        return redirect()->back()->withErrors($errors)->withInput();
+        }
+    
+
 
 
         // If all rows are valid, proceed with deduction
-    foreach ($productionMilkIds as $index => $productionMilkId) {
-        $stockMilk = ProductionMilk::find($productionMilkId);
-        
-        if ($stockMilk) {
-            $stockMilk->stock_quantity -= $consumedQuantities[$index];
-            $stockMilk->save();
-        }
-
-        // Save the milk consumption record
-        $productionSupply = ProductionSupply::create([
+        $productionSupply = ProductionSupply::create
+        ([
             'date' => $request->date,
             'time' => $request->time,
             'entered_by' => $request->entered_by,
         ]);
 
-        ProductionSupplyDetails::create([
-            'production_milk_id' =>  $productionMilkId,
-            'production_supply_id' => $productionSupply->id,
-            'product_id' => $request->product_id[$index],
-            'consumed_quantity' => $consumedQuantities[$index],
-        ]);
+
+        foreach ($productionMilkIds as $index => $productionMilkId) 
+        {
+            $stockMilk = ProductionMilk::find($productionMilkId);
+
+            if ($stockMilk) 
+            {
+            // Deduct stock quantity
+            $stockMilk->stock_quantity -= $consumedQuantities[$index];
+            $stockMilk->save();
+            }
+
+            // Save the milk consumption record
+             ProductionSupplyDetails::create
+             ([
+                'production_milk_id' => $productionMilkId,
+                'production_supply_id' => $productionSupply->id,
+                'product_id' => $request->product_id[$index],
+                'consumed_quantity' => $consumedQuantities[$index],
+            ]);
+        }
+
+    
+        $available_stock = ProductionMilk::sum('stock_quantity');
+
+        if($available_stock < 10)
+        {
+             Mail::to('pararajasingampraveen22@gmail.com')->send(new LowStockMilkNotification($available_stock));
+
+        }
+
+        return redirect()->route('milk_allocated_for_manufacturing.index')->with('success', 'Milk consumption record saved successfully.');
     }
-
-    return redirect()->route('milk_allocated_for_manufacturing.index')->with('success', 'Milk consumption record saved successfully.');
-
-    }*/
-
 
     public function view(ProductionSupplyDetails $productionSupplyDetails)
     {
@@ -417,7 +416,7 @@ class ProductionSupplyDetailsController extends Controller
         
         $milkProducts=MilkProduct::all();
 
-        $ProductionsMilk = ProductionMilk::where('stock_quantity', '>', 0)->get();
+       $ProductionsMilk = ProductionMilk::where('stock_quantity', '>', 0)->get();
 
         // Ensure the relationship is loaded
         $productionSupplyDetails->load('production_milk', 'milk_product', 'production_supply');

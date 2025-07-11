@@ -4,14 +4,26 @@
 <div class="col-md-12">
 
        
-            <h1>Animal Registration Form</h1>     
-            
+          
+  <h1 style="text-align:center">Animal Registration Form</h1>
+   
         
 
     <br>
 
     <form  method="POST" enctype="multipart/form-data" action="{{route('animal.update',$animaldetail->id)}}">
         @csrf
+
+        
+         @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
         <fieldset class="border p-4 mb-4">
         <legend class="w-auto px-2">General Information</legend>
@@ -96,7 +108,7 @@
                     <select name="sire_id" id="sire_id"  class="form-control">
                     <option value="">Select Sire</option>
 
-                    <option value="null" {{ is_null($animaldetail->sire_id) ? 'selected' : '' }}>No Sire (null)</option> 
+                    <option value="" {{ is_null($animaldetail->sire_id) ? 'selected' : '' }}>No Sire (null)</option> 
 
                             @foreach($male_animals as $male_animal)
                         <option value="{{ $male_animal->id }}"
@@ -115,7 +127,7 @@
 
                     <option value="">Select Dam</option>
 
-                    <option value="null" {{ is_null($animaldetail->dam_id) ? 'selected' : '' }}>No Dam (null)</option> 
+                    <option value="" {{ is_null($animaldetail->dam_id) ? 'selected' : '' }}>No Dam (null)</option> 
 
                             @foreach($female_Animals as $female_Animal)
                         <option value="{{ $female_Animal->id }}"

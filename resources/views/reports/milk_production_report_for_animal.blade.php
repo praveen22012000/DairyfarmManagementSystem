@@ -53,6 +53,17 @@
     </div>
 </form>
 
+<br><br>
+@if (!empty($milkData) && count($milkData))
+    <form method="GET" action="{{ route('milk.production.report.animal.pdf') }}" target="_blank">
+        <input type="hidden" name="start_date" value="{{ $start }}">
+        <input type="hidden" name="end_date" value="{{ $end }}">
+        <input type="hidden" name="animal_id" value="{{ $animalID }}">
+        <button type="submit" class="btn btn-danger mb-3">Download as PDF</button>
+    </form>
+@endif
+
+
     {{-- Show the report only if data is available --}}
     @if (!empty($milkData) && count($milkData))
         <div class="mb-4">
@@ -65,16 +76,20 @@
             <table class="table table-bordered">
                 <thead class="thead-dark">
                     <tr>
-                        <th class="px-4 py-2 border-b">Animal ID</th>
+                       
                         <th class="px-4 py-2 border-b">Animal Name</th>
+                        <th class="px-4 py-2 border-b">Shift</th>
+                        <th class="px-4 py-2 border-b">Production Date</th>
                         <th class="px-4 py-2 border-b">Total Milk (Liters)</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($milkData as $data)
                         <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-2 border-b">{{ $data->animal_id }}</td>
+                         
                             <td class="px-4 py-2 border-b">{{ $data->AnimalDetail->animal_name ?? 'Unknown' }}</td>
+                            <td class="px-4 py-2 border-b">{{ $data->shift }}</td>
+                            <td class="px-4 py-2 border-b">{{ $data->production_date }}</td>
                             <td class="px-4 py-2 border-b">{{ $data->Quantity_Liters }}</td>
                         </tr>
                     @endforeach

@@ -8,7 +8,9 @@ use App\Models\RetailorOrder;
 use App\Models\OrderPayment;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Mail;
+use App\Mail\UploadPaymentNotification;
+use App\Mail\UploadPaymentModificationNotification;  
 
 
 class UploadPaymentController extends Controller
@@ -74,6 +76,7 @@ class UploadPaymentController extends Controller
          $order->save();
  
             // 7. Redirect back with success message
+              Mail::to('pararajasingampraveen22@gmail.com')->send(new UploadPaymentNotification($order));
          return redirect()->route('retailor_order_items.list')->with('success', 'Payment details uploaded successfully. Waiting for manager verification.');
      }
 
@@ -187,8 +190,9 @@ class UploadPaymentController extends Controller
  
          $order->save();
  
-
-             // 7. Redirect back with success message
+           // 7. Redirect back with success message
+              Mail::to('pararajasingampraveen22@gmail.com')->send(new UploadPaymentModificationNotification($order));
+           
          return redirect()->route('retailor_order_items.list')->with('success', 'Payment details updated succeesfully. Waiting for manager verification.');
      }
  

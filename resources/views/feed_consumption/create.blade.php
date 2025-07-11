@@ -183,7 +183,8 @@
     
 
     // Enable/disable purchase feed item dropdown based on feed selection
-    $(document).on("change", ".feed-select", function() { //Listens for a change event on any element with class "feed-select"
+    $(document).on("change", ".feed-select", function() 
+    { //Listens for a change event on any element with class "feed-select"
         let row = $(this).closest("tr");//"Find the table row where this dropdown is located
         let purchaseItemSelect = row.find(".purchase-item-select");//Within that row, find the second dropdown for selecting items related to the feed
         let selectedFeedId = $(this).val();//Store the ID of the selected feed

@@ -41,10 +41,21 @@
     </div>
 </form>
 
-  <h2 style="text-align:center">Milk Allocation Report</h2>
-<p>From <strong>{{ $startDate }}</strong> to <strong>{{ $endDate }}</strong></p>
+<br><br>
+@if (!empty($allocatedMilk) && count($allocatedMilk))
+    <form method="GET" action="{{ route('reports.allocated_milk_for_each_product.pdf') }}" target="_blank">
+        <input type="hidden" name="start_date" value="{{ $startDate }}">
+        <input type="hidden" name="end_date" value="{{ $endDate }}">
+        <button type="submit" class="btn btn-danger mb-3">Download as PDF</button>
+    </form>
+@endif
+
+  
 
 @if(count($allocatedMilk))
+
+<h2 style="text-align:center">Milk Allocation Report</h2>
+<p>From <strong>{{ $startDate }}</strong> to <strong>{{ $endDate }}</strong></p>
 
       <table class="table table-bordered">
         <thead class="thead-dark">
@@ -63,7 +74,7 @@
         </tbody>
     </table>
 
-@else
+@elseif($startDate && $endDate)
     <p>No milk allocation records found for the selected date range.</p>
 @endif
 </div>

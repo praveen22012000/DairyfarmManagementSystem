@@ -55,7 +55,8 @@
                @foreach($pregnancies as $preg)
                     <option value="{{$preg->id}}">
                          Breeding_ID: {{ $preg->breeding_event->id ?? 'N/A' }} |
-                            Female_cow: {{ $preg->AnimalDetail->animal_name ?? 'N/A' }}
+                            Female_cow: {{ $preg->AnimalDetail->animal_name ?? 'N/A' }} |
+                            Breeding_Date: {{ $preg->breeding_event->breeding_date ?? 'N/A' }}
                     </option>
                 @endforeach
             </select>

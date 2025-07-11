@@ -21,7 +21,7 @@
 @endif
 
 
-    <h1>Feed  Registration Form</h1>     
+    <h1 style="text-align:center;">Feed  Registration Form</h1>     
         
         <!-- Name Field -->
         <div class="mb-4">

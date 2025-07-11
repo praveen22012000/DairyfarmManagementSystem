@@ -5,7 +5,7 @@
 <div class="col-md-12">
 
        
-            <h1>Milk Production Form</h1>     
+            <h1 style="text-align:center;">Milk Production Form</h1>     
         
 
     <br>

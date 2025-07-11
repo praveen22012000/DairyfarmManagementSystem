@@ -8,6 +8,7 @@ use App\Models\AnimalDetail;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\BreedingEvents;
+use Illuminate\Support\Facades\Auth;
 
 class BreedingEventsController extends Controller
 {
@@ -48,7 +49,7 @@ class BreedingEventsController extends Controller
                                     ->get();
 
 
-       $veterinarian_id=Role::whereIn('role_name',['veterinarian'])->pluck('id');
+       $veterinarian_id=Role::whereIn('role_name',['Veterinarion'])->pluck('id');
 
        $veterinarians=User::whereIn('role_id',$veterinarian_id)->get();
 
@@ -68,12 +69,30 @@ class BreedingEventsController extends Controller
             'female_cow_id'=>'required|exists:animal_details,id',
             'male_cow_id'=>'required|exists:animal_details,id',
             'veterinarian_id'=>'required|exists:users,id',
-            'breeding_date'=>'required|string',
+            'breeding_date'=>'required|string|before_or_equal:today',
             
             'insemination_type'=>'required|string',
             'notes'=>'required|string',
             
         ]);
+
+        $female = AnimalDetail::find($request->female_cow_id);
+        $male = AnimalDetail::find($request->male_cow_id);
+
+        if ($request->breeding_date <= $female->animal_birthdate) 
+        {
+             return redirect()->back()
+           ->withInput()
+
+           ->withErrors(['the breeding date should not before the female animal birthdate'.$female->animal_birthdate.'.']);
+        }
+
+        if ($request->breeding_date <= $male->animal_birthdate) 
+        {
+             return redirect()->back()
+           ->withInput()
+           ->withErrors(['The breeding date should not before the male_animal birthdate'.$male->animal_birthdate.'.']);
+        }
      
         BreedingEvents::create([
 
@@ -109,9 +128,9 @@ class BreedingEventsController extends Controller
                                     ->get();
 
 
-        $veterinarian_id=Role::whereIn('role_name',['veterinarian'])->pluck('id');
+        $veterinarian_id=Role::whereIn('role_name',['Veterinarion'])->pluck('id');
 
-        $veterinarians=User::whereIn('role_id',$veterinarian_id)->get();
+       $veterinarians=User::whereIn('role_id',$veterinarian_id)->get();
 
 
         $Breedings=BreedingEvents::with(['user','malecow','femalecow'])->get();
@@ -143,7 +162,7 @@ class BreedingEventsController extends Controller
                                     ->get();
 
 
-        $veterinarian_id=Role::whereIn('role_name',['veterinarian'])->pluck('id');
+        $veterinarian_id=Role::whereIn('role_name',['Veterinarion'])->pluck('id');
 
         $veterinarians=User::whereIn('role_id',$veterinarian_id)->get();
 
@@ -166,12 +185,29 @@ class BreedingEventsController extends Controller
             'female_cow_id'=>'required|exists:animal_details,id',
             'male_cow_id'=>'required|exists:animal_details,id',
             'veterinarian_id'=>'required|exists:users,id',
-            'breeding_date'=>'required|string',
+            'breeding_date'=>'required|string|before_or_equal:today',
             
             'insemination_type'=>'required|string',
             'notes'=>'required|string',
 
         ]);
+
+        $female = AnimalDetail::find($request->female_cow_id);
+        $male = AnimalDetail::find($request->male_cow_id);
+
+        if ($request->breeding_date <= $female->animal_birthdate) 
+        {
+             return redirect()->back()
+           ->withInput()
+           ->withErrors(['the breeding date should not before the female animal birthdate']);
+        }
+
+        if ($request->breeding_date <= $male->animal_birthdate) 
+        {
+             return redirect()->back()
+           ->withInput()
+           ->withErrors(['The breeding date should not before the male_animal birthdate']);
+        }
 
         $animalbreeding->update($data);
 

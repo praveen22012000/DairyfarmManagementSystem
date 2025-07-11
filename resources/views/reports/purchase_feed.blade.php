@@ -41,12 +41,21 @@
     </div>
     <br>
 </form>
+<br><br>
+
+@if (!empty($purchaseFeedData) && count($purchaseFeedData))
+    <form method="GET" action="{{ route('report.purchase_feed_pdf') }}" target="_blank">
+        <input type="hidden" name="start_date" value="{{ $start }}">
+        <input type="hidden" name="end_date" value="{{ $end }}">
+        <button type="submit" class="btn btn-danger mb-3">Download as PDF</button>
+    </form>
+@endif
 
  
-<p>From <strong>{{ $start }}</strong> to <strong>{{ $end }}</strong></p>
+
 
 @if(count($purchaseFeedData))
-
+<p>From <strong>{{ $start }}</strong> to <strong>{{ $end }}</strong></p>
       <table class="table table-bordered">
         <thead class="thead-dark">
             <tr>
@@ -64,8 +73,8 @@
         </tbody>
     </table>
 
-@else
-    <p>No milk allocation records found for the selected date range.</p>
+@elseif($start && $end)
+    <p>No purchase Feed items within this date range.</p>
 @endif
 </div>
 </div>

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\RetailorOrder;
 use App\Models\FarmLabore;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AssignDeliveryPersonNotification;
 
 class AssignDeliveryPersonController extends Controller
 {
@@ -22,7 +24,8 @@ class AssignDeliveryPersonController extends Controller
         $deliveryPersons = FarmLabore::where('status', 'Available')
                                       ->get();
 
-                               
+     
+
         return view('assign_delivery_person.create',['retailor_order'=>$retailor_order,'deliveryPersons'=>$deliveryPersons]);
     }
 
@@ -47,7 +50,7 @@ class AssignDeliveryPersonController extends Controller
         $deliveryPerson->status = 'Busy';
         $deliveryPerson->save();
 
-        
+           Mail::to('pararajasingampraveen22@gmail.com')->send(new AssignDeliveryPersonNotification($retailor_order));
     
         return redirect()->route('retailor_order_items.list')->with('success', 'Delivery person assigned successfully!');
    

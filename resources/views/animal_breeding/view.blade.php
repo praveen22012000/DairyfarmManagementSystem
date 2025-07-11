@@ -12,6 +12,7 @@
 
     <form  method="POST" enctype="multipart/form-data" action="">
         @csrf
+        {{ $animalbreeding }}
 
         <fieldset class="border p-4 mb-4">
         <legend class="w-auto px-2">General Information</legend>
@@ -70,6 +71,7 @@
             </select>
             @error('veterinarian_id') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
+
 
 
         

@@ -7,7 +7,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="float-left">
-                    <h2>Dispose Milk Productions </h2>
+                    <h2 style="text-align:center;">Dispose Milk Productions </h2>
                 </div>
 
                 <div class="float-right">

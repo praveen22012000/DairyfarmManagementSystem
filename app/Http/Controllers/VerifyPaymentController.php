@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\RetailorOrder;
 use App\Models\OrderPayment;
 use Illuminate\Support\Facades\Auth;
+use App\Mail\VerifyPaymentAcceptNotification;
+use App\Mail\VerifyPaymentRejectNotification;
+use Illuminate\Support\Facades\Mail;
 
 class VerifyPaymentController extends Controller
 {
@@ -38,6 +41,9 @@ class VerifyPaymentController extends Controller
        
         $order->save();
 
+           // 7. Redirect back with success message
+              Mail::to($order->user->email)->send(new VerifyPaymentAcceptNotification($order));
+
         return redirect()->route('retailor_order_items.list')->with('success', 'Payment verified successfully.');
     }
 
@@ -52,6 +58,8 @@ class VerifyPaymentController extends Controller
         $order->payment_status = 'Rejected';
         $order->status='Rejected';
         $order->save();
+
+               Mail::to($order->user->email)->send(new VerifyPaymentRejectNotification($order));
 
         return redirect()->route('retailor_order_items.list')->with('error', 'Payment rejected successfully.');
     }

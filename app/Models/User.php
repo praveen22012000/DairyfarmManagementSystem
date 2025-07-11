@@ -54,7 +54,7 @@ class User extends Authenticatable
 
      public function sales_manager()
     {
-         return $this->hasMany(GeneralManager::class,'sales_manager_id');
+         return $this->hasMany(SalesManager::class,'sales_manager_id');
     }
 
     public function general_manager()

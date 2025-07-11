@@ -8,6 +8,7 @@ use App\Models\ProductionMilk;
 use App\Models\User;
 use App\Models\Role;
 
+
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -105,6 +106,27 @@ class ProductionMilkController extends Controller
     return view('reports.milk_production_report', compact('milkData', 'start', 'end'));
     }
 
+    // the following code is  the download pdf for the above function
+    public function downloadPDFforGenerateReport(Request $request)
+    {
+    $start = $request->start_date;
+    $end = $request->end_date;
+
+    $request->validate([
+        'start_date' => 'required|date',
+        'end_date' => 'required|date|after_or_equal:start_date',
+    ]);
+
+    $milkData = \App\Models\ProductionMilk::whereBetween('production_date', [$start, $end])
+        ->select('animal_id', \DB::raw('SUM(Quantity_Liters) as total_milk'))
+        ->groupBy('animal_id')
+        ->with('AnimalDetail')
+        ->get();
+
+    $pdf = \Pdf::loadView('reports_pdf.milk_production_report_pdf', compact('milkData', 'start', 'end'));
+    return $pdf->download('Milk_Production_Report.pdf');
+    }
+
     //this function is used to get the milk records of the animal between the particular dates
     public function  generateReportPerAnimal(Request $request)
     {
@@ -114,10 +136,10 @@ class ProductionMilkController extends Controller
 
         $milkData = [];
 
-          $female_animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');
+        $female_animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');
 
          
-          $female_animals = AnimalDetail::whereIn('animal_type_id', $female_animal_types_id)->get();
+        $female_animals = AnimalDetail::whereIn('animal_type_id', $female_animal_types_id)->get();
 
       
 
@@ -132,9 +154,9 @@ class ProductionMilkController extends Controller
 
 
          $milkData = \App\Models\ProductionMilk::whereBetween('production_date', [$start, $end])
-    ->where('animal_id', $animalID)
-    ->with('AnimalDetail')
-    ->get();
+                        ->where('animal_id', $animalID)
+                        ->with('AnimalDetail')
+                        ->get();
 
         }
 
@@ -145,8 +167,50 @@ class ProductionMilkController extends Controller
             $total_quantity=$total_quantity+$data->Quantity_Liters;
         }
 
-          return view('reports.milk_production_report_for_animal', compact('milkData', 'start', 'end','female_animals','total_quantity'));
+          return view('reports.milk_production_report_for_animal', compact('milkData', 'start', 'end','female_animals','total_quantity','animalID'));
    
+    }
+
+    // the following code is  the download pdf for the above function
+    public function downloadPDFforGenerateReportPerAnimal(Request $request)
+    {
+        $start = $request->start_date;
+        $end = $request->end_date;
+        $animalID = $request->animal_id;
+
+        $milkData = [];
+
+        $female_animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');
+   
+        $female_animals = AnimalDetail::whereIn('animal_type_id', $female_animal_types_id)->get();
+
+
+        if ($start && $end) 
+        {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'animal_id' => 'required|exists:animal_details,id'
+        ]);
+
+
+         $milkData = \App\Models\ProductionMilk::whereBetween('production_date', [$start, $end])
+                        ->where('animal_id', $animalID)
+                        ->with('AnimalDetail')
+                        ->get();
+
+        }
+
+        $total_quantity =0 ;
+
+        foreach($milkData as $data)
+        {
+            $total_quantity=$total_quantity+$data->Quantity_Liters;
+        }
+
+        $pdf = \Pdf::loadView('reports_pdf.milk_production_report_animal_pdf', compact('milkData', 'start', 'end','female_animals','total_quantity','animalID'));
+        return $pdf->download('Milk_Production_Animal_Report.pdf');
+        
     }
 
 
@@ -170,6 +234,8 @@ class ProductionMilkController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
+       
+
         $female_animal_types_id = AnimalType::whereIn('animal_type', ['Cow', 'Heifer'])->pluck('id');//newcode
 
         $female_Animals = AnimalDetail::whereIn('animal_type_id', $female_animal_types_id)->get();//newcode
@@ -177,7 +243,6 @@ class ProductionMilkController extends Controller
         $farmlabors_id=Role::whereIn('role_name',['FarmLabore'])->pluck('id');
 
         $farm_labors=User::whereIn('role_id',$farmlabors_id)->get();
-
 
 
         return view('milk_production.create',['female_Animals'=>$female_Animals,'farm_labors'=>$farm_labors]);
@@ -197,17 +262,42 @@ class ProductionMilkController extends Controller
 
             'animal_id'=>'required|exists:animal_details,id',
             'user_id'=>'required|exists:users,id',
-            'production_date'=>'required',
+            'production_date'=>'required|before_or_equal:today',
             'Quantity_Liters'=>'required|numeric|min:0',
             'shift'=>'required',
-            'fat_percentage'=>'required',
-             'protein_percentage'=>'required',
-            'lactose_percentage'=>'required',
-            'somatic_cell_count'=>'required',
+            'fat_percentage'=>'required|numeric|min:0',
+             'protein_percentage'=>'required|numeric|min:0',
+            'lactose_percentage'=>'required|numeric|min:0',
+            'somatic_cell_count'=>'required|numeric|min:0',
 
            
            
         ]);
+
+        $animal = AnimalDetail::findOrfail($request->animal_id);
+
+        if($animal->animal_birthdate >= $request->production_date)
+        {
+              return back()->withInput()->withErrors([
+                'production_date' => 'production date must be after the animal birth date (' . $animal->animal_birthdate . ').',
+            ]);
+
+        }
+
+        $production_date = $request->production_date;
+        $time = $request->shift;
+
+        $exists = ProductionMilk::where('production_date',$production_date)
+                    ->where('shift',$time)
+                    ->exists();
+
+        if($exists)
+        {
+              return redirect()->back()
+               ->withInput() // THIS IS CRUCIAL
+               ->withErrors(['Already Milk is gain from the animal in this date and time']);
+        }
+        
 
         $milkProduction = new ProductionMilk();
         $milkProduction->animal_id = $request->animal_id;
@@ -224,6 +314,8 @@ class ProductionMilkController extends Controller
 
         $milkProduction->save();
 
+      
+        
         return redirect()->route('production_milk.list')->with('success', 'Milk production recorded successfully!');
 
         
@@ -296,16 +388,42 @@ class ProductionMilkController extends Controller
             
             'animal_id'=>'required|exists:animal_details,id',
             'user_id'=>'required|exists:users,id',
-            'production_date'=>'required',
-            'Quantity_Liters'=>'required',
+            'production_date'=>'required|before_or_equal:today',
+            'Quantity_Liters'=>'required|numeric|min:0.01',
             'shift'=>'required',
-            'fat_percentage'=>'required',
-             'protein_percentage'=>'required',
-            'lactose_percentage'=>'required',
-            'somatic_cell_count'=>'required',
+            'fat_percentage'=>'required|numeric|min:0',
+             'protein_percentage'=>'required|numeric|min:0',
+            'lactose_percentage'=>'required|numeric|min:0',
+            'somatic_cell_count'=>'required|numeric|min:0',
 
 
         ]);
+
+
+            $animal = AnimalDetail::findOrfail($request->animal_id);
+
+        if($animal->animal_birthdate >= $request->production_date)
+        {
+              return back()->withInput()->withErrors([
+                'production_date' => 'production date must be after the animal birth date (' . $animal->animal_birthdate . ').',
+            ]);
+
+        }
+
+         $production_date = $request->production_date;
+        $time = $request->shift;
+
+        $exists = ProductionMilk::where('production_date',$production_date)
+                    ->where('shift',$time)
+                        ->where('id', '!=', $productionmilk->id)
+                    ->exists();
+
+        if($exists)
+        {
+              return redirect()->back()
+               ->withInput() // THIS IS CRUCIAL
+               ->withErrors(['Already Milk is gain from the animal in this date and time']);
+        }
 
          // Update all fields
             $productionmilk->animal_id = $data['animal_id'];

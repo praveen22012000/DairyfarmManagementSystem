@@ -8,7 +8,7 @@
         @csrf
         <!-- Role Selection -->
 
-        {{$salesmanager}}
+   
         <div class="form-group">
             <label for="role_id">Role:</label>
             <select id="role_id" name="role_id" disabled class="form-control">
@@ -25,7 +25,7 @@
        <div id="sales_manager_fields" class="d-none" >
 
             <div class="form-group">
-                        <label for="sales_manager_id">General Manager</label><br>
+                        <label for="sales_manager_id">Sales Manager</label><br>
                             <select name="sales_manager_id" id="sales_manager_id"  class="form-control">
 
                                 <option value="">Select General Manager</option>

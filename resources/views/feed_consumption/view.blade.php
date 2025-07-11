@@ -90,12 +90,12 @@
                             <input type="number" class="form-control" name="quantity" value="" readonly>
                         </td>
 
-                        <td class="border-t px-6 py-4">
+                        <td class="border-t px-6 py-4 text-left text-gray-800">
                             <input type="text" name="consumed_quantity" value="{{ $feedconsumeitem->consumed_quantity }}" class="form-control"  style="width: 80px;">
                             @error('consumed_quantity') <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
 
-                        <td>
+                        <td class="border-t px-6 py-4 text-left text-gray-800">
                         <input type="text" name="notes" class="form-control"  style="width:200px;" value="{{ $feedconsumeitem->notes }}">
                         @error('notes') <span class="text-danger">{{ $message }}</span> @enderror
                         </td>
@@ -131,73 +131,80 @@
 @endsection
 
 @section('js')
-
 <script>
-$(document).ready(function () {
-    let today = new Date().toISOString().split("T")[0];
-    $("#date").attr("max", today);
+    $(document).ready(function () {
+        let today = new Date().toISOString().split("T")[0];
+        $("#date").attr("max", today);
 
-    // Function to update stock quantity when purchase item is selected
-    function updateStockQuantity(selectElement) {
-        let selectedOption = $(selectElement).find(":selected");
-        let stockQuantity = selectedOption.data("stock-quantity");
-        $(selectElement).closest("tr").find("input[name='quantity']").val(stockQuantity || '');
-    }
+        //  Function to update stock quantity (FIXED to allow 0)
+        function updateStockQuantity(selectElement) // This defines a function called updateStockQuantity.
+        {
+            let selectedOption = $(selectElement).find(":selected");//.find(":selected") gets the <option> that is currently selected in the dropdown.
+            let stockQuantity = selectedOption.data("stock-quantity");// .data("stock-quantity") gets the value of the attribute data-stock-quantity from the selected <option>
 
-    // Function to filter purchase items based on selected feed
-    function filterPurchaseItems(feedSelect) {
-        let row = $(feedSelect).closest("tr");
-        let purchaseItemSelect = row.find(".purchase-item-select");
-        let selectedFeedId = $(feedSelect).val();
-        
-        if (selectedFeedId) {
-            // Enable the purchase item dropdown
-            purchaseItemSelect.prop("disabled", false);
-            
-            // Filter options to show only items for the selected feed
-            purchaseItemSelect.find("option").each(function() {
-                let optionFeedId = $(this).data("feed-id");
-                if (optionFeedId == selectedFeedId || $(this).val() === "") {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                    // If current selection doesn't match, reset it
-                    if ($(this).prop('selected') && optionFeedId != selectedFeedId) {
-                        purchaseItemSelect.val("");
-                        row.find("input[name='quantity']").val("");
-                    }
-                }
-            });
-        } else {
-            // Disable the purchase item dropdown if no feed is selected
-            purchaseItemSelect.prop("disabled", true);
-            purchaseItemSelect.val("");
-            row.find("input[name='quantity']").val("");
+            //  Allow 0, only replace if null or undefined
+            $(selectElement).closest("tr").find("input[name='quantity']").val
+            (
+                stockQuantity !== undefined && stockQuantity !== null ? stockQuantity : '' // This checks two things:Is stockQuantity not undefined? Is stockQuantity not null? This condition is true if stockQuantity has a real value, even if it's 0.
+            );
         }
-    }
 
-    // Initialize existing rows
-    $(".feed-select").each(function() {
-        filterPurchaseItems(this);
-        if ($(this).val()) {
+        // Function to filter purchase items based on selected feed
+        function filterPurchaseItems(feedSelect) //This declares a function named filterPurchaseItems.It takes one parameter: feedSelect, which is the <select> dropdown for feed names 
+        {
+            let row = $(feedSelect).closest("tr");//
+            let purchaseItemSelect = row.find(".purchase-item-select");//Inside the same row, it finds the <select> dropdown with class .purchase-item-select
+            let selectedFeedId = $(feedSelect).val();//Gets the currently selected feed ID from the feedSelect dropdown.
+
+            if (selectedFeedId) //Checks if the user has selected a feed (i.e., not empty).
+            {
+                purchaseItemSelect.prop("disabled", false);// Enables the purchase item dropdown by removing the disabled attribute.
+
+                purchaseItemSelect.find("option").each(function () { //Loops through each <option> tag in the purchase item dropdown.
+                    let optionFeedId = $(this).data("feed-id");//Gets the data-feed-id value of the current <option>.
+
+                    if (optionFeedId == selectedFeedId || $(this).val() === "") //If the option's feed-id matches the selected feed
+                    {
+                        $(this).show();//Makes the matching option visible in the dropdown.
+                    } 
+                    else //If the feed ID doesn't match...
+                    {
+                        $(this).hide();//Hide the option from the dropdown.
+
+
+                        if ($(this).prop("selected") && optionFeedId != selectedFeedId) 
+                        {
+                            purchaseItemSelect.val("");
+                            row.find("input[name='quantity']").val("");
+                        }
+                    }
+                });
+            } 
+            else 
+            {
+                purchaseItemSelect.prop("disabled", true);
+                purchaseItemSelect.val("");
+                row.find("input[name='quantity']").val("");
+            }
+        }
+
+        //  Initialize existing rows (on page load)
+        $(".feed-select").each(function () {
+            filterPurchaseItems(this);
             let purchaseSelect = $(this).closest("tr").find(".purchase-item-select");
             if (purchaseSelect.val()) {
                 updateStockQuantity(purchaseSelect);
             }
-        }
-    });
+        });
 
-    // Update stock quantity when purchase item selection changes
-    $(document).on("change", ".purchase-item-select", function() {
-        updateStockQuantity(this);
-    });
+        //  On change handlers
+        $(document).on("change", ".purchase-item-select", function () {
+            updateStockQuantity(this);
+        });
 
-    // Filter purchase items when feed selection changes
-    $(document).on("change", ".feed-select", function() {
-        filterPurchaseItems(this);
+        $(document).on("change", ".feed-select", function () {
+            filterPurchaseItems(this);
+        });
     });
-});
-
 </script>
-
 @endsection

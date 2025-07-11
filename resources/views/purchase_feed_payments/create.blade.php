@@ -22,7 +22,9 @@
         <select name="purchase_id" id="purchase_id" class="form-control" >
             <option value="">Select Purchase</option>
             @foreach($unpaid_purchase_feeds as $unpaid_purchase_feed)
-                <option value="{{ $unpaid_purchase_feed->id }}">{{ $unpaid_purchase_feed->purchase_date.'|'.$unpaid_purchase_feed->supplier->name}}</option>
+                <option value="{{ $unpaid_purchase_feed->id }}"
+                {{  old('purchase_id') == $unpaid_purchase_feed->id ? 'selected' : ''  }}
+                >{{ $unpaid_purchase_feed->purchase_date.'|'.$unpaid_purchase_feed->supplier->name}}</option>
             @endforeach
         </select>
         @error('purchase_id') <span class="text-danger">{{ $message }}</span> @enderror
@@ -33,6 +35,7 @@
         <div class="form-group">
             <label for="payment_date">Payment Date</label>
                 <input type="date" name="payment_date" class="form-control rounded" id="payment_date">
+                 @error('payment_date') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
 
          <!--this is to get the Animalname-->

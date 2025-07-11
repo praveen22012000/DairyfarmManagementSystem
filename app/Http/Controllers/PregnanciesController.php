@@ -8,12 +8,22 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\BreedingEvents;
 use App\Models\Pregnancies;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class PregnanciesController extends Controller
 {
     //
+
+    public function getBreedingEvents($female_cow_id)
+    {
+    $breedings = BreedingEvents::where('female_cow_id', $female_cow_id)
+      //  ->whereDoesntHave('pregnancy')// Ensure this breeding event has no associated pregnancy
+        ->with(['femalecow', 'malecow']) // Optional: for names
+        ->get();
+
+    return response()->json($breedings);
+    }
 
     public function index()
     {
@@ -24,6 +34,7 @@ class PregnanciesController extends Controller
 
         $pregnancies=Pregnancies::with(['AnimalDetail','user'])->get();
 
+     
         return view('animal_pregnancies.index',['pregnancies'=>$pregnancies]);
     }
 
@@ -40,7 +51,7 @@ class PregnanciesController extends Controller
             	                        ->where('status','alive')
                                         ->get();
 
-        $veterinarian_id=Role::whereIn('role_name',['veterinarian'])->pluck('id');
+        $veterinarian_id=Role::whereIn('role_name',['Veterinarion'])->pluck('id');
 
        $veterinarians=User::whereIn('role_id',$veterinarian_id)->get();
 
@@ -66,6 +77,25 @@ class PregnanciesController extends Controller
             'confirmation_date'=>'required'
         ]);
 
+        
+        // Fetch the breeding event record
+        $breedingEvent = BreedingEvents::find($request->breeding_id);
+
+        if ($breedingEvent->breeding_date >= $request->confirmation_date) 
+        {
+            return back()->withInput()->withErrors([
+                'confirmation_date' => 'Confirmation date must be after the breeding date (' . $breedingEvent->breeding_date . ').',
+            ]);
+
+        }
+
+        if($request->confirmation_date >= $request->estimated_calving_date)
+        {
+            return back()->withInput()->withErrors([
+                'estimated_calving_date' => 'Estimated calving date must be after the confirmation date (' . $request->confirmation_date . ').',
+            ]);
+        }
+
         Pregnancies::create([
 
             'breeding_id'=>$request->breeding_id,
@@ -79,7 +109,7 @@ class PregnanciesController extends Controller
 
         ]);
 
-        return view('animal_pregnancies.index');
+       return redirect()->route('animal_pregnancies.list')->with('success', 'AnimalPregnancy record stored successfully!');
     }
 
     public function edit(Pregnancies $pregnancie)
@@ -95,7 +125,7 @@ class PregnanciesController extends Controller
         ->where('status','alive')
         ->get();
 
-        $veterinarian_id=Role::whereIn('role_name',['veterinarian'])->pluck('id');
+        $veterinarian_id=Role::whereIn('role_name',['Veterinarion'])->pluck('id');
 
        $veterinarians=User::whereIn('role_id',$veterinarian_id)->get();
 
@@ -125,6 +155,26 @@ class PregnanciesController extends Controller
             'confirmation_date'=>'required'
 
         ]);
+
+           // Fetch the breeding event record
+        $breedingEvent = BreedingEvents::find($request->breeding_id);
+
+        if ($breedingEvent->breeding_date >= $request->confirmation_date) 
+        {
+            return back()->withInput()->withErrors([
+                'confirmation_date' => 'Confirmation date must be after the breeding date (' . $breedingEvent->breeding_date . ').',
+            ]);
+
+        }
+
+        if($request->confirmation_date >= $request->estimated_calving_date)
+        {
+            return back()->withInput()->withErrors([
+                'estimated_calving_date' => 'Estimated calving date must be after the confirmation date (' . $request->confirmation_date . ').',
+            ]);
+        }
+
+
 
         $pregnancie->update($data);
 

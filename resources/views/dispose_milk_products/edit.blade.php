@@ -5,7 +5,7 @@
 <div class="col-md-12">
 
        
-            <h1>Dispose Milk Products Registration Form</h1>     
+            <h1 style="text-align:center;">Dispose Milk Products Registration Form</h1>     
         
 
     <br>
@@ -113,11 +113,12 @@
 
 <script>
 
+
 $(document).ready(function () {
     function fetchStockQuantity(manufacturerProductId) {
         if (manufacturerProductId) {
             $.ajax({
-                url: `/milk_dispose/${manufacturerProductId}/details`,
+                url: `/dispose_milk_products/${manufacturerProductId}/details`,
                 method: 'GET',
                 dataType: 'json',
                 success: function (data) {
@@ -142,6 +143,7 @@ $(document).ready(function () {
         fetchStockQuantity(selectedManufacturerProductId);
     });
 });
+
 
 
 </script>

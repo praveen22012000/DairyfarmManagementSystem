@@ -8,6 +8,9 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\Appointment;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\VeterinarianAppointmentNotification;
+
 
 class AppointmentController extends Controller
 {
@@ -32,9 +35,11 @@ class AppointmentController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $veterinarian_id=Role::whereIn('role_name',['veterinarian'])->pluck('id');
+        $veterinarian_id=Role::whereIn('role_name',['Veterinarion'])->pluck('id');
 
         $veterinarians=User::whereIn('role_id',$veterinarian_id)->get();
+
+ 
 
         return view('appointments.create',['veterinarians'=>$veterinarians]);
     }
@@ -48,18 +53,33 @@ class AppointmentController extends Controller
 
         $request->validate([
             'veterinarian_id'=>'required|exists:users,id',
-            'appointment_date'=>'required',
+            'appointment_date'=>'required|after_or_equal:today',
             'appointment_time'=>'required',
             'notes'=>'required'
 
         ]);
 
-        Appointment::create([
+        
+          $exists = Appointment::where('veterinarian_id',$request->veterinarian_id)
+            ->where('appointment_date', $request->appointment_date)
+              ->where('appointment_time', $request->appointment_time)
+              ->exists();
+
+    if ($exists) 
+    {
+        return redirect()->back()
+               ->withInput()
+               ->withErrors(['This time and date is already appointed to this veterinarian']);
+    }
+
+        $appointment=Appointment::create([
             'veterinarian_id'=>$request->veterinarian_id,
             'appointment_date'=>$request->appointment_date,
             'appointment_time'=>$request->appointment_time,
             'notes'=>$request->notes
         ]);
+
+        Mail::to('pararajasingampraveen22@gmail.com')->send(new VeterinarianAppointmentNotification($appointment));
 
         return redirect()->route('appointment.list')->with('success', 'Appointment record stored successfully!');
     }

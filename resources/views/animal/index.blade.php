@@ -6,7 +6,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="float-left">
-                    <h2>Animals</h2>
+                    <h2 style="text-align:center;">Animals</h2>
                 </div>
 
                 <div class="float-right">
@@ -126,25 +126,30 @@
 <script>
     $(document).ready(function () {
         // Filter animals by type dynamically
-        $('#animal_type').on('change', function () {
-            const animalTypeId = $(this).val();
+        $('#animal_type').on('change', function () { // This listens for the change event on the <select> dropdown with the ID animal_type
+            const animalTypeId = $(this).val();// Gets the selected value (the animal_type_id) from the dropdown.
 
             if (!animalTypeId) {
                 location.reload(); // Reload the page if no type is selected
                 return;
             }
 
-            $.ajax({
-                url: `/animal/filter`,
-                method: 'GET',
-                data: { animal_type_id: animalTypeId },
-                success: function (data) {
-                    const $animalList = $('#animals_list');
-                    $animalList.empty();
+            $.ajax({ // Starts an AJAX request using jQuery to send data to the server without reloading the page.
+                url: `/animal/filter`,// This is the URL Laravel expects to receive AJAX requests  to filter animals.//It points to your filterByType() method in the AnimalController
+                method: 'GET',// The type of request is GET, meaning we're just retrieving data, not changing it.
+                data: { animal_type_id: animalTypeId },//This sends the selected animal type ID to the server as a parameter in the request.// Example: /animal/filter?animal_type_id=2
 
-                    if (data.length > 0) {
-                        data.forEach(function (animal) {
-                            $animalList.append(
+                success: function (data) //If the request is successful, this function will run.
+                {
+
+                    const $animalList = $('#animals_list');// This targets the <tbody> where animals are listed.//Stores it in a variable so it can be updated.
+
+                    $animalList.empty();// Clears the current contents (rows) of the animal table body, so we can insert the filtered ones.
+
+                    if (data.length > 0) { //Checks if any animals were returned from the server.
+
+                        data.forEach(function (animal) {//Loops through each animal object in the returned list.
+                            $animalList.append(//Adds a new row (<tr>) for each animal to the HTML table dynamically.
                                 `<tr>
                                     <td>${animal.id}</td>
                                     <td>${animal.animal_name}</td>
@@ -158,8 +163,9 @@
                                 </tr>`
                             );
                         });
-                    } else {
-                        $animalList.append('<tr><td colspan="5" class="text-center">No animals found for the selected type.</td></tr>');
+                    } else 
+                    {
+                        $animalList.append('<tr><td colspan="5" class="text-center">No animals found for the selected type.</td></tr>');// Adds one table row that spans all 5 columns and says: “No animals found…”
                     }
                 },
                 error: function (xhr, status, error) {
