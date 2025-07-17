@@ -17,9 +17,14 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class DisposeVaccineItemsController extends Controller
 {
-    //
+    //new code
     public function DisposeVaccineItemsReport(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $start = $request->start_date;
         $end = $request->end_date;
 
@@ -46,9 +51,15 @@ class DisposeVaccineItemsController extends Controller
           return view('reports.dispose_vaccine', compact('disposeVaccineData', 'start', 'end'));
     }
 
+    //new code 
     public function DisposeVaccineItemsReportPDFDownload(Request $request)
     {
-         $start = $request->start_date;
+         if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
+        $start = $request->start_date;
         $end = $request->end_date;
 
         $disposeVaccineData = [];

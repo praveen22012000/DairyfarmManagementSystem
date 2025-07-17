@@ -12,7 +12,7 @@
 
     <form  method="POST" enctype="multipart/form-data" action="{{route('dispose_milk.update',$disposeMilk->id)}}">
         @csrf
-{{ $disposeMilk }}
+
         
 
 

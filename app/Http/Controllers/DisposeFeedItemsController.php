@@ -70,6 +70,11 @@ class DisposeFeedItemsController extends Controller
     //new code use this is used to get the details of the feed items disposed between two specific dates
     public function DisposeFeedItemsReport(Request $request)
     {
+         if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
 
         $start = $request->start_date;
         $end = $request->end_date;
@@ -101,6 +106,11 @@ class DisposeFeedItemsController extends Controller
     //the following function is used to download the pdf of the dispose milk product items.
     public function DisposeFeedItemsReportPDFDownload(Request $request)
     {
+         if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
      
        $start = $request->start_date;
         $end = $request->end_date;

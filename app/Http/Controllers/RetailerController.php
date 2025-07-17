@@ -37,7 +37,7 @@ class RetailerController extends Controller
         }
         $data=$request->validate([
 
-            'store_name'=>'required|string',
+            'store_name'=>"required|string|unique:retailers,store_name,$retailer_id",
             'business_type'=>'required|string',
             'tax_id'=>"required|unique:retailers,tax_id,$retailer->id"
         ]);

@@ -5,7 +5,7 @@
 <div class="col-md-12">
 
        
-            <h1>Purchase Feed Payments</h1>     
+            <h1 style="text-align:center;">Purchase Feed Payments</h1>     
         
 
     <br>
@@ -13,8 +13,7 @@
     <form  method="POST" enctype="multipart/form-data" action="">
         @csrf
 
-        <fieldset class="border p-4 mb-4">
-        <legend class="w-auto px-2">General Information</legend>
+        
 
 
         <div class="form-group">
@@ -45,7 +44,7 @@
         </div>
 
 
-        </fieldset>
+        
 
    
     </form>

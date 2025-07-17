@@ -23,9 +23,7 @@
                 <!-- start-->
         <div class="card-header">
             
-                <a class="btn btn-primary" href="{{ route('dispose_milk_records_monthly.report') }}">
-                     View Monthly Chart
-                </a>   
+              
 
                
         </div>
@@ -38,7 +36,7 @@
                     {{ session('success') }}
                 </div>
                 @endif
-            <table class="table">
+            <table class="table" id="disposeMilkTable">
                 <thead class="thead-dark">
                     <tr>
                         <th> ID</th>
@@ -121,6 +119,18 @@
             }
         });
     }
+</script>
+
+<script>
+$(document).ready(function() {
+    $('#disposeMilkTable').DataTable({
+        "pageLength": 10,  // Optional: Sets how many rows per page
+        "lengthMenu": [5, 10, 25, 50, 100],
+        "language": {
+            "search": "Search Dispose Milk Records:"
+        }
+    });
+});
 </script>
 
 @endsection

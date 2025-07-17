@@ -10,6 +10,7 @@ use App\Models\BreedingEvents;
 use App\Models\Pregnancies;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class PregnanciesController extends Controller
 {
@@ -18,7 +19,7 @@ class PregnanciesController extends Controller
     public function getBreedingEvents($female_cow_id)
     {
     $breedings = BreedingEvents::where('female_cow_id', $female_cow_id)
-      //  ->whereDoesntHave('pregnancy')// Ensure this breeding event has no associated pregnancy
+        ->whereDoesntHave('pregnancy')// Ensure this breeding event has no associated pregnancy
         ->with(['femalecow', 'malecow']) // Optional: for names
         ->get();
 
@@ -55,8 +56,14 @@ class PregnanciesController extends Controller
 
        $veterinarians=User::whereIn('role_id',$veterinarian_id)->get();
 
-       $breedings=BreedingEvents::with('femalecow')->get();
+       $used_pregnancy_ids = Pregnancies::pluck('breeding_id');
+        
+     // $breedings=BreedingEvents::with('femalecow')->get();
 
+     // dd($breedings);
+
+       $breedings=BreedingEvents::whereNotIn('id',$used_pregnancy_ids)->with('femalecow')->get();
+      
         return view('animal_pregnancies.create',['female_Animals'=>$female_Animals,'veterinarians'=>$veterinarians,'breedings'=>$breedings]);
     }
 
@@ -81,6 +88,12 @@ class PregnanciesController extends Controller
         // Fetch the breeding event record
         $breedingEvent = BreedingEvents::find($request->breeding_id);
 
+        $breeding_date = Carbon::parse($breedingEvent->breeding_date);
+
+        $estimated_Calving_date = Carbon::parse($request->estimated_calving_date);
+
+        
+
         if ($breedingEvent->breeding_date >= $request->confirmation_date) 
         {
             return back()->withInput()->withErrors([
@@ -91,11 +104,20 @@ class PregnanciesController extends Controller
 
         if($request->confirmation_date >= $request->estimated_calving_date)
         {
-            return back()->withInput()->withErrors([
+            return back()->withInput()->withErrors
+            ([
                 'estimated_calving_date' => 'Estimated calving date must be after the confirmation date (' . $request->confirmation_date . ').',
             ]);
         }
 
+        if ($estimated_Calving_date < $breeding_date->copy()->addMonths(8)) 
+        {
+            return back()->withInput()->withErrors
+            ([
+                'estimated_calving_date' => 'The estimated calving date must be at least 8 months after the breeding date (' . $breeding_date->toDateString() . '), which is on ' . $breeding_date->copy()->addMonths(8)->toDateString() . '.',
+            ]);
+        }
+        
         Pregnancies::create([
 
             'breeding_id'=>$request->breeding_id,

@@ -11,7 +11,7 @@
 
                 <div class="float-right">
 
-                    <a class="btn btn-success btn-md btn-rounded" href="{{route('supply_feed_vaccine.create')}}">
+                    <a class="btn btn-success btn-md btn-rounded" href="{{route('suppliers.create')}}">
                         <i class="mdi mdi-plus-circle mdi-18px"></i> Add a Supplier
                     </a>
                
@@ -25,7 +25,7 @@
                     {{ session('success') }}
                 </div>
                 @endif
-            <table class="table">
+            <table class="table" id="supplierTable">
                 <thead class="thead-dark">
                     <tr>
                         <th> ID</th>
@@ -56,7 +56,7 @@
 
                         <a href="{{ route('supply_feed_vaccine.view',$supplier->id) }}" class="btn btn-info">View</a>
                         <a href="{{ route('supply_feed_vaccine.edit',$supplier->id) }}" class="btn btn-primary">Edit</a>
-                        <button class="btn btn-danger" onclick="">Delete</button>
+                        <button class="btn btn-danger" onclick="confirmDelete({{$supplier->id}})">Delete</button>
                     
                         </td>
                     </tr>
@@ -92,10 +92,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-   function confirmDelete(milkProductId) {
+   function confirmDelete(supplierId) {
         Swal.fire({
             title: "Are you sure?",
-            text: "This will permanently delete the milk Product record.",
+            text: "This will permanently delete the supplier record.",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#d33",
@@ -105,12 +105,25 @@
             if (result.isConfirmed) {
                 // Set form action dynamically based on animal ID
                 let deleteForm = document.getElementById("deleteForm");
-                deleteForm.action = `/milk_product_details/${milkProductId}/destroy`;
+                deleteForm.action = `/supplier_details/${supplierId}/destroy`;
                 deleteForm.submit();
             }
         });
     }
 </script>
+
+<script>
+$(document).ready(function() {
+    $('#supplierTable').DataTable({
+        "pageLength": 10,  // Optional: Sets how many rows per page
+        "lengthMenu": [5, 10, 25, 50, 100],
+        "language": {
+            "search": "Search For Supplier Records:"
+        }
+    });
+});
+</script>
+
 
 @endsection
 

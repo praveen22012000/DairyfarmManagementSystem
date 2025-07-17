@@ -79,16 +79,23 @@ class DashboardControllerForAdmin extends Controller
         ->get();
 
 
+    $death_animals = AnimalDetail::where('status','deceased')
+                        ->whereBetween('death_date',[Carbon::now()->startOfweek(),Carbon::now()->endOfWeek()])->count();
+
+    
+
 
          
     // Prepare monthly product sales
     $monthlySales = [];
 
-    foreach (range(1, 12) as $month) {
+    foreach (range(1, 12) as $month) 
+    {
         $monthlySales[$month] = 0;
     }
 
-    foreach ($deliveredOrders as $order) {
+    foreach ($deliveredOrders as $order) 
+    {
         $month = Carbon::parse($order->ordered_date)->month;
 
         foreach ($order->retailor_order_item as $item) {
@@ -106,6 +113,6 @@ class DashboardControllerForAdmin extends Controller
     }
 
 
-    return view('dashboard',['totalAnimals'=>$totalAnimals,'totalMilkInStock'=>$totalMilkInStock,'todayMilk'=>$todayMilk,'total_grain_Feed'=>$total_grain_Feed,'feed_grain'=>$feed_grain,'total_wheat_Feed'=>$total_wheat_Feed,'sales'=>$sales,'labels'=>$labels,'weeklyAnimals'=>$weeklyAnimals,'weeklyRetailorOrders'=>$weeklyRetailorOrders,'yogurt'=>$yogurt,'total_yogurt_stock'=>$total_yogurt_stock,'cheese'=>$cheese,'total_cheese_stock'=>$total_cheese_stock]);
+    return view('dashboard',['totalAnimals'=>$totalAnimals,'totalMilkInStock'=>$totalMilkInStock,'todayMilk'=>$todayMilk,'total_grain_Feed'=>$total_grain_Feed,'feed_grain'=>$feed_grain,'total_wheat_Feed'=>$total_wheat_Feed,'sales'=>$sales,'labels'=>$labels,'weeklyAnimals'=>$weeklyAnimals,'weeklyRetailorOrders'=>$weeklyRetailorOrders,'yogurt'=>$yogurt,'total_yogurt_stock'=>$total_yogurt_stock,'cheese'=>$cheese,'total_cheese_stock'=>$total_cheese_stock,'death_animals'=>$death_animals]);
     }
 }

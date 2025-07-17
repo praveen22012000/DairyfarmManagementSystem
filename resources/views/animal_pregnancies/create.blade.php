@@ -5,7 +5,7 @@
 <div class="col-md-12">
 
        
-            <h1>Animals Pregnancies Registration Form</h1>     
+            <h1 style="text-align:center;">Animals Pregnancies Registration Form</h1>     
         
 
     <br>
@@ -25,9 +25,7 @@
 @endif
 
 
-        <fieldset class="border p-4 mb-4">
-        <legend class="w-auto px-2">General Information</legend>
-
+      
 
     <!--this is used to list the female_cow_name -->
         <div class="form-group">
@@ -118,10 +116,9 @@
 
        
 
-        </fieldset>
 
         
-        <button type="submit" class="btn btn-success mt-3">Register Breedings</button>
+        <button type="submit" class="btn btn-success mt-3">Register Pregnancy</button>
     </form>
 </div>
 
@@ -132,49 +129,60 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
-        $('#female_cow_id').on('change', function () {
-            var cowId = $(this).val(); // Get selected female cow ID
-            var breedingSelect = $('#breeding_id'); // Breeding event dropdown
+        const femaleCowId = $('#female_cow_id').val();
+        const oldBreedingId = "{{ old('breeding_id') }}";
 
-            breedingSelect.empty(); // Clear current options
-            breedingSelect.append('<option value="">Loading...</option>'); // Show loading
+        function loadBreedingEvents(cowId, preselectId = null) {
+            var breedingSelect = $('#breeding_id');
+            breedingSelect.empty().append('<option value="">Loading...</option>');
 
-            if (cowId) {
-                $.ajax({
-                    url: '/animal_pregnancies/get-breeding-events/' + cowId, // Ensure this matches your route
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function (data) {
-                        console.log("Breeding events:", data); // Log response for debugging
+            $.ajax({
+                url: '/animal_pregnancies/get-breeding-events/' + cowId,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    breedingSelect.empty();
+                    breedingSelect.append('<option value="">Select Breeding Event</option>');
 
-                        breedingSelect.empty(); // Clear options again
-                        breedingSelect.append('<option value="">Select Breeding Event</option>');
+                    data.forEach(function (breeding) {
+                        const optionText = 'Breeding ID: ' + breeding.id +
+                            ' | Female Cow: ' + (breeding.femalecow?.animal_name || 'Unknown') +
+                            ' | Male Cow: ' + (breeding.malecow?.animal_name || 'Unknown') +
+                            ' | Date: ' + breeding.breeding_date;
 
-                        if (data.length > 0) {
-                            data.forEach(function (breeding) {
-                                breedingSelect.append(
-                                    '<option value="' + breeding.id + '">' +
-                                    'Breeding ID: ' + breeding.id +
-                                    ' | Female Cow: ' + (breeding.femalecow?.animal_name || 'Unknown') +
-                                    ' | Male Cow: ' + (breeding.malecow?.animal_name || 'Unknown') +
-                                    ' | Date: ' + breeding.breeding_date +
-                                    '</option>'
-                                );
-                            });
-                        } else {
-                            breedingSelect.append('<option value="">No valid breeding events found</option>');
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("AJAX error:", status, error);
-                        breedingSelect.empty().append('<option value="">Error loading breeding events</option>');
+                        const selected = (preselectId && preselectId == breeding.id) ? 'selected' : '';
+
+                        breedingSelect.append(
+                            '<option value="' + breeding.id + '" ' + selected + '>' + optionText + '</option>'
+                        );
+                    });
+
+                    if (data.length === 0) {
+                        breedingSelect.append('<option value="">No valid breeding events found</option>');
                     }
-                });
+                },
+                error: function () {
+                    breedingSelect.empty().append('<option value="">Error loading breeding events</option>');
+                }
+            });
+        }
+
+        // When cow is changed
+        $('#female_cow_id').on('change', function () {
+            var cowId = $(this).val();
+            if (cowId) {
+                loadBreedingEvents(cowId); // No preselected ID needed here
             } else {
-                breedingSelect.empty().append('<option value="">Select Breeding Event</option>');
+                $('#breeding_id').empty().append('<option value="">Select Breeding Event</option>');
             }
         });
+
+        // Load on page load if old breeding ID exists (i.e., validation failed)
+        if (femaleCowId && oldBreedingId) {
+            loadBreedingEvents(femaleCowId, oldBreedingId);
+        }
     });
 </script>
+
 
 @endsection

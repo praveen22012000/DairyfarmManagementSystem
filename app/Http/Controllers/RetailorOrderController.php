@@ -24,6 +24,11 @@ class RetailorOrderController extends Controller
     //the below function is used to calculate the total retailor orders
     public function totalDeliverOrdersReport(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $start = $request->start_date;
         $end = $request->end_date;
 
@@ -54,6 +59,11 @@ class RetailorOrderController extends Controller
 
     public function totalDeliverOrdersReportDownloadPDF(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
          $start = $request->start_date;
         $end = $request->end_date;
 
@@ -119,8 +129,6 @@ class RetailorOrderController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        
-
         $milk_products=MilkProduct::with('retailor_order_item')->get();
 
         return view('retailor_orders.create',['milk_products'=>$milk_products]);
@@ -128,12 +136,16 @@ class RetailorOrderController extends Controller
 
     public function store(Request $request)
     {
-
+       
         if (!in_array(Auth::user()->role_id, [1,3])) 
         {
             abort(403, 'Unauthorized action.');
         }
-        $request->validate([
+     
+       
+
+        $request->validate
+        ([
 
             'delivery_address'=>'required',
 
@@ -264,10 +276,12 @@ class RetailorOrderController extends Controller
 
     public function update(RetailorOrder $retailororder,Request $request)
     {
+     
         if (!in_array(Auth::user()->role_id, [1,3])) 
         {
             abort(403, 'Unauthorized action.');
         }
+ 
         $request->validate([
 
             'delivery_address'=>'required',
@@ -277,28 +291,38 @@ class RetailorOrderController extends Controller
 
             'ordered_quantity'=>'required|array',
             'ordered_quantity.*'=>'required|numeric|min:1',
+
+             'total_amount' => 'required|numeric',
+            'discount_amount' => 'required|numeric',
+            'total_payable_amount' => 'required|numeric',
         ]);
 
+    
+       
+       
         $errors = [];
 
          // Start transaction
         DB::beginTransaction();
 
 
-        $retailororder->update([
-
-            'delivery_address'=>$request->delivery_address,
-            'retailor_id'=>auth()->id(),
-            'ordered_date'=>now(),
-            'status'=>'Pending',
-            'total_amount'=> 0
+         $retailororder->update([
+            'delivery_address' => $request->delivery_address,
+            'retailor_id' => auth()->id(),
+            'ordered_date' => now(),
+            'status' => 'Pending',
+            'total_amount' => $request->total_amount,
+            'discount_amount' => $request->discount_amount,
+            'total_payable_amount' => $request->total_payable_amount,
         ]);
+
+
+            
 
          // Delete old order items
         $retailororder->retailor_order_item()->delete();
 
-        $totalAmount = 0;
-
+     
 
         foreach ($request->product_id as $index => $productId) 
         {
@@ -306,7 +330,8 @@ class RetailorOrderController extends Controller
             $orderedQuantity = $request->ordered_quantity[$index];
             
            
-            $retailororder->retailor_order_item()->create([
+            $retailororder->retailor_order_item()->create
+            ([
                 'product_id'=>$productId,
                 'ordered_quantity'=>$orderedQuantity,
                 'unit_price'=>$product->unit_price,
@@ -314,18 +339,15 @@ class RetailorOrderController extends Controller
             ]);
     
         
-            $totalAmount += $product->unit_price * $orderedQuantity;
+           
         }
-
-        $retailororder->update(['total_amount'=>$totalAmount]);
-
             // Commit transaction if everything is successful
-            DB::commit();
+        DB::commit();
 
-            $retailor_order_items=RetailorOrderItems::where('order_id',$retailororder->id)->get();
+        $retailor_order_items=RetailorOrderItems::where('order_id',$retailororder->id)->get();
 
               // Send email to general manager
-                Mail::to('pararajasingampraveen22@gmail.com')->send(new RetailorOrderUpdateNotification($retailororder,$retailor_order_items));
+        Mail::to('pararajasingampraveen22@gmail.com')->send(new RetailorOrderUpdateNotification($retailororder,$retailor_order_items));
 
         return redirect()->route('retailor_order_items.list')->with('success', 'Retailor Order updated successfully.');
     }

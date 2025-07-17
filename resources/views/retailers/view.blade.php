@@ -3,7 +3,7 @@
 @section('content')
        
 <div class="container">
-    <h2>User Registration</h2>
+    <h2 style="text-align:center;">User Registration</h2>
 <form>
    
     @csrf

@@ -28,14 +28,8 @@
                     @error('time') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
             <br>
-            <div>
-                <label for="entered_by" class="block text-lg font-medium text-gray-700 mb-2">Entered By</label>
-                <br>
-                <input type="text" name="entered_by" id="entered_by" placeholder="Enter your name" class="form-control rounded"
-                    class="border border-gray-300 rounded-lg px-4 py-3 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none" required value="{{$productionSupplyDetails-> production_supply->entered_by}}">
-                    @error('entered_by') <span class="text-danger">{{ $message }}</span> @enderror
-            </div>
-            <br>
+           
+            
         </div>
 
         

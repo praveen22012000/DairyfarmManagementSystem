@@ -6,7 +6,7 @@
 
 
        
-            <h1>Re-Assign Delivery Person</h1>     
+            <h1 style="text-align:center;">Re Assign Delivery Person</h1>     
 
     <br>
 

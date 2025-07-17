@@ -166,9 +166,9 @@ class DashboardControllerForFarmLabore extends Controller
 
         $total_milk_from_animal = $this->getTotalMilkFromAnimals();// this line gets the total amount of milk get from the animals
 
-        $total_milk_product_manufacturing = $this->getManufacturedMilkProducts();// this line gets the amount of total milk products 
+      $total_milk_product_manufacturing = $this->getManufacturedMilkProducts();// this line gets the amount of total milk products 
 
-        $total_disposed_products = $this->getDisposedMilkProducts();// this line gets the milk products  disposed by the farm labores
+       $total_disposed_products = $this->getDisposedMilkProducts();// this line gets the milk products  disposed by the farm labores
 
         
     //the below code is used to generate the chart in the dashboard

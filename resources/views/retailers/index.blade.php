@@ -21,7 +21,7 @@
                     {{ session('success') }}
                 </div>
                 @endif
-            <table class="table">
+            <table id="retailorsTable" class="table">
                 <thead class="thead-dark">
                     <tr>
                         <th> ID</th>
@@ -35,9 +35,10 @@
                       
                     </tr>
                 </thead>
-                 
+                <tbody>
+                    @foreach($retailers as $retailer)
                     <tr>
-                        @foreach($retailers as $retailer)
+                        
 
                         <td>{{$retailer->id}}</td>
                         <td>{{$retailer->user->name}}</td>
@@ -54,9 +55,9 @@
                         </td>
                     </tr>
                     @endforeach
-                <tbody>
-            
                 </tbody>
+            
+              
             </table>
 
             <form id="deleteForm" method="post" style="display:none;">
@@ -104,6 +105,19 @@
         });
     }
 </script>
+
+<script>
+$(document).ready(function() {
+    $('#retailorsTable').DataTable({
+        "pageLength": 10,  // Optional: Sets how many rows per page
+        "lengthMenu": [5, 10, 25, 50, 100],
+        "language": {
+            "search": "Search Retailors Records:"
+        }
+    });
+});
+</script>
+
 
 @endsection
 

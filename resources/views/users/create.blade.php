@@ -3,7 +3,7 @@
 @section('content')
        
 <div class="container">
-    <h2>User Registration</h2>
+    <h2 style="text-align:center">User Registration</h2>
 <form method="POST" action="{{ route('users.store') }}">
    
     @csrf
@@ -69,7 +69,7 @@
 
             <div class="form-group">
                 <label for="license_number">License Number:</label>
-                <input type="text" id="license_number" name="license_number" class="form-control">
+                <input type="text" id="license_number" name="license_number" placeholder="license number should be in this format SLVC-2024-0089" class="form-control">
                 @error('license_number') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 

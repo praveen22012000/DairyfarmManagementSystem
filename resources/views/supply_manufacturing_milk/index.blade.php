@@ -22,17 +22,7 @@
              <!-- start-->
         <div class="card-header">
             
-                <a class="btn btn-primary" href="{{ route('monthly_milk_allocation.report', ['year' => now()->year]) }}">
-                     View Monthly Chart
-                </a>   
-
-                <a class="btn btn-primary" href="{{ route('milk.consumption.product.monthly', ['year' => now()->year]) }}">
-                     View Monthly Product Chart
-                </a> 
-
-                <a class="btn btn-primary" href="{{ route('reports.animal_milk_usage_per_month', ['year' => now()->year]) }}">
-                     View Monthly report for milk usage of the animals
-                </a> 
+              
         </div>
 
         <!--end -->
@@ -45,7 +35,7 @@
                     {{ session('success') }}
                 </div>
                 @endif
-            <table class="table">
+            <table class="table" id="milkConsumptionTable">
                 <thead class="thead-dark">
                     <tr>
                         <th> ID</th>
@@ -130,6 +120,18 @@
             }
         });
     }
+</script>
+
+<script>
+$(document).ready(function() {
+    $('#milkConsumptionTable').DataTable({
+        "pageLength": 10,  // Optional: Sets how many rows per page
+        "lengthMenu": [5, 10, 25, 50, 100],
+        "language": {
+            "search": "Search Milk Consumption Records:"
+        }
+    });
+});
 </script>
 
 @endsection

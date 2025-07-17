@@ -7,10 +7,10 @@ use App\Models\AnimalDetail;
 use App\Models\ProductionMilk;
 use App\Models\User;
 use App\Models\Role;
-
+use Illuminate\Support\Facades\Auth;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
+
 
 use Illuminate\Http\Request;
 
@@ -78,6 +78,10 @@ class ProductionMilkController extends Controller
     //this is new code,display the amount of milk gain from each animals between specific date
     public function generateReport(Request $request)
     {
+         if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
        
     $start = $request->start_date;
     $end = $request->end_date;
@@ -109,6 +113,10 @@ class ProductionMilkController extends Controller
     // the following code is  the download pdf for the above function
     public function downloadPDFforGenerateReport(Request $request)
     {
+         if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
     $start = $request->start_date;
     $end = $request->end_date;
 
@@ -130,6 +138,11 @@ class ProductionMilkController extends Controller
     //this function is used to get the milk records of the animal between the particular dates
     public function  generateReportPerAnimal(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $start = $request->start_date;
         $end = $request->end_date;
         $animalID = $request->animal_id;
@@ -174,6 +187,11 @@ class ProductionMilkController extends Controller
     // the following code is  the download pdf for the above function
     public function downloadPDFforGenerateReportPerAnimal(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $start = $request->start_date;
         $end = $request->end_date;
         $animalID = $request->animal_id;
@@ -287,8 +305,11 @@ class ProductionMilkController extends Controller
         $production_date = $request->production_date;
         $time = $request->shift;
 
+        $animal_id = $request->animal_id;
+
         $exists = ProductionMilk::where('production_date',$production_date)
                     ->where('shift',$time)
+                    ->where('animal_id',$animal_id)
                     ->exists();
 
         if($exists)

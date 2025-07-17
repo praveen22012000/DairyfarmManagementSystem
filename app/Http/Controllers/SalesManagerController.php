@@ -59,5 +59,17 @@ class SalesManagerController extends Controller
           return redirect()->route('sales_manager.list')->with('success', 'sales manager record updated successfully!');
     }
 
+    
+    public function destroy(SalesManager $salesmanager)
+    {
+         if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $salesmanager->delete();
+        return redirect()->route('sales_manager.list')->with('success','sales manager record deleted successfully!');
+    }
+
 
 }

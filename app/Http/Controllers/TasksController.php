@@ -89,4 +89,16 @@ class TasksController extends Controller
         }
         return view('farm_tasks.view',['task'=>$task]);
     }
+
+    public function destroy(Tasks $task)
+    {
+          if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $task->delete();
+
+         return redirect()->route('tasks.list')->with('success', 'Task record deleted successfully!');
+    }
 }

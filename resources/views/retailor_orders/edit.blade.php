@@ -34,6 +34,21 @@
                 <input type="text" name="total_amount" id="total_amount"  class="form-control rounded" readonly value="">
                 @error('total_amount') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
+
+            <br>
+              <div>
+                <label for="discount_amount" class="block text-lg font-medium text-gray-700 mb-2">Discount Amount</label>
+                <input type="text" name="discount_amount" id="discount_amount"  class="form-control rounded" readonly value="">
+                @error('discount_amount') <span class="text-danger">{{ $message }}</span> @enderror
+            </div>
+
+            <br>
+              <div>
+                <label for="total_payable_amount" class="block text-lg font-medium text-gray-700 mb-2">Total Payable Amount</label>
+                <input type="text" name="total_payable_amount" id="total_payable_amount"  class="form-control rounded" readonly value="">
+                @error('total_payable_amount') <span class="text-danger">{{ $message }}</span> @enderror
+            </div>
+            <br>
         </div>
 
         <br>
@@ -172,14 +187,53 @@
         $('#total_amount').val(grandTotal.toFixed(2)); // For form submission
     }
 
+
+    function totalPayableAmount() 
+    {
+        
+        let grandTotal = 0;
+        let discount = 0;
+        let payable = 0;
+
+        $('.milk-row').each(function () 
+        {
+        grandTotal += updateRowSubtotal($(this));
+        });
+
+        if(grandTotal > 10000)
+        {
+        // grandTotal=grandTotal-grandTotal*0.5;
+        discount=grandTotal*0.3;
+        payable=grandTotal-discount;
+        }
+
+        else if(grandTotal > 5000)
+        {
+            discount=grandTotal*0.2;
+            payable=grandTotal-discount;
+        }
+
+        else 
+        {
+          discount=grandTotal*0;
+        payable=grandTotal-discount;
+        }
+
+        $('#discount_amount').val(discount.toFixed(2));
+        $('#total_payable_amount').val(payable.toFixed(2));
+        $('#total_amount').val(grandTotal.toFixed(2));
+    }
+
 // Trigger calculations on input changes
 $(document).on('input', 'input[name="ordered_quantity[]"], input[name="unit_price[]"]', function() {
     updateAllTotals();
+     totalPayableAmount();
 });
 
 // Initialize on page load
 $(document).ready(function() {
     updateAllTotals();
+     totalPayableAmount();
 });
 
 

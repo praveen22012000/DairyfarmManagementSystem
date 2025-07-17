@@ -187,37 +187,38 @@
     function totalPayableAmount() 
     {
         
-    let grandTotal = 0;
-    let discount = 0;
-    let payable = 0;
+        let grandTotal = 0;
+        let discount = 0;
+        let payable = 0;
 
-    $('.milk-row').each(function () {
+        $('.milk-row').each(function () 
+        {
         grandTotal += updateRowSubtotal($(this));
-    });
+        });
 
-    if(grandTotal > 10000)
-    {
-       // grandTotal=grandTotal-grandTotal*0.5;
-       discount=grandTotal*0.3;
+        if(grandTotal > 10000)
+        {
+        // grandTotal=grandTotal-grandTotal*0.5;
+        discount=grandTotal*0.3;
         payable=grandTotal-discount;
-    }
+        }
 
-    else if(grandTotal > 5000)
-    {
-        discount=grandTotal*0.2;
-          payable=grandTotal-discount;
-    }
+        else if(grandTotal > 5000)
+        {
+            discount=grandTotal*0.2;
+            payable=grandTotal-discount;
+        }
 
-    else 
-    {
+        else 
+        {
           discount=grandTotal*0;
         payable=grandTotal-discount;
-    }
+        }
 
-    $('#discount_amount').val(discount.toFixed(2));
-    $('#total_payable_amount').val(payable.toFixed(2));
-    $('#total_amount').val(grandTotal.toFixed(2));
-}
+        $('#discount_amount').val(discount.toFixed(2));
+        $('#total_payable_amount').val(payable.toFixed(2));
+        $('#total_amount').val(grandTotal.toFixed(2));
+    }
 
 
     

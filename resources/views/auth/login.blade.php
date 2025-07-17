@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>SB Admin 2 - Login</title>
+    <title>Maruthi Dairy - Login</title>
 
     <!-- Custom fonts for this template-->
     <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
@@ -16,9 +16,31 @@
 
     <!-- Custom styles for this template-->
     <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
+    <style>
+        .bg-custom-primary {
+            background-color: #3cb371 !important;
+            background: linear-gradient(180deg, #3cb371 0%, #2e8b57 100%) !important;
+        }
+        .btn-custom-primary {
+            background-color: #3cb371;
+            border-color: #3cb371;
+            color: white;
+        }
+        .btn-custom-primary:hover {
+            background-color: #2e8b57;
+            border-color: #2e8b57;
+            color: white;
+        }
+        .card {
+            border-radius: 10px;
+        }
+        .form-control-user {
+            border-radius: 50px;
+        }
+    </style>
 </head>
 
-<body class="bg-gradient-primary">
+<body class="bg-custom-primary">
 
     <div class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
         <div class="col-xl-6 col-lg-7 col-md-9">
@@ -26,7 +48,7 @@
                 <div class="card-body p-0">
                     <div class="p-5">
                         <div class="text-center">
-                            <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
+                            <h1 class="h4 text-gray-900 mb-4">Welcome to Maruthi Dairy!</h1>
                         </div>
                         <form class="user" method="POST" action="{{ route('login') }}">
                             @csrf
@@ -54,14 +76,14 @@
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary btn-user btn-block">
+                            <button type="submit" class="btn btn-custom-primary btn-user btn-block">
                                 Login
                             </button>
 
                             <hr>
                         </form>
                         <div class="text-center">
-                            <a class="small" href="{{ route('password.request') }}">Forgot Password?</a>
+                            <a class="small" href="forgot-password.html">Forgot Password?</a>
                         </div>
                     </div>
                 </div>

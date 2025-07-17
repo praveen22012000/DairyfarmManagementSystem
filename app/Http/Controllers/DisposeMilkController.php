@@ -145,7 +145,7 @@ class DisposeMilkController extends Controller
 
               $available_stock = ProductionMilk::sum('stock_quantity');
 
-        if($available_stock < 10)
+        if($available_stock < 250)
         {
              Mail::to('pararajasingampraveen22@gmail.com')->send(new LowStockMilkNotification($available_stock));
 

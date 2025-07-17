@@ -25,7 +25,7 @@
                     {{ session('success') }}
                 </div>
                 @endif
-            <table class="table">
+            <table id="disposeVaccineTable" class="table">
                 <thead class="thead-dark">
                     <tr>
                         <th> ID</th>
@@ -116,6 +116,18 @@
             }
         });
     }
+</script>
+
+<script>
+$(document).ready(function() {
+    $('#disposeVaccineTable').DataTable({
+        "pageLength": 10,  // Optional: Sets how many rows per page
+        "lengthMenu": [5, 10, 25, 50, 100],
+        "language": {
+            "search": "Search Dispose Feed Items records:"
+        }
+    });
+});
 </script>
 
 @endsection

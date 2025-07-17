@@ -20,8 +20,8 @@ class PurchaseFeedPaymentController extends Controller
 
        
     // Calculate total of all purchase_feed_items for this purchase
-    $totalAmount = PurchaseFeedItems::where('purchase_id', $id)
-                    ->selectRaw('SUM(unit_price * purchase_quantity) as total')
+    $totalAmount = PurchaseFeedItems::where('purchase_id', $id)     //We're starting a query on the PurchaseFeedItems model
+                    ->selectRaw('SUM(unit_price * purchase_quantity) as total') // selectRaw(...): Used to write raw SQL inside Laravel's query builder.  This multiplies the unit_price and purchase_quantity of each item and adds them all together
                     ->value('total');
 
     return response()->json(['total_amount' => $totalAmount]);
@@ -174,4 +174,16 @@ class PurchaseFeedPaymentController extends Controller
         return view('purchase_feed_payments.view',['purchasefeedpayment'=>$purchasefeedpayment,'paid_purchase_feeds'=>$paid_purchase_feeds]);
     }
    
+    public function destroy(PurchaseFeedPayment $purchasefeedpayment)
+    {
+        if (!in_array(Auth::user()->role_id, [1, 7])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $purchasefeedpayment->delete();
+
+         return redirect()->route('purchase_feed_payments.list')->with('success', 'Purchase feed payment record deleted successfully!');
+
+    }
 }

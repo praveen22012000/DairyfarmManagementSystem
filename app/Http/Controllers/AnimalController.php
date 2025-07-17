@@ -19,6 +19,11 @@ class AnimalController extends Controller
 // this is the new code for find the animals who born between the specific dates
     public function generateAnimalReport(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
         $start = $request->start_date;
         $end = $request->end_date;
 
@@ -48,6 +53,11 @@ class AnimalController extends Controller
 
     public function generateAnimalReportPDF(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1, 2, 6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
          $start = $request->start_date;
         $end = $request->end_date;
 
@@ -191,7 +201,8 @@ class AnimalController extends Controller
         }
 
 
-       $request->validate([
+       $request->validate
+       ([
             'animal_type_id' => 'required',
             'animal_birthdate' => 'required|before_or_equal:today',
             'animal_name' => 'required|string|max:255|unique:animal_details,animal_name',
@@ -217,8 +228,29 @@ class AnimalController extends Controller
             'weight_at_birth' => 'required|numeric|min:1',
             'age_at_first_service' => 'required|numeric|min:0',
             'weight_at_first_service' => 'required|numeric|min:0',
-]);
+        ]);
 
+
+        $male_animal = AnimalDetail::findOrfail($request->sire_id);
+        $female_animal = AnimalDetail::findOrfail($request->dam_id);
+
+       
+
+        if ($female_animal->animal_birthdate > $request->animal_birthdate) 
+        {
+                return back()->withInput()->withErrors
+                ([
+                    'animal_birthdate' => $request->animal_name . "'s birthdate should not be earlier than its female parent's birthdate (" . $female_animal->animal_birthdate . ").",
+                ]);
+        }
+
+        if ($male_animal->animal_birthdate > $request->animal_birthdate) 
+        {
+                return back()->withInput()->withErrors
+                ([
+                    'animal_birthdate' => $request->animal_name . "'s birthdate should not be earlier than its male parent's birthdate (" . $male_animal->animal_birthdate . ").",
+                ]);
+        }
      
      
         AnimalDetail::create(
@@ -362,6 +394,27 @@ class AnimalController extends Controller
             'animal_birthdate.before_or_equal' => 'Animal birthdate should be today or a past date.',
             'ear_tag.unique'=>'Ear Tag should be unique'
         ]);
+
+
+        $male_animal = AnimalDetail::findOrfail($request->sire_id);
+        $female_animal = AnimalDetail::findOrfail($request->dam_id);
+
+        if ($female_animal->animal_birthdate > $request->animal_birthdate) 
+        {
+                return back()->withInput()->withErrors
+                ([
+                    'animal_birthdate' => $request->animal_name . "'s birthdate should not be earlier than its female parent's birthdate (" . $female_animal->animal_birthdate . ").",
+                ]);
+        }
+
+        if ($male_animal->animal_birthdate > $request->animal_birthdate) 
+        {
+                return back()->withInput()->withErrors
+                ([
+                    'animal_birthdate' => $request->animal_name . "'s birthdate should not be earlier than its male parent's birthdate (" . $male_animal->animal_birthdate . ").",
+                ]);
+        }
+
 
         $animaldetail->update([
             'animal_type_id'=>$request->animal_type_id,

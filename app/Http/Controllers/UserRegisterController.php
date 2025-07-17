@@ -121,7 +121,11 @@ class UserRegisterController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $roles = Role::all(); // Fetch all roles
+       // $roles = Role::all(); // Fetch all roles
+
+        $roles = Role::whereNotIn('id',[1,4])->get();
+
+       
 
        // Get users with the veterinarian role who are not in the veterinarians table
         $veterinarians = User::where('role_id', 2) // Only veterinarians
@@ -161,18 +165,23 @@ class UserRegisterController extends Controller
         {
         
 
-            $request->validate([
-                'specialization'=>'required|string',
-                'doctor_hire_date'=>'required|date',
-              
-                'license_number'=>'required|unique:veterinarians,license_number',
-              
-              
-                'veterinarian_id' => 'required|exists:users,id'
-
-
-            ]);
-
+            if ($request->role_id == 2) 
+            {
+                $request->validate([
+                        'specialization' => 'required|string',
+                        'doctor_hire_date' => 'required|date|before_or_equal:today',
+                        'license_number' => [
+                                            'required',
+                                            'regex:/^SLVC-\d{4}-\d{4}$/',
+                                            'unique:veterinarians,license_number',
+                                            ],
+                                            'veterinarian_id' => 'required|exists:users,id',
+                ], [
+                        'license_number.regex' => 'The license number must be in the format SLVC-2024-0089.',
+                        'license_number.required' => 'The license number is required.',
+                        'license_number.unique' => 'This license number is already in use.',
+                ]);
+            }
             Veterinarian::create([
 
                 'specialization'=>$request->specialization,
@@ -191,19 +200,30 @@ class UserRegisterController extends Controller
         else if($request->role_id == 3)
         {
              if (!in_array(Auth::user()->role_id, [1])) 
-        {
+            {
             abort(403, 'Unauthorized action.');
-        }
+            }
 
-            $request->validate([
+            $request->validate
+            ([
 
                 'retailer_id'=>'required',
 
-                'store_name'=>'required|string',
+                'store_name'=>'required|string|unique:retailers,store_name',
                 'business_type'=>'required|string',
-                'tax_id'=>'required|string|unique:retailers,tax_id'
+                'tax_id'=>
+                [
+                            'required',
+                            'string',
+                            'regex:/^TIN-\d{8}$/',
+                            'unique:retailers,tax_id'
+                ]
+                
                     
-            ]);
+            ],
+        
+            ['tax_id.regex'=> 'The tax_id is must be in the format TIN-12345678']
+            );
 
           
             Retailer::create([

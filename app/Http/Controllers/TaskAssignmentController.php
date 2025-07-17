@@ -54,6 +54,8 @@ class TaskAssignmentController extends Controller
             'due_date'=>'required|after_or_equal:today'
         ]);
 
+   
+
         $task_assignment = TaskAssignment::create([
             'task_id'=>$request->task_id,
             'assigned_by'=>Auth::id(),
@@ -128,7 +130,7 @@ class TaskAssignmentController extends Controller
             return redirect()->route('tasks_assignment.list')->with('success', 'Task assigned updated successfully!');
     }
 
-    public function showReassignForm(TaskAssignment $taskassignment)
+    public function showReassignForm(TaskAssignment $taskassignment)// This is a controller method named showReassignForm.
     {
        
          if (!in_array(Auth::user()->role_id, [1,6])) 
@@ -137,10 +139,10 @@ class TaskAssignmentController extends Controller
         }
      
        // Get the currently assigned labore (even if busy)
-        $currentLabore = FarmLabore::with('user')->find($taskassignment->assigned_to);
+        $currentLabore = FarmLabore::with('user')->find($taskassignment->assigned_to);// This retrieves the currently assigned laborer 
 
         // Get all available labores
-        $availableLabores = FarmLabore::where('status', 'Available')->with('user')->get();
+        $availableLabores = FarmLabore::where('status', 'Available')->with('user')->get();// This fetches all laborers whose status is "Available"
 
         // Merge both collections, and make sure no duplicates
         $farm_labores = $availableLabores;

@@ -15,13 +15,13 @@
 
             </div>
             
-            <div class="card-body">
+            <div class="card-body"> 
                 @if (session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
                 </div>
                 @endif
-            <table class="table">
+            <table id="generalManagerTable" class="table">
                 <thead class="thead-dark">
                     <tr>
 
@@ -38,10 +38,11 @@
                       
                     </tr>
                 </thead>
-                 
-                    <tr>
-                        @foreach($general_managers as $general_manager)
+                  <tbody>
+                @foreach($general_managers as $general_manager)
 
+                    <tr>
+                        
                         <td>{{$general_manager->id}}</td>
                         <td>{{$general_manager->user->name}}</td>
                         <td>{{$general_manager->user->phone_number}}</td>
@@ -58,7 +59,7 @@
                         </td>
                     </tr>
                     @endforeach
-                <tbody>
+               
             
                 </tbody>
             </table>
@@ -108,6 +109,19 @@
         });
     }
 </script>
+
+<script>
+$(document).ready(function() {
+    $('#generalManagerTable').DataTable({
+        "pageLength": 10,  // Optional: Sets how many rows per page
+        "lengthMenu": [5, 10, 25, 50, 100],
+        "language": {
+            "search": "Search General Manager Records:"
+        }
+    });
+});
+</script>
+
 
 @endsection
 

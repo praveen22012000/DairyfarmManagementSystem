@@ -18,14 +18,15 @@
                     {{ session('success') }}
                 </div>
                 @endif
-            <table class="table">
+            <table class="table" id="breedingTable">
                 <thead class="thead-dark">
                     <tr>
                         <th>Breeding ID</th>
                         <th>Female Cow Name</th>
                         <th>Male Name</th>
                         <th>Veterinarian</th>
-                        <th>insemination Type</th>
+                        <th>Breeding Date</th>
+                        
                         <th>Breeding Notes</th>
                         <th>Actions</th>
                     </tr>
@@ -36,7 +37,8 @@
                         <td>{{$breeding->femalecow->animal_name}}</td>
                         <td>{{$breeding->malecow->animal_name}}</td>
                         <td>{{$breeding->user->name}}</td>
-                        <td>{{$breeding->insemination_type}}</td>
+                        <td>{{$breeding->breeding_date}}</td>
+                     
                         <td>{{$breeding->notes}}</td>
 
                         <td>
@@ -93,5 +95,18 @@
         });
     }
 </script>
+
+<script>
+$(document).ready(function() {
+    $('#breedingTable').DataTable({
+        "pageLength": 10,  // Optional: Sets how many rows per page
+        "lengthMenu": [5, 10, 25, 50, 100],
+        "language": {
+            "search": "Search Breeding Events:"
+        }
+    });
+});
+</script>
+
 
 @endsection

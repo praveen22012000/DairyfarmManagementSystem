@@ -6,7 +6,7 @@
         <div class="card">
             <div class="card-header">
                 <div class="float-left">
-                    <h2>Milk Productions Details</h2>
+                    <h2>Salary Assignment Details</h2>
                 </div>
 
                 <div class="float-right">
@@ -35,7 +35,7 @@
                     {{ session('success') }}
                 </div>
                 @endif
-            <table class="table">
+            <table id="salaryAssignmentTable" class="table">
                 <thead class="thead-dark">
                     <tr>
                         <th>ID</th>
@@ -63,9 +63,9 @@
 
                         <td>
 
-                        <a href="" class="btn btn-info">View</a>
+                        <a href="{{ route('monthly_salary_assign.view',$monthly_salary_assignment->id) }}" class="btn btn-info">View</a>
                         <a href="{{ route('monthly_salary_assign.edit',$monthly_salary_assignment->id) }}" class="btn btn-primary">Edit</a>
-                        <button class="btn btn-danger" onclick="">Delete</button>
+                        <button class="btn btn-danger" onclick="confirmDelete({{ $monthly_salary_assignment->id }})">Delete</button>
                     
                         </td>
                     </tr>
@@ -101,10 +101,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-   function confirmDelete(milkProductionDetailId) {
+   function confirmDelete(monthlySalaryAssignmentId) {
         Swal.fire({
             title: "Are you sure?",
-            text: "This will permanently delete the milk Production record.",
+            text: "This will permanently delete the salary assignment record.",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#d33",
@@ -114,13 +114,24 @@
             if (result.isConfirmed) {
                 // Set form action dynamically based on animal ID
                 let deleteForm = document.getElementById("deleteForm");
-                deleteForm.action = `/milk_production_details/${milkProductionDetailId}/destroy`;
+                deleteForm.action = `/monthly_salary_details/${monthlySalaryAssignmentId}/destroy`;
                 deleteForm.submit();
             }
         });
     }
 </script>
 
+<script>
+$(document).ready(function() {
+    $('#salaryAssignmentTable').DataTable({
+        "pageLength": 10,  // Optional: Sets how many rows per page
+        "lengthMenu": [5, 10, 25, 50, 100],
+        "language": {
+            "search": "Search For Supplier Records:"
+        }
+    });
+});
+</script>
 @endsection
 
 

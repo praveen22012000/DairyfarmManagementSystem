@@ -16,9 +16,14 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class PurchaseVaccineItemsController extends Controller
 {
-    //
+    //this is new code 
     public function purchaseVaccineReport(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $start = $request->start_date;
         $end = $request->end_date;
 
@@ -47,7 +52,12 @@ class PurchaseVaccineItemsController extends Controller
 
     public function purchaseVaccineReportDownloadPDF(Request $request)
     {
-         $start = $request->start_date;
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
+        $start = $request->start_date;
         $end = $request->end_date;
 
         $purchaseVaccineData = [];

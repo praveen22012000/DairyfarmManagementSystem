@@ -82,12 +82,20 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                Feed Inventory (KG)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Grain  {{$total_grain_Feed}}</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Wheat  {{$total_wheat_Feed}}</div>
+                                                Feed Inventory (KG)
+                                            </div>
+                                            <div class="d-flex justify-content-between h5 mb-0 font-weight-bold text-gray-800">
+                                                    <span>Grain</span>
+                                                    <span>{{ $total_grain_Feed }}</span>
+                                            </div>
+
+                                            <div class="d-flex justify-content-between h5 mb-0 font-weight-bold text-gray-800">
+                                                    <span>Wheat</span>
+                                                    <span>{{ $total_wheat_Feed }}</span>
+                                            </div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                            <i class="fa-solid fa-warehouse fa-2x text-gray-300"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -142,17 +150,17 @@
                                 <div class="card-body">
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Today Milk
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Weekly Death Animals
                                             </div>
                                             <div class="row no-gutters align-items-center">
                                                 <div class="col-auto">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{$todayMilk}}Liters</div>
+                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ $death_animals }}</div>
                                                 </div>
                                                 
                                             </div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fa-glass-water fa-2x text-gray-300"></i>
+                                            <i class="fa-solid fa-heart-crack fa-2x text-gray-300"></i>
                                         </div>
                                     </div>
                                 </div>
@@ -166,12 +174,21 @@
                                     <div class="row no-gutters align-items-center">
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                                MILK PRODUCT STOCK</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Yogurt  {{$total_yogurt_stock}}</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">Cheese  {{$total_cheese_stock}}</div>
+                                                MILK PRODUCT STOCK
+                                            </div>
+
+                                            <div class="d-flex justify-content-between h5 mb-0 font-weight-bold text-gray-800">
+                                                    <span>Yogurt</span>
+                                                    <span>{{ $total_yogurt_stock }}</span>
+                                            </div>
+
+                                            <div class="d-flex justify-content-between h5 mb-0 font-weight-bold text-gray-800">
+                                                    <span>Cheese</span>
+                                                    <span>{{ $total_cheese_stock }}</span>
+                                            </div>
                                         </div>
                                         <div class="col-auto">
-                                            <i class="fas fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                            <i class="fa-solid fa-jar fa-2x text-gray-300"></i> 
                                         </div>
                                     </div>
                                 </div>

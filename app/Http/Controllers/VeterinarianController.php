@@ -6,6 +6,7 @@ use App\Models\Veterinarian;
 use App\Models\Role;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class VeterinarianController extends Controller
 {
@@ -33,17 +34,29 @@ class VeterinarianController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $data=$request->validate([
-            'specialization'=>'required|string',
-            'doctor_hire_date'=>'required|date',
-          
-            'license_number'=>"required|unique:veterinarians,license_number,$veterinarian->id",
-       
-          
-            'veterinarian_id' => 'required|exists:users,id',
+        $data = $request->validate
+        ([
 
+                'specialization' => 'required|string',
+                'doctor_hire_date' => 'required|date',
 
-        ]);
+                'license_number' => [
+                                        'required',
+                                        'regex:/^SLVC-\d{4}-\d{4}$/',
+                                        Rule::unique('veterinarians', 'license_number')->ignore($veterinarian->id),
+                                    ],
+
+                'veterinarian_id' => 'required|exists:users,id',
+        ],
+    
+        [
+                        'license_number.regex' => 'The license number must be in the format SLVC-2024-0089.',
+                        'license_number.required' => 'The license number is required.',
+                        'license_number.unique' => 'This license number is already in use.',
+        ]
+    
+        );
+
 
       
           

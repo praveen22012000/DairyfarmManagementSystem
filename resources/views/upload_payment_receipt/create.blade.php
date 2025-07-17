@@ -11,11 +11,7 @@
 
     <form method="POST" action="{{ route('upload_payment.receipt.store',$retailor_order->id) }}" enctype="multipart/form-data">
         @csrf
-
-        
-
     
-        
         <label class="w-auto px-2">Amount Paid:</label>
         <input type="number" step="0.01" name="amount_paid" readonly value="{{ $retailor_order->total_payable_amount }}" class="form-control rounded"><br>
 

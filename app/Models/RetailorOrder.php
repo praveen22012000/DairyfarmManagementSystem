@@ -9,7 +9,14 @@ class RetailorOrder extends Model
 {
     use HasFactory;
 
-    protected $fillable=['retailor_id','total_amount','ordered_date','status','payment_status'];
+    protected $fillable=['retailor_id','total_amount','ordered_date','status','payment_status','total_amount','discount_amount','total_payable_amount'];
+
+    protected $casts = [
+    'total_amount' => 'decimal:2',
+    'discount_amount' => 'decimal:2',
+    'total_payable_amount' => 'decimal:2',
+];
+
 
     public function user()
     {

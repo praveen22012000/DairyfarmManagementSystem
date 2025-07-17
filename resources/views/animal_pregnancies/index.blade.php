@@ -18,14 +18,15 @@
                     {{ session('success') }}
                 </div>
                 @endif
-            <table class="table">
+            <table class="table" id="pregnancyTable">
                 <thead class="thead-dark">
                     <tr>
                         <th>Pregnancy ID</th>
-                        <th>Breeding ID</th>
+                      
                         <th>Femal Cow Name</th>
                         <th>Veterinarian</th>
                         <th>Confimation Date</th>
+                        <th>Estimated Calving Date</th>
                         <th>Status</th>
                         <th>Actions</th>
                       
@@ -35,12 +36,12 @@
                     @foreach($pregnancies as $pregnancie)
                     <tr>
                         <td>{{$pregnancie->id}}</td>
-                        <td>{{$pregnancie->breeding_id}}</td>
+                       
                         <td>{{$pregnancie->AnimalDetail->animal_name}}</td>
                       
                         <td>{{$pregnancie->user->name}}</td>
                         <td>{{$pregnancie->confirmation_date}}</td>
-
+                        <td>{{$pregnancie->estimated_calving_date}}</td>
                         <td>{{$pregnancie->pregnancy_status}}</td>
 
                        
@@ -97,5 +98,18 @@
         });
     }
 </script>
+
+<script>
+$(document).ready(function() {
+    $('#pregnancyTable').DataTable({
+        "pageLength": 10,  // Optional: Sets how many rows per page
+        "lengthMenu": [5, 10, 25, 50, 100],
+        "language": {
+            "search": "Search calvings Events:"
+        }
+    });
+});
+</script>
+
 
 @endsection

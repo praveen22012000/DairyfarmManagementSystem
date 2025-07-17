@@ -104,19 +104,25 @@
 
 
 <script>
-
 $(document).ready(function () {
     $('#production_milk_id').on('change', function () {
-        var productionMilkId = $(this).val(); // Get the selected calf ID
-     
+        fetchStockQuantity();
+    });
+
+    //  This runs on page load if there's an old value
+    @if(old('production_milk_id'))
+        $('#production_milk_id').val('{{ old('production_milk_id') }}');
+        fetchStockQuantity();
+    @endif
+
+    function fetchStockQuantity() {
+        var productionMilkId = $('#production_milk_id').val();
         if (productionMilkId) {
-            // Send an AJAX request to fetch calving details
             $.ajax({
                 url: `/milk_dispose/${productionMilkId}/details`,
                 method: 'GET',
                 dataType: 'json',
                 success: function (data) {
-                    // If data is returned, populate the form fields
                     if (data) {
                         $('#available_stock_quantity').val(data.stock_quantity);
                     }
@@ -125,8 +131,10 @@ $(document).ready(function () {
                     console.error('Error fetching stock quantity details:', error);
                 }
             });
+        } else {
+            $('#available_stock_quantity').val('');
         }
-    });
+    }
 });
 
 

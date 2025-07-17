@@ -5,7 +5,7 @@
 <div class="col-md-12">
 
        
-            <h1>Animal Calvings Registration Form</h1>     
+            <h1 style="text-align:center;">Animal Calvings Registration Form</h1>     
         
 
     <br>
@@ -13,8 +13,19 @@
     <form  method="POST" enctype="multipart/form-data" action="{{route('animal_calvings.store')}}">
         @csrf
 
-        <fieldset class="border p-4 mb-4">
-        <legend class="w-auto px-2">General Information</legend>
+             @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+
+       
+       
 
 
         <div class="form-group">
@@ -80,7 +91,7 @@
             @error('calving_notes') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
 
-        </fieldset>
+        
 
         
         <button type="submit" class="btn btn-success mt-3">Register Calvings</button>

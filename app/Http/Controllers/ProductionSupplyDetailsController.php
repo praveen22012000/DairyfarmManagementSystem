@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Mail\LowStockMilkNotification;
 use Illuminate\Support\Facades\Mail;
-
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ProductionSupplyDetailsController extends Controller
@@ -180,7 +180,10 @@ class ProductionSupplyDetailsController extends Controller
 //this function is new
     public function allocatedMilkForEachProduct(Request $request)
     {
-
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
        
     $startDate = $request->start_date;
     $endDate = $request->end_date;
@@ -212,9 +215,15 @@ class ProductionSupplyDetailsController extends Controller
     return view('reports.allocated_milk', compact('allocatedMilk', 'startDate', 'endDate'));
         
     }
+
 // this function is for the download PDF for the above function
     public function downloadPDFforAllocatedMilk(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1, 6, 5])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+        
          $startDate = $request->start_date;
          $endDate = $request->end_date;
 
@@ -269,7 +278,8 @@ class ProductionSupplyDetailsController extends Controller
         {
             abort(403, 'Unauthorized action.');
         }
-        
+
+       
          // Fetch records where stock_quantity > 0
          $ProductionsMilk = ProductionMilk::where('stock_quantity', '>', 0)->get();
 
@@ -291,7 +301,7 @@ class ProductionSupplyDetailsController extends Controller
         $request->validate([
             'date' => 'required|date|before_or_equal:today',
             'time' => 'required',
-            'entered_by' => 'required|string',
+            //'entered_by' => 'required|string',
             'production_milk_id' => 'required|array',
             'production_milk_id.*' => 'exists:production_milks,id',
             'consumed_quantity' => 'required|array',
@@ -351,7 +361,8 @@ class ProductionSupplyDetailsController extends Controller
         ([
             'date' => $request->date,
             'time' => $request->time,
-            'entered_by' => $request->entered_by,
+            'entered_by' =>auth()->user()->name
+
         ]);
 
 
@@ -379,7 +390,7 @@ class ProductionSupplyDetailsController extends Controller
     
         $available_stock = ProductionMilk::sum('stock_quantity');
 
-        if($available_stock < 10)
+        if($available_stock < 250)
         {
              Mail::to('pararajasingampraveen22@gmail.com')->send(new LowStockMilkNotification($available_stock));
 
@@ -436,7 +447,7 @@ class ProductionSupplyDetailsController extends Controller
         $request->validate([
             'date' => 'required|date',
             'time' => 'required',
-            'entered_by' => 'required|string',
+           // 'entered_by' => 'required|string',
             'production_milk_id' => 'required|exists:production_milks,id',
             'consumed_quantity' => 'required|numeric|min:0',
             'product_id' => 'required|exists:milk_products,id',
@@ -467,7 +478,7 @@ class ProductionSupplyDetailsController extends Controller
           $productionSupplyDetails->production_supply->update([
             'date' => $request->date,
             'time' => $request->time,
-            'entered_by' => $request->entered_by,
+            'entered_by' => auth()->user()->name
         ]);
 
         $new_consumed_quantity =$productionSupplyDetails->production_milk->stock_quantity+$productionSupplyDetails->consumed_quantity-$request->consumed_quantity;

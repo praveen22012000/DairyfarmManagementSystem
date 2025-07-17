@@ -56,4 +56,16 @@ class FarmLaboreController extends Controller
 
           return redirect()->route('farm_labores.list')->with('success', 'farm labore record updated successfully!');
     }
+
+    public function destroy(FarmLabore $farmlabore)
+    {
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $farmlabore->delete();
+
+        return redirect()->route('farm_labores.list')->with('success','farm labore record deleted successfully!');
+    }
 }

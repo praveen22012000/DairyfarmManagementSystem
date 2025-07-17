@@ -24,13 +24,10 @@
                 <!-- start-->
         <div class="card-header">
             
-                <a class="btn btn-primary" href="{{ route('milk_records_monthly.report', ['year' => now()->year]) }}">
-                     View Monthly Chart
-                </a>   
+                
 
-                 <a href="{{ route('milk.animal_year_chart') }}" class="btn btn-success">Animal-wise Monthly Report</a>
-
-                 <a class="btn btn-primary" href="">New Chart</a>
+              
+               
         </div>
 
         <!--end -->
@@ -41,7 +38,7 @@
                     {{ session('success') }}
                 </div>
                 @endif
-            <table class="table">
+            <table class="table" id="milkProductionTable">
                 <thead class="thead-dark">
                     <tr>
                         <th> ID</th>
@@ -125,6 +122,19 @@
             }
         });
     }
+</script>
+
+
+<script>
+$(document).ready(function() {
+    $('#milkProductionTable').DataTable({
+        "pageLength": 10,  // Optional: Sets how many rows per page
+        "lengthMenu": [5, 10, 25, 50, 100],
+        "language": {
+            "search": "Search Breeding Events:"
+        }
+    });
+});
 </script>
 
 @endsection

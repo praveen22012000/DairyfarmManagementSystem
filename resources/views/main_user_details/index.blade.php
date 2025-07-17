@@ -9,6 +9,12 @@
                     <h2>Users</h2>
                 </div>
 
+                 <div class="float-right">
+                    <a class="btn btn-success btn-md btn-rounded" href="{{ route('main_user_details.create') }}">
+                        <i class="mdi mdi-plus-circle mdi-18px"></i> Add User
+                    </a>
+                </div>
+
                 <div class="float-right">
                
                 </div>
@@ -21,7 +27,7 @@
                     {{ session('success') }}
                 </div>
                 @endif
-            <table class="table">
+            <table id="mainUserTable" class="table">
                 <thead class="thead-dark">
                     <tr>
                         <th> ID</th>
@@ -45,9 +51,12 @@
                         <td>
 
                         <a href="{{ route('main_user_details.view',$user->id) }}" class="btn btn-info">View</a>
+                         @if ($user->role_id !== 1)
                         <a href="{{ route('main_user_details.edit',$user->id) }}" class="btn btn-primary">Edit</a>
-                        <button class="btn btn-danger" onclick="">Delete</button>
-                    
+                         @endif
+                         @if ($user->role_id !== 1)
+                        <button class="btn btn-danger" onclick="confirmDelete({{ $user->id }})">Delete</button>
+                        @endif
                         </td>
                     </tr>
                     @endforeach
@@ -82,10 +91,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-   function confirmDelete(veterinarianId) {
+   function confirmDelete(userId) {
         Swal.fire({
             title: "Are you sure?",
-            text: "This will permanently delete the veterinarian record.",
+            text: "This will permanently delete the user record from the system.",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#d33",
@@ -95,11 +104,23 @@
             if (result.isConfirmed) {
                 // Set form action dynamically based on animal ID
                 let deleteForm = document.getElementById("deleteForm");
-                deleteForm.action = `/users/veterinarian_list/${veterinarianId}/destroy`;
+                deleteForm.action = `/users_main_details/${userId}/destroy`;
                 deleteForm.submit();
             }
         });
     }
+</script>
+
+<script>
+$(document).ready(function() {
+    $('#mainUserTable').DataTable({
+        "pageLength": 10,  // Optional: Sets how many rows per page
+        "lengthMenu": [5, 10, 25, 50, 100],
+        "language": {
+            "search": "Search For User Records:"
+        }
+    });
+});
 </script>
 
 @endsection

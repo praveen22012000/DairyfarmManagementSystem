@@ -21,8 +21,10 @@ return new class extends Migration
 
             $table->string('notes');
 
+            $table->foreign('veterinarian_id')->references('id')->on('users')->onDelete('cascade');
 
             $table->timestamps();
+
         });
     }
 

@@ -25,7 +25,7 @@
                     {{ session('success') }}
                 </div>
                 @endif
-            <table class="table">
+            <table id="feedDetailsTable" class="table">
                 <thead class="thead-dark">
                     <tr>
                         <th> ID</th>
@@ -109,6 +109,18 @@
             }
         });
     }
+</script>
+
+<script>
+$(document).ready(function() {
+    $('#feedDetailsTable').DataTable({
+        "pageLength": 10,  // Optional: Sets how many rows per page
+        "lengthMenu": [5, 10, 25, 50, 100],
+        "language": {
+            "search": "Search Feed Details:"
+        }
+    });
+});
 </script>
 
 @endsection

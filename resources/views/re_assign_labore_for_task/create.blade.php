@@ -5,7 +5,7 @@
 <div class="col-md-12">
 
        
-            <h1>Re-Assign Farm Labore</h1>     
+            <h1 style="text-align:center;">ReAssign Farm Labore</h1>     
         
 
     <br>

@@ -49,8 +49,6 @@ class UploadPaymentController extends Controller
          // 2. Find the order
          $order = RetailorOrder::findOrFail($id);
 
- 
- 
            // 3. Handle the payment receipt upload
          if ($request->hasFile('payment_receipt')) 
          {

@@ -46,16 +46,13 @@ class SupplierController extends Controller
             abort(403, 'Unauthorized action.');
         }
           // Validate the request data
-    $data = $request->validate([
+        $data = $request->validate([
         'name' => 'required|string|max:255',
-        'phone_no' => 'required|string|max:255',
-        'email'=>'required|email',
-        'address'=>'required',
+    
+        'phone_no' => ['required','regex:/^(07[0-9]\d{7})|(021\d{7})$/','unique:suppliers,phone_no'],
+         'email' => ['required','email','unique:suppliers,email'],
+        'address'=>'required'
 
-      //  'feeds' => 'nullable|array|required_without:vaccines', // Ensure feeds is an array (if provided)
-      //  'feeds.*' => 'exists:feeds,id', // Ensure each feed ID exists in the feeds table
-     //   'vaccines' => 'nullable|array|required_without:feeds', // Ensure vaccines is an array (if provided)
-      //  'vaccines.*' => 'exists:vaccines,id', // Ensure each vaccine ID exists in the vaccines table
     ]);
 
 
@@ -68,41 +65,9 @@ class SupplierController extends Controller
         'address'=>$data['address']
     ]);
 
-  //  $received_feeds=$request->feeds;
-   // $received_vaccines=$request->vaccines;
+ 
 
-
-     // Ensure $received_feeds is an array (use null coalescing to default to an empty array)
-  //   $received_feeds = $request->feeds ?? [];
-
- /*   foreach($received_feeds as $index => $received_feed_id)
-    {
-        SupplierFeed::create([
-
-            'feed_id'=>$received_feed_id,
-            'supplier_id'=>$supplier->id
-
-        ]);
-
-    }*/
-
-    // Ensure $received_vaccines is an array (use null coalescing to default to an empty array)
-  //  $received_vaccines = $request->vaccines ?? [];
-
-  /*  foreach($received_vaccines as $index => $received_vaccine_id)
-    {
-        SupplierVaccine::create([
-
-            'vaccine_id'=>$received_vaccine_id,
-            'supplier_id'=>$supplier->id
-
-        ]);
-
-    }*/
-
-   
-
-   // return redirect()->route('suppliers.index')->with('success', 'Supplier created successfully.');
+    return redirect()->route('supplier_details.list')->with('success','supplier details saved successfully');
 
 
 
@@ -110,14 +75,10 @@ class SupplierController extends Controller
 
     public function edit(Supplier $supplier)
     {
-          if (!in_array(Auth::user()->role_id, [1])) 
+        if (!in_array(Auth::user()->role_id, [1])) 
         {
             abort(403, 'Unauthorized action.');
         }
-       // $feeds=Feed::all();
-      //  $vaccines=Vaccine::all();
-
-      
         
         return view('supplier_feed_vaccine_details.edit',['supplier'=>$supplier]);
     }
@@ -139,15 +100,27 @@ class SupplierController extends Controller
         }
         $data=$request->validate([
             'name'=>'required',
-            'phone_no'=>'required|numeric',
-            'email'=>'required|email',
+            'phone_no'=>['required','numeric','regex:/^(07[0-9]\d{7})|(021\d{7})$/','unique:suppliers,phone_no,'.$supplier->id],     
+            'email'=>"required|email|unique:suppliers,email,$supplier->id",
             'address'=>'required'
         ]);
 
         $supplier->update($data);
 
-        return redirect()->route('supply_feed_vaccine.list')->with('success', 'Supplier record updated successfully!');
+        return redirect()->route('supplier_details.list')->with('success', 'Supplier record updated successfully!');
         
+    }
+
+    public function destroy(Supplier $supplier)
+    {
+         if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $supplier->delete();
+
+        return redirect()->route('supplier_details.list')->with('success', 'Supplier record deleted successfully!');
     }
 }
 

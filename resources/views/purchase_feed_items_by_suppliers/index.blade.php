@@ -22,15 +22,7 @@
                      <!-- start-->
         <div class="card-header">
             
-                <a class="btn btn-primary" href="{{ route('report.monthly_feed_purchase') }}">
-                     View Monthly Chart
-                </a>   
-                
-                
-                <a class="btn btn-primary" href="{{ route('reports.feed_spending_for_each_product') }}">
-                     View Monthly Product Price Chart
-                </a>  
-                  
+               
         </div>
             
             <div class="card-body">
@@ -39,7 +31,7 @@
                     {{ session('success') }}
                 </div>
                 @endif
-            <table class="table">
+            <table class="table" id="purchaseFeedTable">
                 <thead class="thead-dark">
                     <tr>
                         <th> ID</th>
@@ -128,6 +120,18 @@
             }
         });
     }
+</script>
+
+<script>
+$(document).ready(function() {
+    $('#purchaseFeedTable').DataTable({
+        "pageLength": 10,  // Optional: Sets how many rows per page
+        "lengthMenu": [5, 10, 25, 50, 100],
+        "language": {
+            "search": "Search Milk Products:"
+        }
+    });
+});
 </script>
 
 @endsection

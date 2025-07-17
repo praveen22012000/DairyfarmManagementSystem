@@ -6,7 +6,7 @@
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
                <div class="sidebar-brand-text mx-3">
-   <!--     <img src="{{ asset('images/cow-2-logo.jpg') }}" alt="Logo" style="height: 40px; width: auto;"> -->
+      <img src="{{ asset('img/cow-2-logo.jpg') }}" alt="Logo" style="height: 65px; width: auto;"> 
     </div>
             </a>
 
@@ -97,7 +97,7 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#collapseUtilities3"
                     aria-expanded="true" aria-controls="collapseUtilities3">
-                    <i class="fas fa-fw fa-wrench"></i>
+                    <i class="fa-solid fa-bowl-food"></i>
                     <span>Feed</span>
                 </a>
                 <div id="collapseUtilities3" class="collapse" aria-labelledby="headingUtilities3"
@@ -232,7 +232,7 @@
                         <h6 class="collapse-header">Custom Utilities:</h6>
                         <a class="collapse-item" href="{{ route('main_user_details.list') }}">User Details</a>
                          <a class="collapse-item" href="{{ route('users.list') }}">Role based User Details</a>
-                        <a class="collapse-item" href="{{ route('supply_feed_vaccine.list') }}">Supplier Details</a>
+                        <a class="collapse-item" href="{{ route('supplier_details.list') }}">Supplier Details</a>
                        
                             
                     </div>
@@ -259,7 +259,8 @@
                 </div>
             </li>
              @endif
-           
+        
+
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('role_salary.list') }}">
                     <i class="fa-solid fa-calendar-check"></i>
@@ -273,84 +274,113 @@
             </li>
 
 
+            @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 6 || Auth::user()->role_id == 2)
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#collapseUtilities9"
+                    aria-expanded="true" aria-controls="collapseUtilities9">
+                    <i class="fa-solid fa-cow"></i>
+                    <span>Animal & Milk Report</span>
+                </a>
+                <div id="collapseUtilities9" class="collapse" aria-labelledby="headingUtilities9"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Custom Utilities:</h6>
+                        @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 6 || Auth::user()->role_id == 2)
+                        <a class="collapse-item" href="{{route('milk.production.report')}}">Milk Production</a>
+                        @endif
+
+                        @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 6 || Auth::user()->role_id == 2)
+                        <a class="collapse-item" href="{{route('milk.production.report_for_animal')}}">Animal Milk Production</a>
+                        @endif
+
+                        @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 6  || Auth::user()->role_id == 2)
+                        <a class="collapse-item" href="{{route('reports.allocated_milk_for_each_product')  }}">Milk Allocated For Products</a>
+                        @endif
+
+                         @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 6  || Auth::user()->role_id == 2)
+                        <a class="collapse-item" href="{{route('report.animal_birth')  }}">Animal Birth</a>
+                        @endif
+
+                      
+                    </div>
+                </div>
+            </li>
+             @endif
+
+
+            @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 6)
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#collapseUtilities10"
+                    aria-expanded="true" aria-controls="collapseUtilities10">
+                    <i class="fa-solid fa-wheat-awn"></i>
+                    <span>Feed & Vaccine Report</span>
+                </a>
+                <div id="collapseUtilities10" class="collapse" aria-labelledby="headingUtilities10"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Custom Utilities:</h6>
+                       
+                        <a class="collapse-item" href="{{route('report.purchase_feed')}}">Purchase Feed</a>          
+                        <a class="collapse-item" href="{{route('vaccine_items.report')}}">Purchase Vaccine</a> 
+                        <a class="collapse-item" href="{{route('dispose_feed_items.report')  }}">Dispose Feed</a>
+                        <a class="collapse-item" href="{{route('dispose_vaccine_items.report')  }}">Dispose Vaccine</a>
+                     
+
+                      
+                    </div>
+                </div>
+            </li>
+             @endif
+
             
-
-           
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('milk.production.report') }}">
-                    <i class="fa-solid fa-calendar-check"></i>
-                    <span>Report1 </span></a>
-            </li>
-           
-
-             <li class="nav-item">
-                <a class="nav-link" href="{{ route('milk.production.report_for_animal') }}">
-                    <i class="fa-solid fa-calendar-check"></i>
-                    <span>Report2 </span></a>
-            </li>
-
-
-             <li class="nav-item">
-                <a class="nav-link" href="{{ route('reports.allocated_milk_for_each_product') }}">
-                    <i class="fa-solid fa-calendar-check"></i>
-                    <span>Report 3 </span></a>
-            </li>
+            @if (Auth::user()->role_id == 1 || Auth::user()->role_id == 7)
 
             <li class="nav-item">
-                <a class="nav-link" href="{{ route('report.purchase_feed') }}">
-                    <i class="fa-solid fa-calendar-check"></i>
-                    <span>Report 4 </span></a>
+                <a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#collapseUtilities11"
+                    aria-expanded="true" aria-controls="collapseUtilities11">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                    <span>Financial Report</span>
+                </a>
+                <div id="collapseUtilities11" class="collapse" aria-labelledby="headingUtilities11"
+                    data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Custom Utilities:</h6>
+                       
+                        <a class="collapse-item" href="{{route('delivered.retailor_order_items')}}">Delivered Orders</a>          
+                        <a class="collapse-item" href="{{route('farm_financial.report')}}">Farm Financial Report</a> 
+                        <a class="collapse-item" href="{{route('salary_per_role_report')}}">Salary Allocation Report</a>          
+                        <a class="collapse-item" href="{{route('monthly_salary_for_role')}}">Monthly Salary Allocation</a>
+                     
+
+                      
+                    </div>
+                </div>
             </li>
-          
-             <li class="nav-item">
-                <a class="nav-link" href="{{ route('report.animal_birth') }}">
-                    <i class="fa-solid fa-calendar-check"></i>
-                    <span>Report 5 </span></a>
-            </li>
+             @endif
            
-          
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('vaccine_items.report') }}">
-                    <i class="fa-solid fa-calendar-check"></i>
-                    <span>Report 6 </span></a>
-            </li>
-                
+           
+
         
-             <li class="nav-item">
-                <a class="nav-link" href="{{ route('dispose_feed_items.report') }}">
-                    <i class="fa-solid fa-calendar-check"></i>
-                    <span>Dispose Feed </span></a>
-            </li>
-
-          
-             <li class="nav-item">
-                <a class="nav-link" href="{{ route('dispose_vaccine_items.report') }}">
-                    <i class="fa-solid fa-calendar-check"></i>
-                    <span>Dispose Vaccine</span></a>
-            </li>
-
          
 
-             <li class="nav-item">
-                <a class="nav-link" href="{{ route('delivered.retailor_order_items') }}">
-                    <i class="fa-solid fa-calendar-check"></i>
-                    <span>Delivered Retailor Orders</span></a>
-            </li>
+        
           
 
-            <li class="nav-item">
+      <!--      <li class="nav-item">
                 <a class="nav-link" href="{{ route('my_profile.show') }}">
                     <i class="fa fa-user"></i>
                     <span>My Profile</span>
                 </a>
-            </li>
+            </li>-->
 
-             <li class="nav-item">
+      <!--       <li class="nav-item">
                 <a class="nav-link" href="{{ route('password.change.form') }}">
                     <i class="fa fa-user"></i>
                     <span>Change Password</span>
                 </a>
-            </li>
+            </li>-->
 
             
 

@@ -142,17 +142,19 @@
 
      
     </form>
+ 
 
     <form action="{{ route('manager.orders.approve', $retailororder->id) }}" method="POST" style="display:inline;">
                     @csrf
                     <button type="submit" class="btn btn-success">Approve</button>
     </form>
-
+  
     <form action="{{ route('manager.orders.reject', $retailororder->id) }}" method="POST" style="display:inline;">
                     @csrf
                 @method('PATCH')
                     <button type="submit" class="btn btn-danger">Reject</button>
     </form>
+    
 </div>
 
 

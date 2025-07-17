@@ -6,7 +6,7 @@
 
 
        
-            <h1>Tasks Details</h1>     
+            <h1 style="text-align:center;">Tasks Details</h1>     
 
     <br>
 
@@ -27,7 +27,7 @@
             @error('description') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
 
-    <button type="submit" class="btn btn-success mt-3">Update</button>
+    
     </form>
 
 </div>

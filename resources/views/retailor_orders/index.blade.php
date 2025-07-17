@@ -26,7 +26,7 @@
                     {{ session('success') }}
                 </div>
                 @endif
-            <table class="table">
+            <table class="table" id="retailorOrderTable">
                 <thead class="thead-dark">
                     <tr>
                         <th>ID</th>
@@ -92,15 +92,18 @@
             @endif
         @endif
 
-        @if($retailor_order->status == 'Approved' && $retailor_order->payment_status == 'Under Review' && $retailor_order->payment_attempts > 1)
+        @if($retailor_order->status == 'Approved' && $retailor_order->payment_status == 'Under Review' && $retailor_order->payment_attempts >= 1)
             @if(Auth::user()->role_id == 1 || $retailor_order->user->id == auth()->id())
-                <form action="{{ route('cancel_payment_receipt',$retailor_order->id) }}" method="POST" class="d-inline">
-                    @csrf
-                    @method('POST')
-                    <button type="submit" class="btn btn-danger btn-sm">Cancel Payment</button>
-                </form>
+               
+                    <button onclick="confirmDelete({{ $retailor_order->id }})" class="btn btn-danger btn-sm">Cancel Payment</button>
+              
             @endif
         @endif
+
+         <form id="cancelPaymentForm" method="post" style="display:none;">
+                    @csrf
+                    @method('POST')
+        </form>
 
         <!-- Ready for Delivery Actions -->
         @if($retailor_order->payment_status == 'Paid' && $retailor_order->status == 'Ready for Delivery')
@@ -196,6 +199,40 @@ function confirmCancel(orderId, type) {
     });
 }
 </script>
+
+<script>
+   function confirmDelete(retailorOrderId) {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "This will permanently delete the retailor payment record.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Set form action dynamically based on animal ID
+                let deleteForm = document.getElementById("cancelPaymentForm");
+                deleteForm.action = `/upload_payment_details/retailor/cancel_payment_receipt/${retailorOrderId}/cancel`;
+                deleteForm.submit();
+            }
+        });
+    }
+</script>
+
+<script>
+$(document).ready(function() {
+    $('#retailorOrderTable').DataTable({
+        "pageLength": 10,  // Optional: Sets how many rows per page
+        "lengthMenu": [5, 10, 25, 50, 100],
+        "language": {
+            "search": "Search For Feed Payment records:"
+        }
+    });
+});
+</script>
+
 @endsection
 
 

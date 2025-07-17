@@ -21,7 +21,7 @@
                     {{ session('success') }}
                 </div>
                 @endif
-            <table class="table">
+            <table class="table" id="famrLaboresTable">
                 <thead class="thead-dark">
                     <tr>
 
@@ -38,8 +38,10 @@
                     </tr>
                 </thead>
                  
+                <tbody>
+                     @foreach($farm_labores as $farm_labore)
                     <tr>
-                        @foreach($farm_labores as $farm_labore)
+                        
 
                         <td>{{$farm_labore->id}}</td>
                         <td>{{$farm_labore->user->name}}</td>
@@ -51,12 +53,12 @@
 
                         <a href="{{ route('farm_labore.view',$farm_labore->id) }}" class="btn btn-info">View</a>
                         <a href="{{ route('farm_labore.edit',$farm_labore->id) }}" class="btn btn-primary">Edit</a>
-                        <button class="btn btn-danger" onclick="">Delete</button>
+                        <button class="btn btn-danger" onclick="confirmDelete({{ $farm_labore->id }})">Delete</button>
 
                         </td>
                     </tr>
                     @endforeach
-                <tbody>
+                
             
                 </tbody>
             </table>
@@ -87,10 +89,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-   function confirmDelete(retailerId) {
+   function confirmDelete(farmLaboreId) {
         Swal.fire({
             title: "Are you sure?",
-            text: "This will permanently delete the retailer record.",
+            text: "This will permanently delete the Farm labore record.",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#d33",
@@ -100,12 +102,25 @@
             if (result.isConfirmed) {
                 // Set form action dynamically based on animal ID
                 let deleteForm = document.getElementById("deleteForm");
-                deleteForm.action = `/users/retailer_list/${retailerId}/destroy`;
+                deleteForm.action = `/users/labores_list/${farmLaboreId}/destroy`;
                 deleteForm.submit();
             }
         });
     }
 </script>
+
+<script>
+$(document).ready(function() {
+    $('#famrLaboresTable').DataTable({
+        "pageLength": 10,  // Optional: Sets how many rows per page
+        "lengthMenu": [5, 10, 25, 50, 100],
+        "language": {
+            "search": "Search Farm Labore records:"
+        }
+    });
+});
+</script>
+
 
 @endsection
 

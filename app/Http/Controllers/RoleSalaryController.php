@@ -89,4 +89,11 @@ class RoleSalaryController extends Controller
     
         return view('role_salaries.view',['roles'=>$roles,'rolesalary'=>$rolesalary]) ;
     }
+
+    public function destroy(RoleSalary $rolesalary)
+    {
+        $rolesalary->delete();
+
+         return redirect()->route('role_salary.list')->with('success', 'Salary record deleted successfully!');   
+    }
 }

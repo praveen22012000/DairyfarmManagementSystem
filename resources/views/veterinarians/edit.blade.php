@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="container">
-    <h2>Change User Details</h2>
+    <h2 style="text-align:center;">Change User Details</h2>
     <form method="POST" action="{{ route('veterinarians.update',$veterinarian->id)}}">
         @csrf
        

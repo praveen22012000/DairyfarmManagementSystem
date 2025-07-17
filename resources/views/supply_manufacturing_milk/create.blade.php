@@ -15,18 +15,14 @@
                 <input type="date" name="date" id="date" class="form-control rounded" value="{{old('date')}}" required>
                 @error('date') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
-
+            <br>
             <div>
                 <label for="time" class="block text-lg font-medium text-gray-700 mb-2">Time</label>
                 <input type="time" name="time" id="time" class="form-control rounded" value="{{old('time')}}" required>
                 @error('time') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
-            <div>
-                <label for="entered_by" class="block text-lg font-medium text-gray-700 mb-2">Entered By</label>
-                <input type="text" name="entered_by" id="entered_by" placeholder="Enter your name" class="form-control rounded" value="{{old('entered_by')}}" required>
-                @error('entered_by') <span class="text-danger">{{ $message }}</span> @enderror
-            </div>
+          
         </div>
 
         <br>

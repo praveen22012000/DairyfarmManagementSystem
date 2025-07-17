@@ -18,7 +18,7 @@
                     {{ session('success') }}
                 </div>
                 @endif
-            <table class="table">
+            <table id="appointmentTable" class="table">
                 <thead class="thead-dark">
                     <tr>
                         <th>Appointment ID</th>
@@ -95,6 +95,18 @@
             }
         });
     }
+</script>
+
+<script>
+$(document).ready(function() {
+    $('#appointmentTable').DataTable({
+        "pageLength": 10,  // Optional: Sets how many rows per page
+        "lengthMenu": [5, 10, 25, 50, 100],
+        "language": {
+            "search": "Search For Veterinarian records:"
+        }
+    });
+});
 </script>
 
 @endsection

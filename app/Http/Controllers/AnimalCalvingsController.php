@@ -49,8 +49,11 @@ class AnimalCalvingsController extends Controller
      //  dd($veterinarians_id);
         $veterinarians=User::whereIn('role_id', $veterinarians_id)->get();
 
+        $used_pregnancies_id = AnimalCalvings::pluck('pregnancy_id');
 
-        $pregnancies = Pregnancies::with(['AnimalCalving','breeding_event','AnimalDetail'])->get();
+
+        $pregnancies = Pregnancies::whereNotIn('id',$used_pregnancies_id)->with(['AnimalCalving','breeding_event','AnimalDetail'])->get();
+
 
 
         return view('animal_calving.create',['Child_animals'=>$Child_animals,'veterinarians'=>$veterinarians,'pregnancies'=>$pregnancies]);
@@ -75,9 +78,45 @@ class AnimalCalvingsController extends Controller
 
         ]);
 
-    
+        $pregnancy_id = $request->pregnancy_id;
+        $pregnancy = Pregnancies::with(['breeding_event','AnimalDetail','AnimalCalving'])->findOrfail($pregnancy_id);
+
+        $calf_id = $request->calf_id;
+        $calf = AnimalDetail::with(['asCalf'])->findOrfail($calf_id);
+
+      
+
+       $parent_male_cow_id = $pregnancy->breeding_event->male_cow_id;
+       $female_cow_id = $pregnancy->breeding_event->female_cow_id;
+
+       $parent_male_animal_name = AnimalDetail::findOrfail($parent_male_cow_id);
+       $parent_female_animal_name = AnimalDetail::findOrfail($female_cow_id);
+
+        if ($calf->dam_id != $pregnancy->breeding_event->female_cow_id) 
+       {
+                return back()->withInput()->withErrors([
+                            'The dam of the calf "' . $calf->animal_name . '" should be "' . $parent_female_animal_name->animal_name . '", but a different animal is registered in the Animal Details table. Please correct it.'
+                ]);
+       }
 
 
+       if ($calf->sire_id != $pregnancy->breeding_event->male_cow_id) 
+       {
+                return back()->withInput()->withErrors([
+                            'The sire of the calf "' . $calf->animal_name . '" should be "' . $parent_male_animal_name->animal_name . '", but a different animal is registered in the Animal Details table. Please correct it.'
+                ]);
+       }
+
+        if ($pregnancy->estimated_calving_date > $calf->animal_birthdate) 
+        {
+            return back()->withInput()->withErrors
+            ([
+                'The birthdate of the calf "' . $calf->animal_name . '" (' . $calf->animal_birthdate . ') cannot be earlier than the estimated calving date (' . $pregnancy->estimated_calving_date . '). Please check and update the birthdate in the Animal Details table.'
+            ]);
+        }
+
+       
+        
         AnimalCalvings::create([
             'calf_id'=>$request->calf_id,
        

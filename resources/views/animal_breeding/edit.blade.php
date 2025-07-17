@@ -5,7 +5,7 @@
 <div class="col-md-12">
 
        
-            <h1>Animal Breedings Registration Form</h1>     
+            <h1 style="text-align:center;S">Animal Breedings Registration Form</h1>     
         
 
     <br>
@@ -24,8 +24,7 @@
 @endif
 
 
-        <fieldset class="border p-4 mb-4">
-        <legend class="w-auto px-2">General Information</legend>
+      
 
 
     <!--this is used to list the female_cow_name -->
@@ -121,10 +120,10 @@
         </div>
 
 
-        </fieldset>
+   
 
         
-        <button type="submit" class="btn btn-success mt-3">Register Breedings</button>
+        <button type="submit" class="btn btn-success mt-3">Update</button>
     </form>
 </div>
 

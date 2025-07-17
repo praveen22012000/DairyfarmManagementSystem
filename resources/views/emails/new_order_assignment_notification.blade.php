@@ -16,7 +16,7 @@
     <p>Store Name: Not Available</p>
 @endif
 
-    <p><Address>: {{ $retailor_order->user->address }}</Address></p>
+    <p><Address>:Address: {{ $retailor_order->user->address }}</Address></p>
     
 </table>
 

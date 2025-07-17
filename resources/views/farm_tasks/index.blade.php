@@ -25,7 +25,7 @@
                     {{ session('success') }}
                 </div>
                 @endif
-            <table class="table">
+            <table id="tasksTable" class="table">
                 <thead class="thead-dark">
                     <tr>
                         <th>ID</th>
@@ -49,7 +49,7 @@
 
                         <a href="{{ route('tasks.view',$task->id) }}" class="btn btn-info">View</a>
                         <a href="{{ route('tasks.edit',$task->id) }}" class="btn btn-primary">Edit</a>
-                        <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+                        <button class="btn btn-danger" onclick="confirmDelete({{ $task->id }})">Delete</button>
                     
                         </td>
                  
@@ -88,23 +88,38 @@
 @section('js')
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+
 <script>
-function confirmCancel(orderId, type) {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "You are about to cancel this order!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, cancel it!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            let formId = (type === 'before') ? 'cancelBeforeForm-' : 'cancelAfterForm-';
-            document.getElementById(formId + orderId).submit();
+   function confirmDelete(taskId) {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "This will permanently delete the Farm Task record.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Set form action dynamically based on animal ID
+                let deleteForm = document.getElementById("deleteForm");
+                deleteForm.action = `/tasks/${taskId}/destroy`;
+                deleteForm.submit();
+            }
+        });
+    }
+</script>
+
+<script>
+$(document).ready(function() {
+    $('#tasksTable').DataTable({
+        "pageLength": 10,  // Optional: Sets how many rows per page
+        "lengthMenu": [5, 10, 25, 50, 100],
+        "language": {
+            "search": "Search For Farm Tasks:"
         }
     });
-}
+});
 </script>
 @endsection
 

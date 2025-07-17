@@ -18,7 +18,7 @@
                     {{ session('success') }}
                 </div>
                 @endif
-            <table class="table">
+            <table id="tasksExecutionTable" class="table">
                 <thead class="thead-dark">
                     <tr>
                        
@@ -48,59 +48,57 @@
                        
                  
 
-                        <td>
+                      <td>
+    @if ($assigned_task->status == 'pending')
+        <div class="d-flex gap-2"> <!-- Added gap-2 for consistent spacing -->
+            <!-- Reject Button (with margin-right) -->
+            <button type="button" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#rejectModal{{ $assigned_task->id }}">
+                Reject Task
+            </button>
 
-                        @if ($assigned_task->status == 'pending')
-                                    <!-- Reject Button that triggers the modal -->
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">
-                            Reject Task
-                        </button>
-
-                    <!-- Modal -->
-    <div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <form action="{{ route('task_execution.reject', $assigned_task->id) }}" method="POST">
-                @csrf
-              
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="rejectModalLabel">Reason for Rejection</h5>
-                        
-                    </div>
-                    <div class="modal-body">
-                        <textarea name="rejected_reason" class="form-control" rows="4" required placeholder="Explain why you're rejecting this task..."></textarea>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-danger">Submit Rejection</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    </div>
-                </div>
-            </form>
+            <!-- Start Task Button -->
+            @if(Auth::user()->role_id == 1 || Auth::user()->role_id == 6 || $assigned_task->farm_labore->user->id == auth()->id())
+                <form method="POST" action="{{ route('task_execution.start', $assigned_task->id) }}">
+                    @csrf
+                    <button class="btn btn-primary">Start Task</button>
+                </form>
+            @endif
         </div>
-    </div>
-@endif
 
+        <!-- Modal (Unique for each task) -->
+        <div class="modal fade" id="rejectModal{{ $assigned_task->id }}" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <form action="{{ route('task_execution.reject', $assigned_task->id) }}" method="POST">
+                    @csrf
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="rejectModalLabel">Reason for Rejection</h5>
+                        </div>
+                        <div class="modal-body">
+                            <textarea name="rejected_reason" class="form-control" rows="4" required placeholder="Explain why you're rejecting this task..."></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-danger">Submit Rejection</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        @elseif($assigned_task->status == 'in_progress')
 
+        @if(Auth::user()->role_id == 1 || Auth::user()->role_id == 6 || $assigned_task->farm_labore->user->id == auth()->id())
+            <form method="POST" action="{{ route('task_execution.complete', $assigned_task->id) }}">
+                @csrf
+                <button class="btn btn-sm btn-warning">Mark as Done</button>
+            </form>
+        @endif
 
-                            @if($assigned_task->status == 'pending')
-                                @if(Auth::user()->role_id == 1 || Auth::user()->role_id == 6 || $assigned_task->farm_labore->user->id == auth()->id() )
-                                <form method="POST" action="{{ route('task_execution.start', $assigned_task->id) }}">
-                                    @csrf
-                                    <button class="btn btn-sm btn-primary">Start Task</button>
-                                </form>
-                                @endif
-                            @elseif($assigned_task->status == 'in_progress')
-                                 @if(Auth::user()->role_id == 1 || Auth::user()->role_id == 6 || $assigned_task->farm_labore->user->id == auth()->id() )
-                                <form method="POST" action="{{ route('task_execution.complete', $assigned_task->id) }}">
-                                    @csrf
-                                    <button class="btn btn-sm btn-warning">Mark as Done</button>
-                                </form>
-                                @endif
-                            @else
-                                <em>No actions</em>
-                            @endif
-                        </td>
-                    </tr>
+        @else
+        <em>No actions</em>
+        @endif
+        </td>
+    </tr>
 
                 @endforeach
                 <tbody>
@@ -157,6 +155,18 @@ function confirmCancel(orderId, type) {
         }
     });
 }
+</script>
+
+<script>
+$(document).ready(function() {
+    $('#tasksExecutionTable').DataTable({
+        "pageLength": 10,  // Optional: Sets how many rows per page
+        "lengthMenu": [5, 10, 25, 50, 100],
+        "language": {
+            "search": "Search For Task Execution records:"
+        }
+    });
+});
 </script>
 @endsection
 

@@ -25,7 +25,7 @@
                     {{ session('success') }}
                 </div>
                 @endif
-            <table class="table">
+            <table id="purchaseFeedPaymentTable" class="table">
                 <thead class="thead-dark">
                     <tr>
                         <th> ID</th>
@@ -59,7 +59,7 @@
                         <a href="{{ route('payment.slip.download',$purchase_feed_payment->id)  }}" class="btn btn-secondary">Slip</a>
                         <a href="{{ route('purchase_feed_payments.view',$purchase_feed_payment->id) }}" class="btn btn-info">View</a>
                         <a href="{{ route('purchase_feed_payments.edit',$purchase_feed_payment->id)  }}" class="btn btn-primary">Edit</a>
-                        <button class="btn btn-danger" onclick="">Delete</button>
+                        <button class="btn btn-danger" onclick="confirmDelete({{ $purchase_feed_payment->id }})">Delete</button>
                     
                         </td>
                     </tr>
@@ -96,10 +96,10 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-   function confirmDelete(purchaseVaccineItemId) {
+   function confirmDelete(purchaseFeedPaymentId) {
         Swal.fire({
             title: "Are you sure?",
-            text: "This will permanently delete the Vaccine Purchase record.",
+            text: "This will permanently delete the Payment for the feed record.",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#d33",
@@ -109,12 +109,26 @@
             if (result.isConfirmed) {
                 // Set form action dynamically based on animal ID
                 let deleteForm = document.getElementById("deleteForm");
-                deleteForm.action = `/purchase_vaccine_items/${purchaseVaccineItemId}/destroy`;
+                deleteForm.action = `/purchase_feed_items_payments/${purchaseFeedPaymentId}/destroy`;
                 deleteForm.submit();
             }
         });
     }
 </script>
+
+
+<script>
+$(document).ready(function() {
+    $('#purchaseFeedPaymentTable').DataTable({
+        "pageLength": 10,  // Optional: Sets how many rows per page
+        "lengthMenu": [5, 10, 25, 50, 100],
+        "language": {
+            "search": "Search For Feed Payment records:"
+        }
+    });
+});
+</script>
+
 
 @endsection
 

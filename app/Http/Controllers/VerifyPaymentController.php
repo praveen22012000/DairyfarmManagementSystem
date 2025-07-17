@@ -55,8 +55,8 @@ class VerifyPaymentController extends Controller
         }
         $order = RetailorOrder::findOrFail($orderId);
 
-        $order->payment_status = 'Rejected';
-        $order->status='Rejected';
+        $order->payment_status = 'Unpaid';
+        $order->status='Approved';
         $order->save();
 
                Mail::to($order->user->email)->send(new VerifyPaymentRejectNotification($order));

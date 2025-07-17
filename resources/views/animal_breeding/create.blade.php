@@ -23,8 +23,7 @@
     </div>
 @endif
 
-        <fieldset class="border p-4 mb-4">
-        <legend class="w-auto px-2">General Information</legend>
+       
 
 
     <!--this is used to list the female_cow_name -->
@@ -82,7 +81,7 @@
         
         <!--this is get the animal_calving date-->
         <div class="form-group">
-            <label for="breeding_date">Breeding_Date</label>
+            <label for="breeding_date">Breeding Date</label>
                 <input type="date" name="breeding_date" class="form-control rounded" id="breeding_date" value="{{ old('breeding_date') }}">
                 @error('breeding_date') <span class="text-danger">{{ $message }}</span> @enderror
         </div>
@@ -91,7 +90,7 @@
         <!-- this is used to denote the breeding_type-->
         <div class="form-group">
 
-            <label for="insemination_type">Breeding_Type</label><br>
+            <label for="insemination_type">Breeding Type</label><br>
 
 
             <input type="radio" id="Artificial Insemination" name="insemination_type" value="Artificial Insemination" {{ old('insemination_type') == 'Artificial Insemination' ? 'checked' : '' }}>
@@ -113,7 +112,7 @@
         </div>
 
 
-        </fieldset>
+       
 
         
         <button type="submit" class="btn btn-success mt-3">Register Breedings</button>

@@ -5,7 +5,7 @@
 <div class="col-md-12">
 
        
-            <h1>Designation Salary Form</h1>     
+            <h1 style="text-align:center;">Designation Salary Form</h1>     
         
 
     <br>

@@ -54,7 +54,7 @@ use App\Http\Controllers\DashboardForVeterinarians;
 use App\Http\Controllers\DashboardControllerForFarmLabore;
 use App\Http\Controllers\DashboardForRetailor;
 use App\Http\Controllers\MyProfileController;
-
+use App\Http\Controllers\FinancialReportController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -402,9 +402,9 @@ Route::middleware('auth')->prefix('vaccine_details')->group(function () {
 
 //this below group is used to manage the supplier_feed_vaccine_details.
 // this means it handles the feed and vaccine details prodvided by the supplier
-Route::middleware('auth')->prefix('supply_feed_vaccine_details')->group(function () {
-    Route::get('/', [SupplierController::class, 'index'])->name('supply_feed_vaccine.list');
-    Route::get('/create', [SupplierController::class, 'create'])->name('supply_feed_vaccine.create');
+Route::middleware('auth')->prefix('supplier_details')->group(function () {
+    Route::get('/', [SupplierController::class, 'index'])->name('supplier_details.list');
+    Route::get('/create', [SupplierController::class, 'create'])->name('suppliers.create');
     Route::post('/store', [SupplierController::class, 'store'])->name('supply_feed_vaccine.store');
     
 
@@ -495,7 +495,7 @@ Route::middleware('auth')->prefix('purchase_feed_items_payments')->group(functio
          Route::post('/update', [PurchaseFeedPaymentController::class, 'update'])->name('purchase_feed_payments.update');
  
          Route::get('/view', [PurchaseFeedPaymentController::class, 'view'])->name('purchase_feed_payments.view');
-         Route::post('/destroy', [PurchaseFeedItemsController::class, 'destroy'])->name('purchase_feed_items.destroy');
+         Route::post('/destroy', [PurchaseFeedPaymentController::class, 'destroy'])->name('purchase_feed_items.destroy');
  
        
      });
@@ -603,7 +603,7 @@ Route::middleware('auth')->prefix('tasks')->group(function () {
          Route::post('/update', [TasksController::class, 'update'])->name('tasks.update');
  
          Route::get('/view', [TasksController::class, 'view'])->name('tasks.view');
-      //   Route::post('/destroy', [PurchaseFeedItemsController::class, 'destroy'])->name('purchase_feed_items.destroy');
+        Route::post('/destroy', [TasksController::class, 'destroy'])->name('tasks.destroy');
  
        
      });
@@ -910,6 +910,17 @@ Route::middleware('auth')->prefix('purchase_vaccine_items')->group(function () {
  });
 
 
+//this below group is used to manage financial report details
+Route::middleware('auth')->prefix('finacial_report')->group(function () {
+
+    Route::get('/loss_and_profit', [FinancialReportController::class, 'financialReport'])->name('farm_financial.report');
+    Route::get('/loss_and_profit/pdf', [FinancialReportController::class, 'DownloadFianacialReport'])->name('farm_financial_report.pdf');
+
+ 
+ });
+
+
+
  //this below group is used to manage dispose vaccine item details
 Route::middleware('auth')->prefix('dispose_vaccine_items')->group(function () {
 
@@ -932,9 +943,6 @@ Route::middleware('auth')->prefix('dispose_vaccine_items')->group(function () {
        
      });
  
- 
-    
-  
  });
 
 
@@ -1104,9 +1112,7 @@ Route::middleware('auth')->prefix('role_salary_details')->group(function () {
         Route::get('/view', [RoleSalaryController::class, 'view'])->name('role_salalry.view');
         Route::get('/edit', [RoleSalaryController::class, 'edit'])->name('role_salary.edit');
         Route::post('/update', [RoleSalaryController::class, 'update'])->name('role_salary.update');
-
-        Route::get('/delete', [BreedingEventsController::class, 'delete'])->name('animal_breedings.delete');
-      //  Route::post('/destroy', [BreedingEventsController::class, 'destroy'])->name('animal_breedings.destroy');
+        Route::post('/destroy', [RoleSalaryController::class, 'destroy'])->name('role_salary.destroy');
 
       
     });
@@ -1122,14 +1128,22 @@ Route::middleware('auth')->prefix('monthly_salary_details')->group(function () {
     Route::get('/create', [MonthlySalaryAssignmentController::class, 'create'])->name('monthly_salary_assign.create');
     Route::post('/store', [MonthlySalaryAssignmentController::class, 'store'])->name('monthly_salary_assign.store');
 
+    //this is for generate reports
+    Route::get('/salary-assignment-report-per-role', [MonthlySalaryAssignmentController::class, 'salaryReportPerRole'])->name('salary_per_role_report');
+    Route::get('/salary_assignment_for_role_in_monthly', [MonthlySalaryAssignmentController::class, 'monthlySalaryPerSpecificRole'])->name('monthly_salary_for_role');
+
+    //this is for download pdf for above two
+    Route::get('/salary-assignment-report-per-role-pdf', [MonthlySalaryAssignmentController::class, 'salaryReportPerRolePDF'])->name('salary_per_role_report.pdf');
+    Route::get('/salary_assignment_for_role_in_monthly_pdf', [MonthlySalaryAssignmentController::class, 'monthlySalaryPerSpecificRolePDF'])->name('monthly_salary_for_role.pdf');
+
      Route::group(['prefix'=>'{monthlysalaryassign}'],function(){
        
         Route::get('/view', [MonthlySalaryAssignmentController::class, 'view'])->name('monthly_salary_assign.view');
         Route::get('/edit', [MonthlySalaryAssignmentController::class, 'edit'])->name('monthly_salary_assign.edit');
         Route::post('/update', [MonthlySalaryAssignmentController::class, 'update'])->name('monthly_salary_assign.update');
 
-      //  Route::get('/delete', [BreedingEventsController::class, 'delete'])->name('animal_breedings.delete');
-      //  Route::post('/destroy', [BreedingEventsController::class, 'destroy'])->name('animal_breedings.destroy');
+      
+        Route::post('/destroy', [MonthlySalaryAssignmentController::class, 'destroy'])->name('monthly_salary_assign.destroy');
 
       
     });
@@ -1149,14 +1163,15 @@ Route::middleware('auth')->prefix('users_main_details')->group(function () {
 
     Route::get('/', [MainUserRegisterController::class, 'index'])->name('main_user_details.list');
   
-   
+    Route::get('/create', [MainUserRegisterController::class, 'create'])->name('main_user_details.create');
+    Route::post('/store', [MainUserRegisterController::class, 'store'])->name('main_user_details.store');
 
     Route::group(['prefix'=>'{user}'],function(){
        
         Route::get('/view', [MainUserRegisterController::class, 'view'])->name('main_user_details.view');
         Route::get('/edit', [MainUserRegisterController::class, 'edit'])->name('main_user_details.edit');
         Route::post('/update', [MainUserRegisterController::class, 'update'])->name('main_user_details.update');
-
+        Route::post('/destroy', [MainUserRegisterController::class, 'destroy'])->name('main_user_details.destroy');
        
       
     });
@@ -1233,7 +1248,7 @@ Route::middleware('auth')->prefix('users')->group(function () {
             Route::post('/update', [SalesManagerController::class, 'update'])->name('sales_manager.update');
 
         
-            Route::post('/destroy', [SalesManagerController::class, 'destroy'])->name('retailers.destroy');
+            Route::post('/destroy', [SalesManagerController::class, 'destroy'])->name('sale_manager.destroy');
 
         });
 
@@ -1269,12 +1284,9 @@ Route::middleware('auth')->prefix('users')->group(function () {
         Route::group(['prefix'=>'{farmlabore}'],function(){
 
             Route::get('/view', [FarmLaboreController::class, 'view'])->name('farm_labore.view');
-
             Route::get('/edit', [FarmLaboreController::class, 'edit'])->name('farm_labore.edit');
-        Route::post('/update', [FarmLaboreController::class, 'update'])->name('farm_labore.update');
-
-        
-       /*     Route::post('/destroy', [RetailerController::class, 'destroy'])->name('retailers.destroy');*/
+            Route::post('/update', [FarmLaboreController::class, 'update'])->name('farm_labore.update'); 
+            Route::post('/destroy', [FarmLaboreController::class, 'destroy'])->name('farm_labore.destroy');
 
         });
 

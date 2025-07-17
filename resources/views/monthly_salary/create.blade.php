@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="col-md-12">
-    <h1>Monthly Salary Table</h1>
+    <h1 style="text-align:center;">Staff Monthly Salary Management</h1>
     
     <br>
     @if($errors->any())

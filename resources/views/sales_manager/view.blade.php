@@ -3,12 +3,12 @@
 @section('content')
 
 <div class="container">
-    <h2>Change User Details</h2>
+    <h2 style="text-align:center;">Change User Details</h2>
     <form method="POST" action="">
         @csrf
         <!-- Role Selection -->
 
-        {{$salesmanager}}
+      
         <div class="form-group">
             <label for="role_id">Role:</label>
             <select id="role_id" name="role_id" disabled class="form-control">

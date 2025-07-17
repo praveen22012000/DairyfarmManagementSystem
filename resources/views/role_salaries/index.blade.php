@@ -26,7 +26,7 @@
                     {{ session('success') }}
                 </div>
                 @endif
-            <table class="table">
+            <table  class="table">
                 <thead class="thead-dark">
                     <tr>
 
@@ -52,7 +52,7 @@
 
                         <a href="{{ route('role_salalry.view',$role_sal->id) }}" class="btn btn-info">View</a>
                         <a href="{{ route('role_salary.edit',$role_sal->id) }}" class="btn btn-primary">Edit</a>
-                        <button class="btn btn-danger" onclick="">Delete</button>
+                        <button class="btn btn-danger" onclick="confirmDelete({{ $role_sal->id }})">Delete</button>
 
                         </td>
                     </tr>
@@ -88,7 +88,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-   function confirmDelete(retailerId) {
+   function confirmDelete(roleSalID) {
         Swal.fire({
             title: "Are you sure?",
             text: "This will permanently delete the retailer record.",
@@ -101,12 +101,25 @@
             if (result.isConfirmed) {
                 // Set form action dynamically based on animal ID
                 let deleteForm = document.getElementById("deleteForm");
-                deleteForm.action = `/users/retailer_list/${retailerId}/destroy`;
+                deleteForm.action = `/role_salary_details/${roleSalID}/destroy`;
                 deleteForm.submit();
             }
         });
     }
 </script>
+
+<script>
+$(document).ready(function() {
+    $('#roleSalaryTable').DataTable({
+        "pageLength": 10,  // Optional: Sets how many rows per page
+        "lengthMenu": [5, 10, 25, 50, 100],
+        "language": {
+            "search": "Search For Salary Records:"
+        }
+    });
+});
+</script>
+
 
 @endsection
 

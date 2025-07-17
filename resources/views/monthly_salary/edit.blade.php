@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="col-md-12">
-    <h1>Monthly Salary Table</h1>
+    <h1 style="text-align:center;">Staff Monthly Salary Management</h1>
     
     <br>
     @if($errors->any())
@@ -46,11 +46,7 @@
     @error('salary_month') <span class="text-danger">{{ $message }}</span> @enderror
 </div>
       
-        <div class="form-group">
-            <label for="salary">Base Salary (Rs.)</label>
-            <input type="text" name="salary" class="form-control rounded" id="salary" value="{{ old('salary') }}" readonly>
-            @error('salary') <span class="text-danger">{{ $message }}</span> @enderror
-        </div>
+     
 
         <div class="form-group">
             <label for="custom_salary">Custom Salary (Optional)</label>

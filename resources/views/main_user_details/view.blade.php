@@ -3,11 +3,11 @@
 @section('content')
        
 <div class="container">
-    <h2>User Details</h2>
+    <h2 style="text-align:center;">User Details</h2>
     <form method="POST" action="">
         @csrf
        
-{{ $user }}
+
 
  @if ($errors->any())
             <div class="alert alert-danger">
@@ -18,6 +18,22 @@
                 </ul>
             </div>
         @endif
+         <div class="form-group">
+                    <label for="role_id">Role</label>
+           
+                        <!-- this is used to list the animal types-->
+                <select name="role_id" id="role_id" class="form-control" >
+                        <option value="">Select Role</option>
+             
+                        @foreach ($roles as $role)
+                            <option value="{{ $role->id }}"
+                            {{ $user->role_id == $role->id ? 'selected' : '' }}
+                            >{{ $role->role_name}}</option>
+                        @endforeach
+                </select>
+                    @error('role_id') <span class="text-danger">{{ $message }}</span> @enderror
+            </div>
+            
             <div class="form-group">
                 <label for="name">First Name:</label>
                 <input type="text" id="name" name="name" class="form-control" 
@@ -48,6 +64,13 @@
                 @error('email') <span class="text-danger">{{ $message }}</span> @enderror
             </div>
 
+            <div class="form-group">
+                <label for="phone_number">Phone No</label>
+                <input type="text" id="phone_number" name="phone_number" class="form-control" 
+                       value="{{ $user->phone_number  }}">
+                @error('phone_number') <span class="text-danger">{{ $message }}</span> @enderror
+            </div>
+
 
             <div class="form-group">
                 <label for="nic">NIC</label>
@@ -58,8 +81,6 @@
 
           
             
-
-        </div>
 
         <a href="{{ route('main_user_details.list') }}" class="btn btn-info">Back</a>
 

@@ -5,7 +5,7 @@
 <div class="col-md-12">
 
        
-            <h1>Purchase Feed Payments</h1>     
+            <h1 style="text-align:center;">Purchase Feed Payments</h1>     
         
 
     <br>
@@ -13,8 +13,7 @@
     <form  method="POST" enctype="multipart/form-data" action="{{ route('purchase_feed_payments.update',$purchasefeedpayment->id) }}">
         @csrf
 
-        <fieldset class="border p-4 mb-4">
-        <legend class="w-auto px-2">General Information</legend>
+  
 
 
         <div class="form-group">
@@ -45,7 +44,7 @@
         </div>
 
 
-        </fieldset>
+       
 
         
         <button type="submit" class="btn btn-success mt-3">Update</button>
@@ -60,7 +59,8 @@
 
 <script>
 $(document).ready(function () {
-    function fetchPaymentAmount(purchaseId) {
+    function fetchPaymentAmount(purchaseId) // This tells the browser to run the code only after the entire webpage (DOM) has finished loading.
+    {
         if (purchaseId !== "") {
             $.ajax({
                 url: '/purchase_feed_items_payments/get-purchase-amount/' + purchaseId,

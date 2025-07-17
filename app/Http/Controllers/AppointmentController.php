@@ -60,17 +60,17 @@ class AppointmentController extends Controller
         ]);
 
         
-          $exists = Appointment::where('veterinarian_id',$request->veterinarian_id)
+        $exists = Appointment::where('veterinarian_id',$request->veterinarian_id)
             ->where('appointment_date', $request->appointment_date)
               ->where('appointment_time', $request->appointment_time)
               ->exists();
 
-    if ($exists) 
-    {
+        if ($exists) 
+        {
         return redirect()->back()
                ->withInput()
-               ->withErrors(['This time and date is already appointed to this veterinarian']);
-    }
+               ->withErrors(['appointment_date'=>'This time and date is already appointed to this veterinarian']);
+        }
 
         $appointment=Appointment::create([
             'veterinarian_id'=>$request->veterinarian_id,
@@ -91,10 +91,11 @@ class AppointmentController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $veterinarian_id=Role::whereIn('role_name',['veterinarian'])->pluck('id');
+        $veterinarian_id=Role::whereIn('role_name',['Veterinarion'])->pluck('id');
 
         $veterinarians=User::whereIn('role_id',$veterinarian_id)->get();
 
+      
      
         return view('appointments.edit',['veterinarians'=>$veterinarians,'appointment'=>$appointment]);
     }
@@ -115,6 +116,8 @@ class AppointmentController extends Controller
 
         $appointment->update($data);
 
+         Mail::to('pararajasingampraveen22@gmail.com')->send(new VeterinarianAppointmentNotification($appointment));
+
         return redirect()->route('appointment.list')->with('success', 'Appointment record updated successfully!');
     }
 
@@ -124,7 +127,7 @@ class AppointmentController extends Controller
         {
             abort(403, 'Unauthorized action.');
         }
-        $veterinarian_id=Role::whereIn('role_name',['veterinarian'])->pluck('id');
+       $veterinarian_id=Role::whereIn('role_name',['Veterinarion'])->pluck('id');
 
         $veterinarians=User::whereIn('role_id',$veterinarian_id)->get();
 

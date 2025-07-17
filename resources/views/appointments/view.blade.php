@@ -4,7 +4,7 @@
        
 <div class="col-md-12">
 
-<h1>Schedule Veterinarian Appointment</h1>
+<h1 style="text-align:center;">Veterinarian Appointment</h1>
 <br>
 <form action="" method="POST">
     @csrf

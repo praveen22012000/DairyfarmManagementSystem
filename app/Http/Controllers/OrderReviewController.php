@@ -30,12 +30,12 @@ class OrderReviewController extends Controller
     public function isProductAvailable($productId, $requestedQty)
     {
         // Get the total available stock for this product
-        $totalStockQty = ManufacturerProduct::where('product_id', $productId)->sum('stock_quantity');
+        $totalStockQty = ManufacturerProduct::where('product_id', $productId)->sum('stock_quantity');//
     
        
 
         // Get the total allocated stock (not yet delivered or completed)
-        $allocatedQty = OrderAllocation::where('product_id', $productId)
+        $allocatedQty = OrderAllocation::where('product_id', $productId) //This part calculates how much of that product is already allocated to orders
             ->whereHas('order', function ($query) {
                 $query->whereNotIn('status', ['Delivered', 'Completed']);
             })
@@ -43,13 +43,13 @@ class OrderReviewController extends Controller
 
           
         // Calculate available stock
-        $availableStock = $totalStockQty - $allocatedQty;
+        $availableStock = $totalStockQty - $allocatedQty;//This subtracts allocated stock from the total stock to get the truly available stock
        
         return $availableStock >= $requestedQty; // Return true/false
     }
 
 
-    public function review($orderId)
+    public function review($orderId)//This function is used to review a retailor's order based on its ID.
     {
         if (!in_array(Auth::user()->role_id, [1, 7])) 
         {
@@ -58,15 +58,15 @@ class OrderReviewController extends Controller
  
         //findOrFail is a shortcut method that directly queries by the primary key, which is usually id
         //Returns a single model instance
-         $retailororder = RetailorOrder::findOrFail($orderId);
+         $retailororder = RetailorOrder::findOrFail($orderId);//This retrieves the order from the RetailorOrder table using the ID
 
-        $order_items= RetailorOrderItems::where('order_id',$orderId)->get();
+        $order_items= RetailorOrderItems::where('order_id',$orderId)->get();// This retrieves all items that belong to the given order.
 
-        $milk_products=MilkProduct::with('retailor_order_item')->get();
+        $milk_products=MilkProduct::with('retailor_order_item')->get();//
 
         // Add availability status to each item
         foreach ($order_items as $item) {
-            $item->is_available = $this->isProductAvailable($item->product_id, $item->ordered_quantity);
+            $item->is_available = $this->isProductAvailable($item->product_id, $item->ordered_quantity);//It checks if the requested quantity is available by calling the earlier isProductAvailable() method
         }
 
         // Return the view with the order data
@@ -138,8 +138,8 @@ class OrderReviewController extends Controller
 
 
      //  Reject the order
-     public function reject($orderId)
-     {
+    public function reject($orderId)
+    {
         if (!in_array(Auth::user()->role_id, [1, 7])) 
         {
             abort(403, 'Unauthorized action.');
@@ -153,7 +153,7 @@ class OrderReviewController extends Controller
         Mail::to($order->user->email)->send(new RetailorOrderStatusNotification($order));
  
          return redirect()->route('retailor_order_items.list')->with('success', 'Order rejected successfully.');
-     }
+    }
 
    
 }

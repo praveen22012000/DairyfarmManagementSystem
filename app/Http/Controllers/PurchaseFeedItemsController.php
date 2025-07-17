@@ -104,6 +104,11 @@ class PurchaseFeedItemsController extends Controller
 
     public function purchaseFeedReport(Request $request)
     {
+        if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
         $start = $request->start_date;
         $end = $request->end_date;
 
@@ -123,8 +128,8 @@ class PurchaseFeedItemsController extends Controller
              ->select(
             'feeds.feed_name',
             DB::raw('SUM(purchase_feed_items.purchase_quantity) as total_purchase_quantity')
-        )->groupBy('purchase_feed_items.feed_id','feeds.feed_name')
-        ->get();
+                )->groupBy('purchase_feed_items.feed_id','feeds.feed_name')
+                ->get();
         }
 
        
@@ -134,6 +139,11 @@ class PurchaseFeedItemsController extends Controller
 
     public function downloadPDFforPurchaseFeed(Request $request)
     {
+         if (!in_array(Auth::user()->role_id, [1,6])) 
+        {
+            abort(403, 'Unauthorized action.');
+        } 
+
              $start = $request->start_date;
              $end = $request->end_date;
 

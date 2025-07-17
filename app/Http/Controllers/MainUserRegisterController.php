@@ -12,6 +12,9 @@ use App\Models\Retailer;
 use App\Models\SalesManager;
 use App\Models\GeneralManager;
 use App\Models\FarmLabore;
+use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class MainUserRegisterController extends Controller
 {
@@ -19,32 +22,34 @@ class MainUserRegisterController extends Controller
 
     public function index()
     {
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+
        $users =User::all();
 
        return view('main_user_details.index',['users'=>$users]);
     }
 
-
-    public function view(User $user)
+    public function create()
     {
-          $targeted_role_ids = ['1','2','3','5','6','7'];
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
 
-        $roles= Role::whereIn('id',$targeted_role_ids)->get();
+        $role_id = Role::whereIn('role_name',['FarmOwner','Supplier'])->pluck('id');// this written to exclude the roles from the dropdwon 
 
-       return view('main_user_details.view',['user'=>$user,'roles'=>$roles]);
+        $roles = Role::whereNotIn('id',$role_id)->get();
+
+       // dd($roles);
+       // dd($role_id);
+       // $roles = Role::all()->pluck('role_name','id')->toArray();
+          
+        return view('main_user_details.create',['roles'=>$roles]);
     }
 
-
-    public function edit(User $user)
-    {
-        $targeted_role_ids = ['1','2','3','5','6','7'];
-
-        $roles= Role::whereIn('id',$targeted_role_ids)->get();
-
- 
-
-       return view('main_user_details.edit',['user'=>$user,'roles'=>$roles]);
-    }
 
     //the following code is used to extract gender and birthdate from the nic
     private function extractDetailsFromNIC($nic)
@@ -86,8 +91,83 @@ class MainUserRegisterController extends Controller
     return [$gender, $birthdate];
     }
 
+    public function store(Request $request)
+    {
+         if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+         $request->validate
+         ([
+                    'name' => ['required', 'string', 'max:255'],
+                    'lastname' => ['required', 'string', 'max:255'],
+                    'address' => ['required', 'string', 'max:255'],
+                    'phone_number' => ['required','regex:/^(07[0-9])\d{7}$/','unique:users,phone_number'],
+                    'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+                    'password' => ['required', 'confirmed', Password::defaults()],
+                    'role_id' => 'required|exists:roles,id',
+                    'nic' => ['required', 'regex:/^(\d{9}[vVxX]|\d{12})$/', 'unique:users,nic']
+        ]);
+
+         //  Extract gender and birthdate from NIC
+        [$gender, $birthdate] = $this->extractDetailsFromNIC($request->nic);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'lastname'=>$request->lastname,
+            'address'=>$request->address,
+            'phone_number'=>$request->phone_number,
+            'password' => Hash::make($request->password),
+            'role_id'=>$request->role_id,
+            'nic' => $request->nic,
+            'gender' => $gender,
+            'birthdate' => $birthdate,
+        ]);
+
+        return redirect()->route('main_user_details.list')->with('success', 'New user is created successfully!');
+
+    }
+
+
+    public function view(User $user)
+    {
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+        $targeted_role_ids = ['2','3','5','6','7'];
+
+        $roles= Role::whereIn('id',$targeted_role_ids)->get();
+
+       return view('main_user_details.view',['user'=>$user,'roles'=>$roles]);
+    }
+
+
+    public function edit(User $user)
+    {
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+        $targeted_role_ids = ['2','3','5','6','7'];
+
+        $roles= Role::whereIn('id',$targeted_role_ids)->get();
+
+ 
+
+       return view('main_user_details.edit',['user'=>$user,'roles'=>$roles]);
+    }
+
+    
+
     public function update(request $request,User $user)
     {
+
+         if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
          $user = User::findOrFail($user->id);//find the user whose record is  being updated
 
      
@@ -99,7 +179,7 @@ class MainUserRegisterController extends Controller
             'role_id' => 'required|exists:roles,id',
             'lastname' => ['required', 'string', 'max:255'],
             'address' => ['required', 'string', 'max:255'],
-            'phone_number' => ['required', 'string', 'max:255'],
+             'phone_number' => ['required','regex:/^(07[0-9])\d{7}$/','unique:users,phone_number,'.$user->id],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:users,email,' . $user->id],
             'nic' => ['required', 'regex:/^(\d{9}[vVxX]|\d{12})$/', 'unique:users,nic,' . $user->id]
         ]);
@@ -145,6 +225,17 @@ class MainUserRegisterController extends Controller
       
          return redirect()->route('main_user_details.list')->with('success', 'User Details updated successfully!');
 
+    }
+
+    public function destroy(User $user)
+    {
+        if (!in_array(Auth::user()->role_id, [1])) 
+        {
+            abort(403, 'Unauthorized action.');
+        }
+        $user->delete();
+
+         return redirect()->route('main_user_details.list')->with('success', 'User deleted successfully!');
     }
 
 }
